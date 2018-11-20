@@ -3,7 +3,7 @@ Fogbow Site Probe is a probe of the Fogbow project created by Laboratório de Si
 
 This is a probe that pushes metrics from a fogbow site to a TMA instance.
 
-### Configuration 
+## Configuration 
 Rename the file "probe-fogbow.conf.example" to "probe-fogbow.conf" and configure it.
 
 ```bash
@@ -35,7 +35,6 @@ probe_password=
 **probe_password**: Probe password
 
 ## Deploy
-
 ### Docker
 #### Pre requirements
 Create docker image of this project. [TMA-monitor-libraries](https://github.com/eubr-atmosphere/tma-framework-m/tree/master/development/libraries)
