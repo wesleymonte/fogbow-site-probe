@@ -1,0 +1,14 @@
+# database
+database_url=
+user_database=
+password_database=
+database_driver= 
+		
+# scheduler
+scheduler_period=
+		
+# monitor ATM
+monitor_url=
+probe_id=
+resource_id=
+probe_password=
