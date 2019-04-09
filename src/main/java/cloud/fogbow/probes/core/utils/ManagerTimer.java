@@ -1,4 +1,4 @@
-package br.edu.ufcg.lsd.core.utils;
+package cloud.fogbow.probes.core.utils;
 
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;

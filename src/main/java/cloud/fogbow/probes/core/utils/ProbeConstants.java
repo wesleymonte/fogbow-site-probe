@@ -1,4 +1,4 @@
-package br.edu.ufcg.lsd.core.utils;
+package cloud.fogbow.probes.core.utils;
 
 public class ProbeConstants {
 
