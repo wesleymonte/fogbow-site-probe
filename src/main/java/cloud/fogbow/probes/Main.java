@@ -1,13 +1,20 @@
 package cloud.fogbow.probes;
 
+import cloud.fogbow.probes.core.models.FogbowResourceAvailabilityProbe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.stereotype.Component;
 
-public class Main {
+@Component
+public class Main implements ApplicationRunner {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
+        @Override
+        public void run(ApplicationArguments args) {
+            FogbowResourceAvailabilityProbe serviceResourceProbe = new FogbowResourceAvailabilityProbe();
+            Thread firstProbe = new Thread(serviceResourceProbe);
+            firstProbe.start();
 
-    public static void main(String[] args) {
-
-    }
+        }
 }
