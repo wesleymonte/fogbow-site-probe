@@ -1,20 +1,31 @@
 package cloud.fogbow.probes.core.models;
 
+import cloud.fogbow.probes.core.Constants;
+import cloud.fogbow.probes.core.services.DataProviderService;
+import cloud.fogbow.probes.core.utils.PropertiesUtil;
 import eu.atmosphere.tmaf.monitor.client.BackgroundClient;
 import eu.atmosphere.tmaf.monitor.message.Data;
 import eu.atmosphere.tmaf.monitor.message.Message;
 import eu.atmosphere.tmaf.monitor.message.Observation;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Properties;
 
 public abstract class Probe implements Runnable {
 
-    private BackgroundClient client;
-    private Message message;
+    protected static final int SLEEP_TIME = 60000;
 
+    protected BackgroundClient client;
+    protected Message message;
+    protected Properties properties;
+    protected Timestamp lastTimestampAwake;
 
-    protected abstract void setup();
+    @Autowired
+    protected DataProviderService providerService;
+
+    protected abstract void setup() throws Exception;
     protected abstract void createMessage();
     protected void sendMessage(List<Integer> descriptionIds, Timestamp timestamp) {
         if(message == null) {
@@ -23,7 +34,7 @@ public abstract class Probe implements Runnable {
 
         for(int i = 1; i <= descriptionIds.size(); i++) {
             this.message.addData(new Data(
-                    Data.Type.MEASUREMENT,
+                    Data.Type.EVENT,
                     descriptionIds.get(i),
                     new Observation(
                         timestamp.getTime(), i

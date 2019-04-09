@@ -3,9 +3,11 @@ package cloud.fogbow.probes.core.services;
 import cloud.fogbow.probes.core.models.OrderState;
 import cloud.fogbow.probes.datastore.DatabaseManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 
+@Service
 public class DataProviderService {
 
     @Autowired
