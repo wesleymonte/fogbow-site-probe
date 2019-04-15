@@ -7,7 +7,6 @@ import eu.atmosphere.tmaf.monitor.client.BackgroundClient;
 import eu.atmosphere.tmaf.monitor.message.Data;
 import eu.atmosphere.tmaf.monitor.message.Message;
 import eu.atmosphere.tmaf.monitor.message.Observation;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -22,8 +21,7 @@ public abstract class Probe implements Runnable {
     protected Properties properties;
     protected Timestamp lastTimestampAwake;
 
-    @Autowired
-    protected DataProviderService providerService;
+    protected DataProviderService providerService = new DataProviderService();
 
     protected abstract void setup() throws Exception;
     protected abstract void createMessage();

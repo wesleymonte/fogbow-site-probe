@@ -6,13 +6,11 @@ import cloud.fogbow.probes.core.utils.PropertiesUtil;
 import eu.atmosphere.tmaf.monitor.client.BackgroundClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
 public class FogbowResourceAvailabilityProbe extends Probe {
     private static final String RESOURCE_AVAILABILITY_ID = "resource_availability_probe_id";
 
