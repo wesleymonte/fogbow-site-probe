@@ -5,7 +5,6 @@
 target/
 bin/
 logs/
-probe-fogbow.conf
 
 .idea/
 
@@ -31,3 +30,6 @@ probe-fogbow.conf
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries
+
+### Private Folder ###
+src/main/resources/private/

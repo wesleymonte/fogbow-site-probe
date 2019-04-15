@@ -1,16 +1,18 @@
 package cloud.fogbow.probes.core.models;
 
 import cloud.fogbow.probes.core.Constants;
+import cloud.fogbow.probes.core.services.DataProviderService;
 import cloud.fogbow.probes.core.utils.PropertiesUtil;
 import eu.atmosphere.tmaf.monitor.client.BackgroundClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@Component
 public class FogbowResourceAvailabilityProbe extends Probe {
     private static final String RESOURCE_AVAILABILITY_ID = "resource_availability_probe_id";
 
@@ -28,6 +30,7 @@ public class FogbowResourceAvailabilityProbe extends Probe {
         }
 
         while(true) {
+            System.out.println("running");
             int failedOrdersQuantity = providerService.getFailed(lastTimestampAwake);
             int fulfilledOrdersQuantity = providerService.getFulfilled(lastTimestampAwake);
 
@@ -36,6 +39,8 @@ public class FogbowResourceAvailabilityProbe extends Probe {
             List<Integer> data = new ArrayList<>();
             data.add(failedOrdersQuantity);
             data.add(fulfilledOrdersQuantity);
+            System.out.println(failedOrdersQuantity);
+            System.out.println(fulfilledOrdersQuantity);
 
             sendMessage(data, new Timestamp(System.currentTimeMillis()));
 
@@ -49,17 +54,23 @@ public class FogbowResourceAvailabilityProbe extends Probe {
     }
 
     public void setup() throws Exception {
-        this.properties = new PropertiesUtil().readProperties(Constants.confFile);
-        this.client = new BackgroundClient();
-        client.authenticate(Integer.valueOf(properties.getProperty(RESOURCE_AVAILABILITY_ID)), "pass".getBytes());
+        String path = Thread.currentThread().getContextClassLoader().getResource("").getPath() + "private/";
+        this.properties = new PropertiesUtil().readProperties(path + Constants.confFile);
+        this.client = new BackgroundClient("https://150.165.85.27:32025/monitor"); // that's it?
+        client.authenticate(Integer.valueOf(properties.getProperty(RESOURCE_AVAILABILITY_ID)), "pass".getBytes()); // what should be passed here?
         boolean startFlag = client.start();
 
         if(!startFlag) {
-
+            System.out.println("failed on starting");
         }
     }
 
     public void createMessage() {
+        this.message = this.client.createMessage();
+        message.setResourceId(1); // what about here, is it important?
+    }
 
+    public DataProviderService getProviderService() {
+        return this.providerService;
     }
 }

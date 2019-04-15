@@ -34,14 +34,14 @@ public abstract class Probe implements Runnable {
 
         for(int i = 1; i <= descriptionIds.size(); i++) {
             this.message.addData(new Data(
-                    Data.Type.EVENT,
-                    descriptionIds.get(i),
+                    Data.Type.EVENT, // Event or measurement?
+                    descriptionIds.get(i-1), // how could I pass a string identifier to this field?
                     new Observation(
                         timestamp.getTime(), i
-                    ))
+                    )) // does it make sense?
             );
         }
 
-        client.send(message);
+        System.out.println(client.send(message));
     }
 }
