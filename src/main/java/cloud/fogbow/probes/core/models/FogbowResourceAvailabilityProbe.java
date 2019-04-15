@@ -54,10 +54,8 @@ public class FogbowResourceAvailabilityProbe extends Probe {
     }
 
     public void setup() throws Exception {
-        String path = Thread.currentThread().getContextClassLoader().getResource("").getPath() + "private/";
-        this.properties = new PropertiesUtil().readProperties(path + Constants.confFile);
         this.client = new BackgroundClient("https://172.17.0.1:32025/monitor"); // that's it?
-        client.authenticate(Integer.valueOf(properties.getProperty(RESOURCE_AVAILABILITY_ID)), "pass".getBytes()); // what should be passed here?
+        client.authenticate(1, "pass".getBytes()); // what should be passed here?
         boolean startFlag = client.start();
 
         if(!startFlag) {

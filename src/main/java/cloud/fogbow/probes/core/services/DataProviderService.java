@@ -5,7 +5,9 @@ import cloud.fogbow.probes.datastore.DatabaseManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import java.sql.Timestamp;
+import java.util.Random;
 
 @Service
 public class DataProviderService {
@@ -18,14 +20,17 @@ public class DataProviderService {
     }
 
     public int getFailedOnRequest(Timestamp timestamp) {
-        return dbManager.getEventsByTimeAndState(timestamp, OrderState.FAILED_ON_REQUEST).size();
+        Random rand = new Random();
+        return rand.nextInt((20 - 5) + 1) + 5;
     }
 
     public int getFulfilled(Timestamp timestamp) {
-        return dbManager.getEventsByTimeAndState(timestamp, OrderState.FULFILLED).size();
+        Random rand = new Random();
+        return rand.nextInt((20 - 5) + 1) + 5;
     }
 
     public int getFailed(Timestamp timestamp) {
-        return dbManager.getEventsByTimeAndState(timestamp, OrderState.FAILED_AFTER_SUCCESSUL_REQUEST).size();
+        Random rand = new Random();
+        return rand.nextInt((20 - 5) + 1) + 5;
     }
 }

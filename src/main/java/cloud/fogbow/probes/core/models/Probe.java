@@ -27,6 +27,7 @@ public abstract class Probe implements Runnable {
 
     protected abstract void setup() throws Exception;
     protected abstract void createMessage();
+
     protected void sendMessage(List<Integer> descriptionIds, Timestamp timestamp) {
         if(message == null) {
             createMessage();
