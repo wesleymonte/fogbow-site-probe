@@ -4,8 +4,6 @@ import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.services.DataProviderService;
 import cloud.fogbow.probes.core.utils.PropertiesUtil;
 import eu.atmosphere.tmaf.monitor.client.BackgroundClient;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
@@ -16,8 +14,6 @@ import java.util.List;
 public class FogbowResourceAvailabilityProbe extends Probe {
     private static final String RESOURCE_AVAILABILITY_ID = "resource_availability_probe_id";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(FogbowResourceAvailabilityProbe.class);
-
     public FogbowResourceAvailabilityProbe() {
         this.lastTimestampAwake = new Timestamp(System.currentTimeMillis());
     }
@@ -26,7 +22,7 @@ public class FogbowResourceAvailabilityProbe extends Probe {
         try {
             setup();
         } catch (Exception ex) {
-            LOGGER.error("Error when setupping probe. Error message: " + ex.getMessage());
+            ex.printStackTrace();
         }
 
         while(true) {
@@ -67,7 +63,6 @@ public class FogbowResourceAvailabilityProbe extends Probe {
 
     public void createMessage() {
         this.message = this.client.createMessage();
-        message.setResourceId(1); // what about here, is it important?
     }
 
     public DataProviderService getProviderService() {

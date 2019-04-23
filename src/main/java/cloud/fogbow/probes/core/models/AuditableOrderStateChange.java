@@ -1,15 +1,11 @@
 package cloud.fogbow.probes.core.models;
 
-import org.apache.log4j.Logger;
-
 import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
 @Table(name = "state_change_event")
 public class AuditableOrderStateChange {
-    @Transient
-    private final Logger LOGGER = Logger.getLogger(AuditableOrderStateChange.class);
 
     @Id
     @GeneratedValue
