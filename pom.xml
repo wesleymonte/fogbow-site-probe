@@ -92,7 +92,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>cloud.fogbow.probes.Main</mainClass>
+                            <mainClass>cloud.fogbow.probes.FogbowProbesApplication</mainClass>
                         </manifest>
                     </archive>
                     <outputDirectory>${basedir}/bin</outputDirectory>
