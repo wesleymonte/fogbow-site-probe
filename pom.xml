@@ -73,6 +73,11 @@
             <artifactId>javax.ws.rs-api</artifactId>
             <version>2.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>2.26</version>
+        </dependency>
     </dependencies>
 
 
@@ -87,7 +92,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
-                            <mainClass>cloud.fogbow.probes.FogbowProbesApplication</mainClass>
+                            <mainClass>cloud.fogbow.probes.Main</mainClass>
                         </manifest>
                     </archive>
                     <outputDirectory>${basedir}/bin</outputDirectory>
