@@ -19,23 +19,19 @@ public class FogbowResourceAvailabilityProbe extends Probe {
 
         this.probeId = Integer.valueOf(properties.getProperty(Constants.RESOURCE_AVAILABILITY_PROBE_ID));
         this.resourceId = Integer.valueOf(properties.getProperty(Constants.RESOURCE_AVAILABILITY_RESOURCE_ID));
+        this.firstTimeAwake = true;
     }
 
     public void run() {
         setup();
 
         while(true) {
-            Number failedOrdersQuantity = providerService.getFailed(lastTimestampAwake);
-            Number fulfilledOrdersQuantity = providerService.getFulfilled(lastTimestampAwake);
+            List<Number> data = getData();
 
             this.lastTimestampAwake = new Timestamp(System.currentTimeMillis());
-
-            List<Number> data = new ArrayList<>();
-            data.add(failedOrdersQuantity);
-            data.add(fulfilledOrdersQuantity);
-            System.out.println(failedOrdersQuantity);
-            System.out.println(fulfilledOrdersQuantity);
-
+            System.out.println("RESOURCE AVAILABILITY");
+            System.out.println(data.get(0));
+            System.out.println(data.get(1));
             sendMessage(data);
 
             try {
@@ -45,5 +41,14 @@ public class FogbowResourceAvailabilityProbe extends Probe {
             }
         }
 
+    }
+
+    private List<Number> getData() {
+        List<Number> results = new ArrayList<>();
+
+        results.add(providerService.getFailed(lastTimestampAwake, firstTimeAwake).size());
+        results.add(providerService.getFulfilled(lastTimestampAwake, firstTimeAwake).size());
+        this.firstTimeAwake = false;
+        return results;
     }
 }

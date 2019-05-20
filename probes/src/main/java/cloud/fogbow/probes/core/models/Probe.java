@@ -27,6 +27,7 @@ public abstract class Probe implements Runnable {
     protected Timestamp lastTimestampAwake;
     protected Integer resourceId;
     protected Integer probeId;
+    protected boolean firstTimeAwake;
 
     @Autowired
     protected DataProviderService providerService;
@@ -44,7 +45,7 @@ public abstract class Probe implements Runnable {
     }
 
     protected void sendMessage(List<Number> dataValues) {
-        checkMessage();
+        createMessage();
 
         this.message.setResourceId(resourceId);
         this.message.setMessageId(messageId++);
@@ -65,8 +66,7 @@ public abstract class Probe implements Runnable {
         client.send(message);
     }
 
-    private void checkMessage() {
-        if(this.message == null)
-            this.message = this.client.createMessage();
+    private void createMessage() {
+        this.message = this.client.createMessage();
     }
 }

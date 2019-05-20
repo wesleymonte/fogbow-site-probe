@@ -23,26 +23,44 @@ public class DataProviderService {
 
     }
 
-    public int getFailedOnRequest(Timestamp timestamp) {
-        return dbManager.getEventsByTimeAndState(timestamp, OrderState.FAILED_ON_REQUEST).size();
+    public List<AuditableOrderStateChange> getFailedOnRequest(Timestamp timestamp, boolean firstTimeAwake) {
+        if(firstTimeAwake) {
+            return dbManager.getEventsBeforeTimeAndState(timestamp, OrderState.FAILED_ON_REQUEST);
+        } else {
+            return dbManager.getEventsAfterTimeAndState(timestamp, OrderState.FAILED_ON_REQUEST);
+        }
+
     }
 
-    public int getFulfilled(Timestamp timestamp) {
-        return dbManager.getEventsByTimeAndState(timestamp, OrderState.FULFILLED).size();
+    public List<AuditableOrderStateChange> getFulfilled(Timestamp timestamp, boolean firstTimeAwake) {
+        if(firstTimeAwake) {
+            return dbManager.getEventsBeforeTimeAndState(timestamp, OrderState.FULFILLED);
+        } else {
+            return dbManager.getEventsAfterTimeAndState(timestamp, OrderState.FULFILLED);
+        }
     }
 
-    public int getFailed(Timestamp timestamp) {
-        return dbManager.getEventsByTimeAndState(timestamp, OrderState.FAILED_AFTER_SUCCESSUL_REQUEST).size();
+    public List<AuditableOrderStateChange> getFailed(Timestamp timestamp, boolean firstTimeAwake) {
+        if(firstTimeAwake) {
+            return dbManager.getEventsBeforeTimeAndState(timestamp, OrderState.FAILED_AFTER_SUCCESSFUL_REQUEST);
+        } else {
+            return dbManager.getEventsAfterTimeAndState(timestamp, OrderState.FAILED_AFTER_SUCCESSFUL_REQUEST);
+        }
+
     }
 
-    public int getOpened(Timestamp timestamp) {
-        return dbManager.getEventsByTimeAndState(timestamp, OrderState.OPEN).size();
+    public List<AuditableOrderStateChange> getOpened(Timestamp timestamp, boolean firstTimeAwake) {
+        if(firstTimeAwake) {
+            return dbManager.getEventsBeforeTimeAndState(timestamp, OrderState.OPEN);
+        } else {
+            return dbManager.getEventsAfterTimeAndState(timestamp, OrderState.OPEN);
+        }
     }
 
-    public List<Number> getLatencies(Timestamp timestamp) {
+    public List<Number> getLatencies(Timestamp timestamp, boolean firstTimeAwake) {
         Map<String, Pair<Timestamp, Timestamp>> ordersLatency = new HashMap<>();
-        List<AuditableOrderStateChange> openEvents = dbManager.getEventsByTimeAndState(timestamp, OrderState.OPEN);
-        List<AuditableOrderStateChange> fulfilledEvents = dbManager.getEventsByTimeAndState(timestamp, OrderState.FULFILLED);
+        List<AuditableOrderStateChange> openEvents = getOpened(timestamp, firstTimeAwake);
+        List<AuditableOrderStateChange> fulfilledEvents = getFulfilled(timestamp, firstTimeAwake);
 
         for(AuditableOrderStateChange stateChange: openEvents) {
             ordersLatency.put(stateChange.getOrder().getId(), new Pair(stateChange.getTimestamp(), null));
