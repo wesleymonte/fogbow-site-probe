@@ -1,8 +1,6 @@
 package cloud.fogbow.probes.core.models;
 
-import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.services.DataProviderService;
-import cloud.fogbow.probes.core.utils.PropertiesUtil;
 import eu.atmosphere.tmaf.monitor.client.BackgroundClient;
 import eu.atmosphere.tmaf.monitor.message.Data;
 import eu.atmosphere.tmaf.monitor.message.Message;

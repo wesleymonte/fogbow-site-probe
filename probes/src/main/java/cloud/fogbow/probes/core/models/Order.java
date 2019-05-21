@@ -55,7 +55,7 @@ public class Order {
 
     @Column
     @Size(max = FIELDS_MAX_SIZE)
-    private String providerId;
+    private String identityProviderId;
 
     @Column
     @Enumerated(EnumType.STRING)

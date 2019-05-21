@@ -82,8 +82,10 @@ public class DataProviderService {
 
         for(String key: ordersLatency.keySet()) {
             Pair<Timestamp, Timestamp> current = ordersLatency.get(key);
-            long latency = current.getValue().getTime() - current.getKey().getTime();
-            latencies.add(latency);
+            if(current.getKey() != null && current.getValue() != null ) {
+                long latency = current.getValue().getTime() - current.getKey().getTime();
+                latencies.add(latency);
+            }
         }
 
         return latencies;

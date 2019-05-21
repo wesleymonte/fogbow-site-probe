@@ -21,10 +21,6 @@ public class AuditableOrderStateChange {
     @Enumerated(EnumType.STRING)
     private OrderState newState;
 
-    @Column
-    @Enumerated(EnumType.STRING)
-    private ResourceType resourceType;
-
     public AuditableOrderStateChange() {
     }
 
