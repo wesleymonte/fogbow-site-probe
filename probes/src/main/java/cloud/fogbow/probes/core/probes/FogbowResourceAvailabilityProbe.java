@@ -12,6 +12,8 @@ import java.util.List;
 @Component
 public class FogbowResourceAvailabilityProbe extends Probe {
 
+    private int SLEEP_TIME;
+
     public FogbowResourceAvailabilityProbe() throws Exception{
         this.lastTimestampAwake = new Timestamp(System.currentTimeMillis());
         String path = Thread.currentThread().getContextClassLoader().getResource("").getPath() + "private/";
@@ -20,6 +22,7 @@ public class FogbowResourceAvailabilityProbe extends Probe {
         this.probeId = Integer.valueOf(properties.getProperty(Constants.RESOURCE_AVAILABILITY_PROBE_ID));
         this.resourceId = Integer.valueOf(properties.getProperty(Constants.RESOURCE_AVAILABILITY_RESOURCE_ID));
         this.firstTimeAwake = true;
+        this.SLEEP_TIME = Integer.valueOf(properties.getProperty(Constants.SLEEP_TIME));
     }
 
     public void run() {
@@ -29,9 +32,6 @@ public class FogbowResourceAvailabilityProbe extends Probe {
             List<Number> data = getData();
 
             this.lastTimestampAwake = new Timestamp(System.currentTimeMillis());
-            System.out.println("RESOURCE AVAILABILITY");
-            System.out.println(data.get(0));
-            System.out.println(data.get(1));
             sendMessage(data);
 
             try {

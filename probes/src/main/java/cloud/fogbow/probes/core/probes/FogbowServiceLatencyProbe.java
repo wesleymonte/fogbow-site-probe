@@ -11,6 +11,8 @@ import java.util.List;
 @Component
 public class FogbowServiceLatencyProbe extends Probe {
 
+    private int SLEEP_TIME;
+
     public FogbowServiceLatencyProbe() throws Exception{
         this.lastTimestampAwake = new Timestamp(System.currentTimeMillis());
 
@@ -20,6 +22,7 @@ public class FogbowServiceLatencyProbe extends Probe {
         this.probeId = Integer.valueOf(properties.getProperty(Constants.SERVICE_LATENCY_PROBE_ID));
         this.resourceId = Integer.valueOf(properties.getProperty(Constants.SERVICE_LATENCY_RESOURCE_ID));
         this.firstTimeAwake = true;
+        this.SLEEP_TIME = Integer.valueOf(properties.getProperty(Constants.SLEEP_TIME));
     }
 
     public void run() {

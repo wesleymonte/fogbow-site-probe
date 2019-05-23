@@ -4,7 +4,7 @@ WORKDIR /app
 
 #       Prepare by downloading dependencies
 COPY    . /app
-	
+
 RUN	\
 	apt-get update -y && \
 	apt-get upgrade -y && \
@@ -12,9 +12,10 @@ RUN	\
 
 RUN	apt-get install openjfx -y
 
-RUN     cd /app/probes &&\ 
-	mvn clean install
+
+RUN     cd /app/probes/ &&\ 
+		mvn clean install
 
 EXPOSE 80
 
-CMD	(cd /app/probes && mvn spring-boot:run)
+CMD ('/bin/sh')

@@ -17,8 +17,6 @@ public abstract class Probe implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Probe.class);
 
-    protected static final int SLEEP_TIME = 60000;
-
     protected BackgroundClient client;
     protected Message message;
     protected Properties properties;
