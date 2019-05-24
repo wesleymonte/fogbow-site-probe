@@ -1,20 +1,21 @@
-FROM    tma-monitor/libs:0.1
+FROM openjdk:8
 
-ENV     probes      /atmosphere/tma/probe
-
-#       Adding Monitor Client
-WORKDIR ${probes}/probe-fogbow
+WORKDIR /app
 
 #       Prepare by downloading dependencies
-COPY    pom.xml     ${probes}/probe-fogbow/pom.xml
+COPY    . /app
 
-#       Copying probe-fogbow.conf
-COPY    pom.xml     ${probes}/probe-fogbow/probe-fogbow.conf
+RUN	\
+	apt-get update -y && \
+	apt-get upgrade -y && \
+	apt-get install -y maven curl git lsof vim nano 
 
-#       Adding source, compile and package into a fat jar
-COPY    src ${probes}/probe-fogbow/src
-RUN     ["mvn", "install"]
+RUN	apt-get install openjfx -y
 
-RUN     ["cp", "-r", "bin", "/atmosphere/tma/probe/bin"]
 
-CMD     ["java", "-jar", "/atmosphere/tma/probe/bin/probe-fogbow-0.1.jar", "/atmosphere/tma/probe/probe-fogbow/probe-fogbow.conf"]
+RUN     cd /app/probes/ &&\ 
+		mvn clean install
+
+EXPOSE 80
+
+CMD ('/bin/sh')
