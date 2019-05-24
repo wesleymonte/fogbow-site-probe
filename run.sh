@@ -39,6 +39,7 @@ conf_file=$DIR_PATH/probe-fogbow.conf
 ip=`awk -F ' *= *' '$1=="monitor_ip"{print $2}' $conf_file`/monitor
 endpoint_attr=DEFAULT_ENDPOINT
 
+sudo docker pull $image
 container_id=`sudo docker run -idt $image`
 sudo docker cp $conf_file $container_id:/app/probes/src/main/resources/private
 chmod 777 get-certificate.sh

@@ -1,0 +1,10 @@
+cert.pem
+Dockerfile
+get-certificate.sh
+logs
+probe-fogbow.conf
+README.md
+run.sh
+.git
+.gitignore
+.idea
