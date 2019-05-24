@@ -19,6 +19,7 @@ public abstract class FogbowServiceReachabilityProbe extends Probe {
 
     @Override
     public void run() {
+        setup();
 
         while (true) {
             for(int i = 0; i < N_REQUESTS_PER_CICLE; i++) {
@@ -30,7 +31,9 @@ public abstract class FogbowServiceReachabilityProbe extends Probe {
             data.add(successfulRequests/N_REQUESTS_PER_CICLE);
 
             lastTimestampAwake = new Timestamp(System.currentTimeMillis());
-            sendMessage(data);
+
+            List<List<Number>> dataWrapper = new ArrayList<>();
+            sendMessage(dataWrapper);
 
             this.successfulRequests = 0;
 
@@ -49,14 +52,6 @@ public abstract class FogbowServiceReachabilityProbe extends Probe {
                 successfulRequests++;
             }
         } catch(Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    private void sleep(int sleepTime) {
-        try {
-            Thread.sleep(sleepTime);
-        } catch (InterruptedException ex) {
             ex.printStackTrace();
         }
     }

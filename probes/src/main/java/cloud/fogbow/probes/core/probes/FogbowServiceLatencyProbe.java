@@ -6,6 +6,7 @@ import cloud.fogbow.probes.core.utils.PropertiesUtil;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -30,20 +31,17 @@ public class FogbowServiceLatencyProbe extends Probe {
 
         while(true) {
             List<Number> latencies = this.providerService.getLatencies(lastTimestampAwake, firstTimeAwake);
+
+            List<List<Number>> latenciesWrapper = new ArrayList<>();
+            latenciesWrapper.add(latencies);
+
             this.firstTimeAwake = false;
             this.lastTimestampAwake = new Timestamp(System.currentTimeMillis());
-            for (Number n : latencies) {
-                System.out.println("LATENCIES");
-                System.out.println(n);
-            }
-            if(!latencies.isEmpty())
-                sendMessage(latencies);
 
-            try {
-                Thread.sleep(SLEEP_TIME);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
+            if(!latencies.isEmpty())
+                sendMessage(latenciesWrapper);
+
+            sleep(SLEEP_TIME);
         }
     }
 }
