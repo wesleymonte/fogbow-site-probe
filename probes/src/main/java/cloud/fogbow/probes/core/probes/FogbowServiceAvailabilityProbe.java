@@ -30,28 +30,27 @@ public class FogbowServiceAvailabilityProbe extends Probe {
         setup();
 
         while(true) {
-            List<Number> data = getData();
+            List<List<Number>> data = getData();
 
             this.lastTimestampAwake = new Timestamp(System.currentTimeMillis());
-            System.out.println("SERVICE AVAILABILITY");
-            System.out.println(data.get(0));
-            System.out.println(data.get(1));
             sendMessage(data);
 
-            try {
-                Thread.sleep(SLEEP_TIME);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
+            sleep(SLEEP_TIME);
         }
 
     }
 
-    private List<Number> getData() {
-        List<Number> results = new ArrayList<>();
+    private List<List<Number>> getData() {
+        List<List<Number>> results = new ArrayList<>();
 
-        results.add(providerService.getFailedOnRequest(lastTimestampAwake, firstTimeAwake).size());
-        results.add(providerService.getOpened(lastTimestampAwake, firstTimeAwake).size());
+        List<Number> l1 = new ArrayList<>();
+        List<Number> l2 = new ArrayList<>();
+
+        l1.add(providerService.getFailedOnRequest(lastTimestampAwake, firstTimeAwake).size());
+        l2.add(providerService.getOpened(lastTimestampAwake, firstTimeAwake).size());
+
+        results.add(l1);
+        results.add(l2);
         this.firstTimeAwake = false;
         return results;
     }

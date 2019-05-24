@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -40,7 +41,7 @@ public abstract class Probe implements Runnable {
         }
     }
 
-    protected void sendMessage(List<Number> dataValues) {
+    protected void sendMessage(List<List<Number>> dataValues) {
         createMessage();
 
         this.message.setResourceId(resourceId);
@@ -48,15 +49,22 @@ public abstract class Probe implements Runnable {
 
         int descriptionId = 0;
 
-        for(Number number : dataValues) {
+        List<Observation> observations = new ArrayList<>();
+
+
+        for(List<Number> numbers: dataValues) {
+            for(Number number : numbers) {
+                observations.add(new Observation(lastTimestampAwake.getTime(), number.doubleValue()));
+            }
+
             this.message.addData(new Data(
-                Data.Type.MEASUREMENT,
-                descriptionId++,
-                new Observation(
-                    lastTimestampAwake.getTime(),
-                    number.doubleValue()
-                ))
+                    Data.Type.MEASUREMENT,
+                    descriptionId++,
+                    observations
+                )
             );
+
+            observations.clear();
         }
 
         client.send(message);
@@ -64,5 +72,13 @@ public abstract class Probe implements Runnable {
 
     private void createMessage() {
         this.message = this.client.createMessage();
+    }
+
+    protected void sleep(int sleepTime) {
+        try {
+            Thread.sleep(sleepTime);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
     }
 }
