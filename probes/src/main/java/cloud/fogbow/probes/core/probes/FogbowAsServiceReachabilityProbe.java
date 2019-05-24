@@ -2,9 +2,11 @@ package cloud.fogbow.probes.core.probes;
 
 import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.utils.PropertiesUtil;
+import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
 
+@Component
 public class FogbowAsServiceReachabilityProbe extends FogbowServiceReachabilityProbe{
 
     public FogbowAsServiceReachabilityProbe() throws Exception{

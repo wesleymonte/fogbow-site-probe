@@ -19,6 +19,7 @@ public abstract class FogbowServiceReachabilityProbe extends Probe {
 
     @Override
     public void run() {
+        setup();
 
         while (true) {
             for(int i = 0; i < N_REQUESTS_PER_CICLE; i++) {
