@@ -42,8 +42,6 @@ endpoint_attr=DEFAULT_ENDPOINT
 sudo docker pull $image
 container_id=`sudo docker run -idt $image`
 sudo docker cp $conf_file $container_id:/app/probes/src/main/resources/private
-chmod 777 get-certificate.sh
-./get-certificate.sh
 sudo docker cp $DIR_PATH/cert.pem $container_id:/app/
 sudo docker cp $DIR_PATH/cert.pem $container_id:/app/java-client-lib
 sudo docker exec -it $container_id sed -i "s,$endpoint_attr.*,$endpoint_attr=$ip;," /app/java-client-lib/src/main/java/eu/atmosphere/tmaf/monitor/client/MonitorClient.java

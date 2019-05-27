@@ -1,0 +1,10 @@
+---
+- name: copy
+- hosts: all
+- become: true
+- become_user: root
+- tasks:
+    - name: "copy file"
+      copy: src="../cert.pem" dest="~/fogbow-site-probe"
+    - name: "copy file"
+      copy: src="../probe-fogbow.conf" dest="~/fogbow-site-probe"
