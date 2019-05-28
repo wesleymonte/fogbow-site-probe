@@ -1,0 +1,12 @@
+ansible/*
+.git
+.gitignore
+.idea
+cert.pem
+Dockerfile
+get-certificate.sh
+logs
+probe-fogbow.conf
+README.md
+run.sh
+install.sh
