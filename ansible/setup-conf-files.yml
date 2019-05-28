@@ -1,9 +1,10 @@
 ---
 - name: copy
-- hosts: all
-- become: true
-- become_user: root
-- tasks:
+  hosts: atm-test
+  become: true
+  become_user: ubuntu
+  gather_facts: true
+  tasks:
     - name: "copy file"
       copy: src="../cert.pem" dest="~/fogbow-site-probe"
     - name: "copy file"
