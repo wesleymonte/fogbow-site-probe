@@ -2,7 +2,9 @@ package cloud.fogbow.probes.core.probes;
 
 import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.models.Probe;
+import cloud.fogbow.probes.core.models.ResourceType;
 import cloud.fogbow.probes.core.utils.PropertiesUtil;
+import javafx.util.Pair;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
@@ -29,28 +31,35 @@ public class FogbowResourceAvailabilityProbe extends Probe {
         setup();
 
         while(true) {
-            List<List<Number>> data = getData();
+            List<List<Pair<Number, Timestamp>>> computeData = getData(ResourceType.COMPUTE);
+            List<List<Pair<Number, Timestamp>>> volumeData = getData(ResourceType.VOLUME);
+            List<List<Pair<Number, Timestamp>>> networkData = getData(ResourceType.NETWORK);
 
-            this.lastTimestampAwake = new Timestamp(System.currentTimeMillis());
-            sendMessage(data);
+            lastTimestampAwake = new Timestamp(System.currentTimeMillis());
+
+            sendMessage(computeData);
+            sendMessage(volumeData);
+            sendMessage(networkData);
 
             sleep(SLEEP_TIME);
         }
 
     }
 
-    private List<List<Number>> getData() {
-        List<List<Number>> results = new ArrayList<>();
+    private List<List<Pair<Number, Timestamp>>> getData(ResourceType type) {
+        List<List<Pair<Number, Timestamp>>> results = new ArrayList<>();
 
-        List<Number> l1 = new ArrayList<>();
-        List<Number> l2 = new ArrayList<>();
+        List<Pair<Number, Timestamp>> l1 = new ArrayList<>();
+        List<Pair<Number, Timestamp>> l2 = new ArrayList<>();
+        List<Pair<Number, Timestamp>> l3 = new ArrayList<>();
 
-        l1.add(providerService.getFailed(lastTimestampAwake, firstTimeAwake).size());
-        l2.add(providerService.getFulfilled(lastTimestampAwake, firstTimeAwake).size());
+        l1.add(new Pair(providerService.getFailed(lastTimestampAwake, firstTimeAwake, type).size(), lastTimestampAwake));
+        l2.add(new Pair(providerService.getFulfilled(lastTimestampAwake, firstTimeAwake, type).size(), lastTimestampAwake));
+        l3.add(new Pair(new Timestamp(System.currentTimeMillis()).getTime() - lastTimestampAwake.getTime(), new Timestamp(System.currentTimeMillis())));
 
         results.add(l1);
         results.add(l2);
-
+        results.add(l3);
         this.firstTimeAwake = false;
         return results;
     }

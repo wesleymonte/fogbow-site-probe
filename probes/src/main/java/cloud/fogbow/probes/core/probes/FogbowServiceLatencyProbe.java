@@ -3,6 +3,7 @@ package cloud.fogbow.probes.core.probes;
 import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.models.Probe;
 import cloud.fogbow.probes.core.utils.PropertiesUtil;
+import javafx.util.Pair;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
@@ -30,15 +31,27 @@ public class FogbowServiceLatencyProbe extends Probe {
         setup();
 
         while(true) {
-            List<Number> latencies = this.providerService.getLatencies(lastTimestampAwake, firstTimeAwake);
+            List<Pair<Number, Timestamp>>[] latencies = this.providerService.getLatencies(lastTimestampAwake, firstTimeAwake);
 
-            List<List<Number>> latenciesWrapper = new ArrayList<>();
-            latenciesWrapper.add(latencies);
+            List<List<Pair<Number, Timestamp>>> latenciesWrapper = new ArrayList<>();
+            latenciesWrapper.add(latencies[0]);
 
             this.firstTimeAwake = false;
             this.lastTimestampAwake = new Timestamp(System.currentTimeMillis());
 
-            if(!latencies.isEmpty())
+            if(!latencies[0].isEmpty())
+                sendMessage(latenciesWrapper);
+
+            latenciesWrapper.clear();
+            latenciesWrapper.add(latencies[1]);
+
+            if(!latencies[1].isEmpty())
+                sendMessage(latenciesWrapper);
+
+            latenciesWrapper.clear();
+            latenciesWrapper.add(latencies[2]);
+
+            if(!latencies[2].isEmpty())
                 sendMessage(latenciesWrapper);
 
             sleep(SLEEP_TIME);

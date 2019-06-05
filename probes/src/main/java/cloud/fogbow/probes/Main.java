@@ -19,17 +19,7 @@ public class Main {
         FogbowServiceAvailabilityProbe serviceAvailabilityProbe;
 
         @Autowired
-        FogbowAsServiceReachabilityProbe asServiceReachabilityProbe;
-
-        @Autowired
-        FogbowRasServiceReachabilityProbe rasServiceReachabilityProbe;
-
-        @Autowired
-        FogbowMsServiceReachabilityProbe msServiceReachabilityProbe;
-
-        @Autowired
-        FogbowFnsServiceReachabilityProbe fnsServiceReachabilityProbe;
-
+        FogbowServiceReachabilityProbe serviceReachabilityProbe;
         @PostConstruct
         public void startProbes() {
             Thread firstProbe = new Thread(resourceAvailabilityProbe);
@@ -41,16 +31,7 @@ public class Main {
             Thread thirdProbe = new Thread(serviceAvailabilityProbe);
             thirdProbe.start();
 
-            Thread asReachabilityProbe = new Thread(asServiceReachabilityProbe);
+            Thread asReachabilityProbe = new Thread(serviceReachabilityProbe);
             asReachabilityProbe.start();
-
-            Thread rasReachabilityProbe = new Thread(rasServiceReachabilityProbe);
-            rasReachabilityProbe.start();
-
-            Thread msReachabilityProbe = new Thread(msServiceReachabilityProbe);
-            msReachabilityProbe.start();
-
-            Thread fnsReachabilityProbe = new Thread(fnsServiceReachabilityProbe);
-            fnsReachabilityProbe.start();
         }
 }

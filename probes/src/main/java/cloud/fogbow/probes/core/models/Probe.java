@@ -5,6 +5,7 @@ import eu.atmosphere.tmaf.monitor.client.BackgroundClient;
 import eu.atmosphere.tmaf.monitor.message.Data;
 import eu.atmosphere.tmaf.monitor.message.Message;
 import eu.atmosphere.tmaf.monitor.message.Observation;
+import javafx.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public abstract class Probe implements Runnable {
         }
     }
 
-    protected void sendMessage(List<List<Number>> dataValues) {
+    protected void sendMessage(List<List<Pair<Number, Timestamp>>> dataValues) {
         createMessage();
 
         this.message.setResourceId(resourceId);
@@ -52,9 +53,9 @@ public abstract class Probe implements Runnable {
         List<Observation> observations = new ArrayList<>();
 
 
-        for(List<Number> numbers: dataValues) {
-            for(Number number : numbers) {
-                observations.add(new Observation(lastTimestampAwake.getTime(), number.doubleValue()));
+        for(List<Pair<Number, Timestamp>> obs: dataValues) {
+            for(Pair<Number, Timestamp> ob : obs) {
+                observations.add(new Observation(ob.getValue().getTime(), ob.getKey().doubleValue()));
             }
 
             this.message.addData(new Data(
