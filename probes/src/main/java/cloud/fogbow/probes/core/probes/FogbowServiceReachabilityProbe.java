@@ -4,6 +4,7 @@ import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.models.Probe;
 import cloud.fogbow.probes.core.utils.PropertiesUtil;
 import javafx.util.Pair;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -12,6 +13,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class FogbowServiceReachabilityProbe extends Probe {
 
     protected int SLEEP_TIME;
