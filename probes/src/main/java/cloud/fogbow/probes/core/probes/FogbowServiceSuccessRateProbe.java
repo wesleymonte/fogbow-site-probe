@@ -12,11 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class FogbowServiceAvailabilityProbe extends Probe {
+public class FogbowServiceSuccessRateProbe extends Probe {
 
     private int SLEEP_TIME;
 
-    public FogbowServiceAvailabilityProbe() throws Exception{
+    public FogbowServiceSuccessRateProbe() throws Exception{
         this.lastTimestampAwake = new Timestamp(System.currentTimeMillis());
 
         String path = Thread.currentThread().getContextClassLoader().getResource("").getPath() + "private/";
@@ -32,11 +32,13 @@ public class FogbowServiceAvailabilityProbe extends Probe {
         setup();
 
         while(true) {
-            List<List<Pair<Number, Timestamp>>> computeData = getData(ResourceType.COMPUTE);
-            List<List<Pair<Number, Timestamp>>> volumeData = getData(ResourceType.VOLUME);
-            List<List<Pair<Number, Timestamp>>> networkData = getData(ResourceType.NETWORK);
+            Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
 
-            lastTimestampAwake = new Timestamp(System.currentTimeMillis());
+            List<List<Pair<Number, Timestamp>>> computeData = getData(ResourceType.COMPUTE, currentTimestamp);
+            List<List<Pair<Number, Timestamp>>> volumeData = getData(ResourceType.VOLUME, currentTimestamp);
+            List<List<Pair<Number, Timestamp>>> networkData = getData(ResourceType.NETWORK, currentTimestamp);
+
+            lastTimestampAwake = currentTimestamp;
 
             if(hasData(computeData))
                 sendMessage(computeData);
@@ -51,16 +53,16 @@ public class FogbowServiceAvailabilityProbe extends Probe {
         }
     }
 
-    private List<List<Pair<Number, Timestamp>>> getData(ResourceType type) {
+    private List<List<Pair<Number, Timestamp>>> getData(ResourceType type, Timestamp currentTimestamp) {
         List<List<Pair<Number, Timestamp>>> results = new ArrayList<>();
 
         List<Pair<Number, Timestamp>> l1 = new ArrayList<>();
         List<Pair<Number, Timestamp>> l2 = new ArrayList<>();
         List<Pair<Number, Timestamp>> l3 = new ArrayList<>();
 
-        l1.add(new Pair(providerService.getFailedOnRequest(lastTimestampAwake, firstTimeAwake, type).size(), lastTimestampAwake));
-        l2.add(new Pair(providerService.getOpened(lastTimestampAwake, firstTimeAwake, type).size(), lastTimestampAwake));
-        l3.add(new Pair(new Timestamp(System.currentTimeMillis()).getTime() - lastTimestampAwake.getTime(), new Timestamp(System.currentTimeMillis())));
+        l1.add(new Pair(providerService.getFailedOnRequest(lastTimestampAwake, firstTimeAwake, type).size(), currentTimestamp));
+        l2.add(new Pair(providerService.getOpened(lastTimestampAwake, firstTimeAwake, type).size(), currentTimestamp));
+        l3.add(new Pair(currentTimestamp.getTime() - lastTimestampAwake.getTime(), currentTimestamp));
 
         results.add(l1);
         results.add(l2);

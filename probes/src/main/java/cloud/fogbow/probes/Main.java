@@ -16,7 +16,7 @@ public class Main {
         FogbowServiceLatencyProbe serviceLatencyProbe;
 
         @Autowired
-        FogbowServiceAvailabilityProbe serviceAvailabilityProbe;
+        FogbowServiceSuccessRateProbe serviceAvailabilityProbe;
 
         @Autowired
         FogbowServiceReachabilityProbe serviceReachabilityProbe;
