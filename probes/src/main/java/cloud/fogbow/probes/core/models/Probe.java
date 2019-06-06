@@ -71,6 +71,21 @@ public abstract class Probe implements Runnable {
         client.send(message);
     }
 
+    protected boolean hasData(List<List<Pair<Number, Timestamp>>> dataSet) {
+        boolean hasData = false;
+
+        for(int i = 0; i < 2; i++) {
+            List<Pair<Number, Timestamp>> current = dataSet.get(i);
+            for(Pair<Number, Timestamp> pair : current) {
+                if(pair.getKey().doubleValue() != 0) {
+                    hasData = true;
+                }
+            }
+        }
+
+        return hasData;
+    }
+
     private void createMessage() {
         this.message = this.client.createMessage();
     }

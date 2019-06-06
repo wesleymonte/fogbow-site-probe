@@ -38,9 +38,14 @@ public class FogbowServiceAvailabilityProbe extends Probe {
 
             lastTimestampAwake = new Timestamp(System.currentTimeMillis());
 
-            sendMessage(computeData);
-            sendMessage(volumeData);
-            sendMessage(networkData);
+            if(hasData(computeData))
+                sendMessage(computeData);
+
+            if(hasData(volumeData))
+                sendMessage(volumeData);
+
+            if(hasData(networkData))
+                sendMessage(networkData);
 
             sleep(SLEEP_TIME);
         }
