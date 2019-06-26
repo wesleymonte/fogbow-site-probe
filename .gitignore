@@ -32,4 +32,7 @@ logs/
 .idea/**/libraries
 
 ### Private Folder ###
-probes/src/main/resources/private/
+./probes/src/main/resources/private
+
+## cert pem ###
+cert.pem

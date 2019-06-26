@@ -22,7 +22,6 @@ public class FogbowServiceLatencyProbe extends Probe {
         this.properties = new PropertiesUtil().readProperties(path + Constants.CONF_FILE);
 
         this.probeId = Integer.valueOf(properties.getProperty(Constants.SERVICE_LATENCY_PROBE_ID));
-        this.resourceId = Integer.valueOf(properties.getProperty(Constants.SERVICE_LATENCY_RESOURCE_ID));
         this.firstTimeAwake = true;
         this.SLEEP_TIME = Integer.valueOf(properties.getProperty(Constants.SLEEP_TIME));
     }
@@ -39,20 +38,26 @@ public class FogbowServiceLatencyProbe extends Probe {
             this.firstTimeAwake = false;
             this.lastTimestampAwake = new Timestamp(System.currentTimeMillis());
 
-            if(!latencies[0].isEmpty())
+            if(!latencies[0].isEmpty()) {
+                this.resourceId = Integer.valueOf(properties.getProperty(Constants.COMPUTE_RESOURCE_ID));
                 sendMessage(latenciesWrapper);
+            }
 
             latenciesWrapper.clear();
             latenciesWrapper.add(latencies[1]);
 
-            if(!latencies[1].isEmpty())
+            if(!latencies[1].isEmpty()) {
+                this.resourceId = Integer.valueOf(properties.getProperty(Constants.VOLUME_RESOURCE_ID));
                 sendMessage(latenciesWrapper);
+            }
 
             latenciesWrapper.clear();
             latenciesWrapper.add(latencies[2]);
 
-            if(!latencies[2].isEmpty())
+            if(!latencies[2].isEmpty()) {
+                this.resourceId = Integer.valueOf(properties.getProperty(Constants.NETWORK_RESOURCE_ID));
                 sendMessage(latenciesWrapper);
+            }
 
             sleep(SLEEP_TIME);
         }

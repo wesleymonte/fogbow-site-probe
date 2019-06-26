@@ -20,8 +20,8 @@ public class FogbowServiceReachabilityProbe extends Probe {
     protected String endPoint;
     private int successfulRequests = 0;
     private final int N_REQUESTS_PER_CICLE = 60;
-    private final int RESPONSE_CODE_LOWER_BOUND = 200;
-    private final int RESPONSE_CODE_UPPER_BOUND = 299;
+    private final int RESPONSE_CODE_LOWER_BOUND = 199;
+    private final int RESPONSE_CODE_UPPER_BOUND = 300;
     private String AS_ENDPOINT;
     private String RAS_ENDPOINT;
     private String FNS_ENDPOINT;
@@ -34,7 +34,7 @@ public class FogbowServiceReachabilityProbe extends Probe {
         this.properties = new PropertiesUtil().readProperties(path + Constants.CONF_FILE);
 
         this.probeId = Integer.valueOf(properties.getProperty(Constants.SERVICE_REACHABILITY_PROBE_ID));
-        this.resourceId = Integer.valueOf(properties.getProperty(Constants.SERVICE_REACHABILITY_RESOURCE_ID));
+        this.resourceId = Integer.valueOf(properties.getProperty(Constants.SITE_RESOURCE_ID));
         this.SLEEP_TIME = Integer.valueOf(properties.getProperty(Constants.SLEEP_TIME));
         this.AS_ENDPOINT = properties.getProperty(Constants.AS_ENDPOINT);
         this.RAS_ENDPOINT = properties.getProperty(Constants.RAS_ENDPOINT);
@@ -74,7 +74,7 @@ public class FogbowServiceReachabilityProbe extends Probe {
             int fnsResponseCode = getResponseCode(FNS_ENDPOINT);
             int msResponseCode = getResponseCode(MS_ENDPOINT);
 
-            if (successfulRequests(asResponseCode, rasResponseCode, fnsResponseCode, msResponseCode)) {
+            if (checkRequests(asResponseCode, rasResponseCode, fnsResponseCode, msResponseCode)) {
                 successfulRequests++;
             }
 
@@ -90,7 +90,7 @@ public class FogbowServiceReachabilityProbe extends Probe {
         return connection.getResponseCode();
     }
 
-    private boolean successfulRequests(int asResponseCode, int rasResponseCode, int fnsResponseCode, int msResponseCode) {
+    private boolean checkRequests(int asResponseCode, int rasResponseCode, int fnsResponseCode, int msResponseCode) {
         if(asResponseCode < RESPONSE_CODE_UPPER_BOUND && asResponseCode > RESPONSE_CODE_LOWER_BOUND
             && rasResponseCode < RESPONSE_CODE_UPPER_BOUND && rasResponseCode > RESPONSE_CODE_LOWER_BOUND
             && fnsResponseCode < RESPONSE_CODE_UPPER_BOUND && fnsResponseCode > RESPONSE_CODE_LOWER_BOUND

@@ -26,6 +26,7 @@ public abstract class Probe implements Runnable {
     protected Integer resourceId;
     protected Integer probeId;
     protected boolean firstTimeAwake;
+    protected Integer descriptionId;
 
     @Autowired
     protected DataProviderService providerService;
@@ -48,8 +49,6 @@ public abstract class Probe implements Runnable {
         this.message.setResourceId(resourceId);
         this.message.setMessageId(messageId++);
 
-        int descriptionId = 0;
-
         List<Observation> observations = new ArrayList<>();
 
 
@@ -60,7 +59,7 @@ public abstract class Probe implements Runnable {
 
             this.message.addData(new Data(
                     Data.Type.MEASUREMENT,
-                    descriptionId++,
+                    probeId,
                     observations
                 )
             );

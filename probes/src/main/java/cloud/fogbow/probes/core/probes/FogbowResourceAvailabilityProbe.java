@@ -22,7 +22,6 @@ public class FogbowResourceAvailabilityProbe extends Probe {
         this.properties = new PropertiesUtil().readProperties(path + Constants.CONF_FILE);
 
         this.probeId = Integer.valueOf(properties.getProperty(Constants.RESOURCE_AVAILABILITY_PROBE_ID));
-        this.resourceId = Integer.valueOf(properties.getProperty(Constants.RESOURCE_AVAILABILITY_RESOURCE_ID));
         this.firstTimeAwake = true;
         this.SLEEP_TIME = Integer.valueOf(properties.getProperty(Constants.SLEEP_TIME));
     }
@@ -39,14 +38,20 @@ public class FogbowResourceAvailabilityProbe extends Probe {
 
             lastTimestampAwake = currentTimestamp;
 
-            if(hasData(computeData))
+            if(hasData(computeData)) {
+                this.resourceId = Integer.valueOf(properties.getProperty(Constants.COMPUTE_RESOURCE_ID));
                 sendMessage(computeData);
+            }
 
-            if(hasData(volumeData))
+            if(hasData(volumeData)) {
+                this.resourceId = Integer.valueOf(properties.getProperty(Constants.VOLUME_RESOURCE_ID));
                 sendMessage(volumeData);
+            }
 
-            if(hasData(networkData))
+            if(hasData(networkData)) {
+                this.resourceId = Integer.valueOf(properties.getProperty(Constants.NETWORK_RESOURCE_ID));
                 sendMessage(networkData);
+            }
 
             sleep(SLEEP_TIME);
         }
