@@ -12,16 +12,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class FogbowResourceAvailabilityProbe extends Probe {
+public class FogbowServiceSuccessRateProbe extends Probe {
 
     private int SLEEP_TIME;
 
-    public FogbowResourceAvailabilityProbe() throws Exception{
+    public FogbowServiceSuccessRateProbe() throws Exception{
         this.lastTimestampAwake = new Timestamp(System.currentTimeMillis());
+
         String path = Thread.currentThread().getContextClassLoader().getResource("").getPath() + "private/";
         this.properties = new PropertiesUtil().readProperties(path + Constants.CONF_FILE);
 
-        this.probeId = Integer.valueOf(properties.getProperty(Constants.RESOURCE_AVAILABILITY_PROBE_ID));
+        this.probeId = Integer.valueOf(properties.getProperty(Constants.SERVICE_SUCCESS_RATE_PROBE_ID));
         this.firstTimeAwake = true;
         this.SLEEP_TIME = Integer.valueOf(properties.getProperty(Constants.SLEEP_TIME));
     }
@@ -43,6 +44,7 @@ public class FogbowResourceAvailabilityProbe extends Probe {
                 sendMessage(computeData);
             }
 
+
             if(hasData(volumeData)) {
                 this.resourceId = Integer.valueOf(properties.getProperty(Constants.VOLUME_RESOURCE_ID));
                 sendMessage(volumeData);
@@ -55,7 +57,6 @@ public class FogbowResourceAvailabilityProbe extends Probe {
 
             sleep(SLEEP_TIME);
         }
-
     }
 
     private List<List<Pair<Number, Timestamp>>> getData(ResourceType type, Timestamp currentTimestamp) {
@@ -65,8 +66,8 @@ public class FogbowResourceAvailabilityProbe extends Probe {
         List<Pair<Number, Timestamp>> l2 = new ArrayList<>();
         List<Pair<Number, Timestamp>> l3 = new ArrayList<>();
 
-        l1.add(new Pair(providerService.getFailed(lastTimestampAwake, firstTimeAwake, type).size(), currentTimestamp));
-        l2.add(new Pair(providerService.getFulfilled(lastTimestampAwake, firstTimeAwake, type).size(), currentTimestamp));
+        l1.add(new Pair(providerService.getFailedOnRequest(lastTimestampAwake, firstTimeAwake, type).size(), currentTimestamp));
+        l2.add(new Pair(providerService.getOpened(lastTimestampAwake, firstTimeAwake, type).size(), currentTimestamp));
         l3.add(new Pair(currentTimestamp.getTime() - lastTimestampAwake.getTime(), currentTimestamp));
 
         results.add(l1);

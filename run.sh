@@ -45,9 +45,9 @@ sudo docker cp $conf_file $container_id:/app/probes/src/main/resources/private
 sudo docker cp $DIR_PATH/cert.pem $container_id:/app/
 sudo docker cp $DIR_PATH/cert.pem $container_id:/app/java-client-lib
 sudo docker exec -it $container_id sed -i "s,$endpoint_attr.*,$endpoint_attr=$ip;," /app/java-client-lib/src/main/java/eu/atmosphere/tmaf/monitor/client/MonitorClient.java
-sudo docker exec -it $container_id sed -i "s,spring.datasource.url.*,spring.datasource.url=jdbc:postgresql://10.11.4.55:5432/ras," /app/probes/src/main/resources/application.properties
-sudo docker exec -it $container_id sed -i "s,spring.datasource.username.*,spring.datasource.username=ro_user," /app/probes/src/main/resources/application.properties
-sudo docker exec -it $container_id sed -i "s,spring.datasource.password.*,spring.datasource.password=r0us3r," /app/probes/src/main/resources/application.properties
+sudo docker exec -it $container_id sed -i "s,spring.datasource.url.*,spring.datasource.url=jdbc:postgresql://10.11.16.23:5432/ras," /app/probes/src/main/resources/application.properties
+sudo docker exec -it $container_id sed -i "s,spring.datasource.username.*,spring.datasource.username=fogbow," /app/probes/src/main/resources/application.properties
+sudo docker exec -it $container_id sed -i "s,spring.datasource.password.*,spring.datasource.password=Ieloh0maze," /app/probes/src/main/resources/application.properties
 sudo docker exec -it $container_id chmod 777 probes
 sudo docker exec -it $container_id /bin/sh -c 'cd /app/probes && nohup mvn spring-boot:run -Drun.profiles=staging &'
 
