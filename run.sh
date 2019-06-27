@@ -44,11 +44,11 @@ container_id=`sudo docker run -idt $image`
 sudo docker cp $conf_file $container_id:/app/probes/src/main/resources/private
 sudo docker cp $DIR_PATH/cert.pem $container_id:/app/
 sudo docker cp $DIR_PATH/cert.pem $container_id:/app/java-client-lib
-sudo docker exec -it $container_id sed -i "s,$endpoint_attr.*,$endpoint_attr=$ip;," /app/java-client-lib/src/main/java/eu/atmosphere/tmaf/monitor/client/MonitorClient.java
-sudo docker exec -it $container_id sed -i "s,spring.datasource.url.*,spring.datasource.url=jdbc:postgresql://10.11.4.173:5432/ras," /app/probes/src/main/resources/application.properties
-sudo docker exec -it $container_id sed -i "s,spring.datasource.username.*,spring.datasource.username=fogbow," /app/probes/src/main/resources/application.properties
-sudo docker exec -it $container_id sed -i "s,spring.datasource.password.*,spring.datasource.password=jooBahx6ai," /app/probes/src/main/resources/application.properties
-sudo docker exec -it $container_id chmod 777 probes
+sudo docker exec $container_id sed -i "s,$endpoint_attr.*,$endpoint_attr=$ip;," /app/java-client-lib/src/main/java/eu/atmosphere/tmaf/monitor/client/MonitorClient.java
+sudo docker exec $container_id sed -i "s,spring.datasource.url.*,spring.datasource.url=jdbc:postgresql://10.11.4.173:5432/ras," /app/probes/src/main/resources/application.properties
+sudo docker exec $container_id sed -i "s,spring.datasource.username.*,spring.datasource.username=fogbow," /app/probes/src/main/resources/application.properties
+sudo docker exec $container_id sed -i "s,spring.datasource.password.*,spring.datasource.password=jooBahx6ai," /app/probes/src/main/resources/application.properties
+sudo docker exec $container_id chmod 777 probes
 echo "LAAAAST LINEEEEEEEEEE"
-sudo docker exec -it $container_id /bin/bash -c "cd /app/probes && mvn spring-boot:run -X > log.out 2> log.err" &
+sudo docker exec $container_id /bin/bash -c "cd /app/probes && mvn clean install && mvn spring-boot:run -X > log.out 2> log.err" &
 
