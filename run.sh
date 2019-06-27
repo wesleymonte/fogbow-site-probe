@@ -49,5 +49,6 @@ sudo docker exec -it $container_id sed -i "s,spring.datasource.url.*,spring.data
 sudo docker exec -it $container_id sed -i "s,spring.datasource.username.*,spring.datasource.username=fogbow," /app/probes/src/main/resources/application.properties
 sudo docker exec -it $container_id sed -i "s,spring.datasource.password.*,spring.datasource.password=jooBahx6ai," /app/probes/src/main/resources/application.properties
 sudo docker exec -it $container_id chmod 777 probes
-sudo docker exec -it $container_id /bin/sh -c 'cd /app/probes && mvn spring-boot:run &'
+echo "LAAAAST LINEEEEEEEEEE"
+sudo docker exec -it $container_id /bin/bash -c "cd /app/probes && mvn spring-boot:run -X > log.out 2> log.err" &
 
