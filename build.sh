@@ -1,0 +1,1 @@
+sudo docker build --no-cache -f Dockerfile -t eubraatmosphere/fogbow-probes:$1 .
