@@ -1,4 +1,4 @@
-FROM openjdk:8
+FROM    maven:3.5.3-jdk-8
 
 WORKDIR /app
 
@@ -11,10 +11,6 @@ RUN	\
 	apt-get install -y maven curl git lsof vim nano 
 
 RUN	apt-get install openjfx -y
-
-
-RUN     cd /app/probes/ &&\ 
-		mvn clean install
 
 EXPOSE 80
 

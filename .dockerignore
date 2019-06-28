@@ -11,3 +11,7 @@ README.md
 run.sh
 install.sh
 ansible
+probes
+probes/*
+java-client-lib/*
+java-client-lib
