@@ -15,3 +15,6 @@ probes
 probes/*
 java-client-lib/*
 java-client-lib
+build.sh
+push.sh
+probes-log.log
