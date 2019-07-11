@@ -52,7 +52,7 @@ db_username=`awk -F ' *= *' '$1=="db_username"{print $2}' $conf_file`
 db_password=`awk -F ' *= *' '$1=="db_password"{print $2}' $conf_file`
 
 sudo docker pull $image
-container_id=`sudo docker run -idt $image`
+container_id=`sudo docker run --name probes -idt $image`
 sudo docker cp $DIR_PATH/java-client-lib $container_id:/app/
 sudo docker cp $DIR_PATH/probes $container_id:/app/
 sudo docker cp $conf_file $container_id:/app/probes/src/main/resources/private
