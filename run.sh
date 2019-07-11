@@ -46,7 +46,7 @@ image_tag=${1-latest}
 image=eubraatmosphere/fogbow-probes:$image_tag
 conf_file=$DIR_PATH/probe-fogbow.conf
 ip=`awk -F ' *= *' '$1=="monitor_ip"{print $2}' $conf_file`/monitor
-endpoint_attr=DEFAULT_ENDPOINT=
+endpoint_attr="DEFAULT_ENDPOINT ="
 ras_db_url=`awk -F ' *= *' '$1=="ras_db_url"{print $2}' $conf_file`/ras
 db_username=`awk -F ' *= *' '$1=="db_username"{print $2}' $conf_file`
 db_password=`awk -F ' *= *' '$1=="db_password"{print $2}' $conf_file`
