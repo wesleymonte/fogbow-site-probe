@@ -58,7 +58,7 @@ sudo docker cp $DIR_PATH/probes $container_id:/app/
 sudo docker cp $conf_file $container_id:/app/probes/src/main/resources/private
 sudo docker cp $DIR_PATH/cert.pem $container_id:/app/
 sudo docker cp $DIR_PATH/cert.pem $container_id:/app/java-client-lib
-sudo docker exec $container_id /bin/bash -c "sed -i 's,$endpoint_attr.*,$endpoint_attr=\"$ip\";,' /app/java-client-lib/src/main/java/eu/atmosphere/tmaf/monitor/client/MonitorClient.java"
+sudo docker exec $container_id /bin/bash -c "sed -i 's,$endpoint_attr.*,$endpoint_attr\"$ip\";,' /app/java-client-lib/src/main/java/eu/atmosphere/tmaf/monitor/client/MonitorClient.java"
 sudo docker exec $container_id /bin/bash -c "sed -i 's,spring.datasource.url.*,spring.datasource.url=jdbc:postgresql://$ras_db_url,' /app/probes/src/main/resources/application.properties"
 sudo docker exec $container_id /bin/bash -c "sed -i 's,spring.datasource.username.*,spring.datasource.username=$db_username,' /app/probes/src/main/resources/application.properties"
 sudo docker exec $container_id /bin/bash -c "sed -i 's,spring.datasource.password.*,spring.datasource.password=$db_password,' /app/probes/src/main/resources/application.properties"
