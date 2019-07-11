@@ -9,8 +9,16 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Component
@@ -19,7 +27,7 @@ public class FogbowServiceReachabilityProbe extends Probe {
     protected int SLEEP_TIME;
     protected String endPoint;
     private int successfulRequests = 0;
-    private final int N_REQUESTS_PER_CICLE = 60;
+    private final int N_REQUESTS_PER_CICLE = 1;
     private final int RESPONSE_CODE_LOWER_BOUND = 199;
     private final int RESPONSE_CODE_UPPER_BOUND = 300;
     private String AS_ENDPOINT;
@@ -51,7 +59,6 @@ public class FogbowServiceReachabilityProbe extends Probe {
 
             for(int i = 0; i < N_REQUESTS_PER_CICLE; i++) {
                 doGetRequest();
-                sleep(1000);
             }
 
             List<Pair<Number, Timestamp>> data = new ArrayList<>();
@@ -73,6 +80,8 @@ public class FogbowServiceReachabilityProbe extends Probe {
             int rasResponseCode = getResponseCode(RAS_ENDPOINT);
             int fnsResponseCode = getResponseCode(FNS_ENDPOINT);
             int msResponseCode = getResponseCode(MS_ENDPOINT);
+
+            loggerHandler(asResponseCode, rasResponseCode, fnsResponseCode, msResponseCode);
 
             if (checkRequests(asResponseCode, rasResponseCode, fnsResponseCode, msResponseCode)) {
                 successfulRequests++;
@@ -99,6 +108,50 @@ public class FogbowServiceReachabilityProbe extends Probe {
         }
 
         return false;
+    }
+
+    private boolean hasFailed(int responseCode) {
+        return responseCode > RESPONSE_CODE_UPPER_BOUND || responseCode < RESPONSE_CODE_LOWER_BOUND;
+    }
+
+    private void loggerHandler(int asResponseCode, int rasResponseCode, int fnsResponseCode, int msResponseCode) {
+        List<String> messages = new ArrayList<>();
+
+        if(hasFailed(asResponseCode)) {
+            messages.add("Authentication Service is down");
+        }
+
+        if(hasFailed(rasResponseCode)) {
+            messages.add("Resource Allocation Service is down");
+        }
+
+        if(hasFailed(fnsResponseCode)) {
+            messages.add("Federated Network Service is down");
+        }
+
+        if(hasFailed(msResponseCode)) {
+            messages.add("Membership Service is down");
+        }
+
+        for(int i = 0; i < messages.size(); i++) {
+            String date = timestampToDate(Instant.now().getEpochSecond());
+            String currentMessage = "[" + date + "] " + messages.get(i) + "\n";
+            try {
+                if (!Files.exists(Paths.get("probes-log.log"), LinkOption.NOFOLLOW_LINKS))
+                    Files.createFile(Paths.get("probes-log.log"));
+                Files.write(Paths.get("probes-log.log"), currentMessage.getBytes(), StandardOpenOption.APPEND);
+            } catch (IOException e) {
+                //exception handling left as an exercise for the reader
+            }
+        }
+
+    }
+
+    private String timestampToDate(long timestamp){
+        Date date = new java.util.Date(timestamp*1000L);
+        SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        sdf.setTimeZone(java.util.TimeZone.getTimeZone("GMT-3"));
+        return sdf.format(date);
     }
 
 }
