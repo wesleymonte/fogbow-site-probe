@@ -1,7 +1,7 @@
 [localhost]
 127.0.0.1
 [atm-test]
-10.11.4.173
+10.11.16.23
 [atm-test:vars]
 ansible_ssh_private_key_file=~/Downloads/id_rsa_fogbow_default_private_key
 ansible_python_interpreter=/usr/bin/python3
