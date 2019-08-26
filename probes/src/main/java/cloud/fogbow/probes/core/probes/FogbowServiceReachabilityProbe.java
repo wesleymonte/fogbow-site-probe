@@ -42,7 +42,6 @@ public class FogbowServiceReachabilityProbe extends Probe {
         this.properties = new PropertiesUtil().readProperties(path + Constants.CONF_FILE);
 
         this.probeId = Integer.valueOf(properties.getProperty(Constants.SERVICE_REACHABILITY_PROBE_ID));
-        this.resourceId = Integer.valueOf(properties.getProperty(Constants.SITE_RESOURCE_ID));
         this.SLEEP_TIME = Integer.valueOf(properties.getProperty(Constants.SLEEP_TIME));
         this.AS_ENDPOINT = properties.getProperty(Constants.AS_ENDPOINT);
         this.RAS_ENDPOINT = properties.getProperty(Constants.RAS_ENDPOINT);
@@ -66,7 +65,8 @@ public class FogbowServiceReachabilityProbe extends Probe {
 
             List<List<Pair<Number, Timestamp>>> dataWrapper = new ArrayList<>();
             dataWrapper.add(data);
-            sendMessage(dataWrapper);
+            int resourceId = Integer.valueOf(properties.getProperty(Constants.SITE_RESOURCE_ID));
+            sendMessage(resourceId, dataWrapper);
 
             this.successfulRequests = 0;
 

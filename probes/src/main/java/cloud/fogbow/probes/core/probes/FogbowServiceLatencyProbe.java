@@ -38,25 +38,26 @@ public class FogbowServiceLatencyProbe extends Probe {
             this.firstTimeAwake = false;
             this.lastTimestampAwake = new Timestamp(System.currentTimeMillis());
 
+            Integer resourceId;
             if(!latencies[0].isEmpty()) {
-                this.resourceId = Integer.valueOf(properties.getProperty(Constants.COMPUTE_RESOURCE_ID));
-                sendMessage(latenciesWrapper);
+                resourceId = Integer.valueOf(properties.getProperty(Constants.COMPUTE_RESOURCE_ID));
+                sendMessage(resourceId, latenciesWrapper);
             }
 
             latenciesWrapper.clear();
             latenciesWrapper.add(latencies[1]);
 
             if(!latencies[1].isEmpty()) {
-                this.resourceId = Integer.valueOf(properties.getProperty(Constants.VOLUME_RESOURCE_ID));
-                sendMessage(latenciesWrapper);
+                resourceId = Integer.valueOf(properties.getProperty(Constants.VOLUME_RESOURCE_ID));
+                sendMessage(resourceId, latenciesWrapper);
             }
 
             latenciesWrapper.clear();
             latenciesWrapper.add(latencies[2]);
 
             if(!latencies[2].isEmpty()) {
-                this.resourceId = Integer.valueOf(properties.getProperty(Constants.NETWORK_RESOURCE_ID));
-                sendMessage(latenciesWrapper);
+                resourceId = Integer.valueOf(properties.getProperty(Constants.NETWORK_RESOURCE_ID));
+                sendMessage(resourceId, latenciesWrapper);
             }
 
             sleep(SLEEP_TIME);
