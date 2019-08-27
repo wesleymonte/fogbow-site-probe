@@ -1,14 +1,15 @@
 package cloud.fogbow.probes.core.models;
 
 import java.sql.Timestamp;
+import java.util.List;
 import javafx.util.Pair;
 
 public class Observation {
     private String label;
-    private Pair<String, String> values;
+    private List<Pair<String, Float>> values;
     private Timestamp timestamp;
 
-    public Observation(String label, Pair<String, String> values, Timestamp timestamp) {
+    public Observation(String label, List<Pair<String, Float>> values, Timestamp timestamp) {
         this.label = label;
         this.values = values;
         this.timestamp = timestamp;
@@ -18,7 +19,7 @@ public class Observation {
         return label;
     }
 
-    public Pair<String, String> getValues() {
+    public List<Pair<String, Float>> getValues() {
         return values;
     }
 
