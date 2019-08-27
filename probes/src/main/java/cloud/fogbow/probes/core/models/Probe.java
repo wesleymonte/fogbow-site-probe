@@ -21,9 +21,11 @@ public abstract class Probe implements Runnable {
 
     protected BackgroundClient client;
     protected Message message;
+
+    @Autowired
     protected Properties properties;
+
     protected Timestamp lastTimestampAwake;
-    protected Integer resourceId;
     protected Integer probeId;
     protected boolean firstTimeAwake;
     protected Integer descriptionId;
@@ -43,7 +45,7 @@ public abstract class Probe implements Runnable {
         }
     }
 
-    protected void sendMessage(List<List<Pair<Number, Timestamp>>> dataValues) {
+    protected void sendMessage(Integer resourceId, List<List<Pair<Number, Timestamp>>> dataValues) {
         createMessage();
 
         this.message.setResourceId(resourceId);

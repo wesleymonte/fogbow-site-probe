@@ -1,26 +1,22 @@
 package cloud.fogbow.probes.core.probes;
 
 import cloud.fogbow.probes.core.Constants;
-import cloud.fogbow.probes.core.models.Probe;
+import cloud.fogbow.probes.core.models.FogbowDataProbe;
+import cloud.fogbow.probes.core.models.OrderState;
 import cloud.fogbow.probes.core.models.ResourceType;
-import cloud.fogbow.probes.core.utils.PropertiesUtil;
 import javafx.util.Pair;
+import javax.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class FogbowResourceAvailabilityProbe extends Probe {
+public class FogbowResourceAvailabilityProbe extends FogbowDataProbe {
 
-    private int SLEEP_TIME;
-
-    public FogbowResourceAvailabilityProbe() throws Exception{
+    @PostConstruct
+    public void FogbowResourceAvailabilityProbe(){
         this.lastTimestampAwake = new Timestamp(System.currentTimeMillis());
-        String path = Thread.currentThread().getContextClassLoader().getResource("").getPath() + "private/";
-        this.properties = new PropertiesUtil().readProperties(path + Constants.CONF_FILE);
-
         this.probeId = Integer.valueOf(properties.getProperty(Constants.RESOURCE_AVAILABILITY_PROBE_ID));
         this.firstTimeAwake = true;
         this.SLEEP_TIME = Integer.valueOf(properties.getProperty(Constants.SLEEP_TIME));
@@ -32,47 +28,21 @@ public class FogbowResourceAvailabilityProbe extends Probe {
         while(true) {
             Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
 
-            List<List<Pair<Number, Timestamp>>> computeData = getData(ResourceType.COMPUTE, currentTimestamp);
-            List<List<Pair<Number, Timestamp>>> volumeData = getData(ResourceType.VOLUME, currentTimestamp);
-            List<List<Pair<Number, Timestamp>>> networkData = getData(ResourceType.NETWORK, currentTimestamp);
+            List<List<Pair<Number, Timestamp>>> computeData = getResourceAvailabilityData(ResourceType.COMPUTE, currentTimestamp);
+            List<List<Pair<Number, Timestamp>>> volumeData = getResourceAvailabilityData(ResourceType.VOLUME, currentTimestamp);
+            List<List<Pair<Number, Timestamp>>> networkData = getResourceAvailabilityData(ResourceType.NETWORK, currentTimestamp);
 
             lastTimestampAwake = currentTimestamp;
+            sendResourceDataMessages(computeData, volumeData, networkData);
 
-            if(hasData(computeData)) {
-                this.resourceId = Integer.valueOf(properties.getProperty(Constants.COMPUTE_RESOURCE_ID));
-                sendMessage(computeData);
-            }
-
-            if(hasData(volumeData)) {
-                this.resourceId = Integer.valueOf(properties.getProperty(Constants.VOLUME_RESOURCE_ID));
-                sendMessage(volumeData);
-            }
-
-            if(hasData(networkData)) {
-                this.resourceId = Integer.valueOf(properties.getProperty(Constants.NETWORK_RESOURCE_ID));
-                sendMessage(networkData);
-            }
-
-            sleep(SLEEP_TIME);
         }
 
     }
 
-    private List<List<Pair<Number, Timestamp>>> getData(ResourceType type, Timestamp currentTimestamp) {
-        List<List<Pair<Number, Timestamp>>> results = new ArrayList<>();
-
-        List<Pair<Number, Timestamp>> l1 = new ArrayList<>();
-        List<Pair<Number, Timestamp>> l2 = new ArrayList<>();
-        List<Pair<Number, Timestamp>> l3 = new ArrayList<>();
-
-        l1.add(new Pair(providerService.getFailed(lastTimestampAwake, firstTimeAwake, type).size(), currentTimestamp));
-        l2.add(new Pair(providerService.getFulfilled(lastTimestampAwake, firstTimeAwake, type).size(), currentTimestamp));
-        l3.add(new Pair(currentTimestamp.getTime() - lastTimestampAwake.getTime(), currentTimestamp));
-
-        results.add(l1);
-        results.add(l2);
-        results.add(l3);
-        this.firstTimeAwake = false;
+    private List<List<Pair<Number, Timestamp>>> getResourceAvailabilityData(ResourceType type, Timestamp currentTimestamp) {
+        List<List<Pair<Number, Timestamp>>> results;
+        OrderState[] states = {OrderState.FAILED_AFTER_SUCCESSFUL_REQUEST, OrderState.FULFILLED};
+        results = super.getData(states, type, currentTimestamp);
         return results;
     }
 }
