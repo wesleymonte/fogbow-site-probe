@@ -21,7 +21,10 @@ public abstract class Probe implements Runnable {
 
     protected BackgroundClient client;
     protected Message message;
+
+    @Autowired
     protected Properties properties;
+
     protected Timestamp lastTimestampAwake;
     protected Integer probeId;
     protected boolean firstTimeAwake;

@@ -3,21 +3,11 @@ package cloud.fogbow.probes.core.utils;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Properties;
 
 public class PropertiesUtil {
 
-    public static Properties readProperties(String fileName) throws Exception {
-        Properties properties = new Properties();
-        Properties mProperties = loadProperties(fileName);
-        properties.putAll(mProperties);
-
-        return properties;
-    }
-
-    private static Properties loadProperties(String fileName) throws Exception {
+    public static Properties loadProperties(String fileName) throws Exception {
         Properties prop = new Properties();
         FileInputStream fileInputStream = null;
 

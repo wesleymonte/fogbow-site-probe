@@ -2,8 +2,8 @@ package cloud.fogbow.probes.core.probes;
 
 import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.models.Probe;
-import cloud.fogbow.probes.core.utils.PropertiesUtil;
 import javafx.util.Pair;
+import javax.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
@@ -15,12 +15,9 @@ public class FogbowServiceLatencyProbe extends Probe {
 
     private int SLEEP_TIME;
 
-    public FogbowServiceLatencyProbe() throws Exception{
+    @PostConstruct
+    public void FogbowServiceLatencyProbe() {
         this.lastTimestampAwake = new Timestamp(System.currentTimeMillis());
-
-        String path = Thread.currentThread().getContextClassLoader().getResource("").getPath() + "private/";
-        this.properties = new PropertiesUtil().readProperties(path + Constants.CONF_FILE);
-
         this.probeId = Integer.valueOf(properties.getProperty(Constants.SERVICE_LATENCY_PROBE_ID));
         this.firstTimeAwake = true;
         this.SLEEP_TIME = Integer.valueOf(properties.getProperty(Constants.SLEEP_TIME));

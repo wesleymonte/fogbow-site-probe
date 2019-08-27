@@ -2,8 +2,8 @@ package cloud.fogbow.probes.core.probes;
 
 import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.models.Probe;
-import cloud.fogbow.probes.core.utils.PropertiesUtil;
 import javafx.util.Pair;
+import javax.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -14,7 +14,6 @@ import java.nio.file.LinkOption;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -25,7 +24,6 @@ import java.util.List;
 public class FogbowServiceReachabilityProbe extends Probe {
 
     protected int SLEEP_TIME;
-    protected String endPoint;
     private int successfulRequests = 0;
     private final int N_REQUESTS_PER_CICLE = 1;
     private final int RESPONSE_CODE_LOWER_BOUND = 199;
@@ -35,12 +33,9 @@ public class FogbowServiceReachabilityProbe extends Probe {
     private String FNS_ENDPOINT;
     private String MS_ENDPOINT;
 
-    public FogbowServiceReachabilityProbe() throws Exception{
+    @PostConstruct
+    public void FogbowServiceReachabilityProbe() {
         this.lastTimestampAwake = new Timestamp(System.currentTimeMillis());
-
-        String path = Thread.currentThread().getContextClassLoader().getResource("").getPath() + "private/";
-        this.properties = new PropertiesUtil().readProperties(path + Constants.CONF_FILE);
-
         this.probeId = Integer.valueOf(properties.getProperty(Constants.SERVICE_REACHABILITY_PROBE_ID));
         this.SLEEP_TIME = Integer.valueOf(properties.getProperty(Constants.SLEEP_TIME));
         this.AS_ENDPOINT = properties.getProperty(Constants.AS_ENDPOINT);
