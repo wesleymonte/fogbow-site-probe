@@ -106,6 +106,28 @@ public class DataProviderService {
         return result;
     }
 
+    public Integer getAuditsFromResourceByState(OrderState orderState, ResourceType type,
+        Timestamp lastTimestampAwake, boolean firstTimeAwake) {
+        Integer value;
+        switch (orderState) {
+            case FAILED_ON_REQUEST:
+                value = getFailedOnRequest(lastTimestampAwake, firstTimeAwake, type).size();
+                break;
+            case FAILED_AFTER_SUCCESSFUL_REQUEST:
+                value = getFailed(lastTimestampAwake, firstTimeAwake, type).size();
+                break;
+            case FULFILLED:
+                value = getFulfilled(lastTimestampAwake, firstTimeAwake, type).size();
+                break;
+            case OPEN:
+                value = getOpened(lastTimestampAwake, firstTimeAwake, type).size();
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + orderState);
+        }
+        return value;
+    }
+
     private List<Pair<Number, Timestamp>> computeLatencies(List<AuditableOrderStateChange> openEvents, List<AuditableOrderStateChange> fulfilledEvents) {
         Map<String, Pair<Timestamp, Timestamp>> ordersLatency = new HashMap<>();
 

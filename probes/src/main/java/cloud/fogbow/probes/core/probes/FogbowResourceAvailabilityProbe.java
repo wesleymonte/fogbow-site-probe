@@ -26,6 +26,7 @@ public class FogbowResourceAvailabilityProbe extends FogbowDataProbe {
         this.probeId = Integer.valueOf(properties.getProperty(Constants.RESOURCE_AVAILABILITY_PROBE_ID));
         this.firstTimeAwake = true;
         this.SLEEP_TIME = Integer.valueOf(properties.getProperty(Constants.SLEEP_TIME));
+        this.fmaConverter = new FmaConverter();
     }
 
     public void run() {
@@ -52,34 +53,23 @@ public class FogbowResourceAvailabilityProbe extends FogbowDataProbe {
         return results;
     }
 
-    private Observation getObservation(Timestamp lastTimestampAwake){
-        List<Pair<String, Float>> values = getResourceAvailabilityValues(lastTimestampAwake);
-        Observation observation = new Observation(PROBE_LABEL, values, lastTimestampAwake);
+    private Observation getObservation(Timestamp currentTimestamp){
+        List<Pair<String, Float>> resourcesAvailability = new ArrayList<>();
+        ResourceType resourceTypes[] = {ResourceType.COMPUTE, ResourceType.VOLUME, ResourceType.NETWORK};
+        for(ResourceType r : resourceTypes){
+            resourcesAvailability.add(getResourceAvailabilityValue(r, currentTimestamp, firstTimeAwake));
+        }
+        Observation observation = fmaConverter.createObservation(PROBE_LABEL, resourcesAvailability, currentTimestamp);
         return observation;
     }
 
-    private List<Pair<String, Float>> getResourceAvailabilityValues(Timestamp lastTimestampAwake){
-        Pair<String, Float> computeAvailability = getResourceAvailabilityValue(ResourceType.COMPUTE, lastTimestampAwake, firstTimeAwake);
-        Pair<String, Float> volumeAvailability = getResourceAvailabilityValue(ResourceType.VOLUME, lastTimestampAwake, firstTimeAwake);
-        Pair<String, Float> networkAvailability = getResourceAvailabilityValue(ResourceType.NETWORK, lastTimestampAwake, firstTimeAwake);
-        List<Pair<String, Float>> resourcesAvailability = new ArrayList<>();
-        resourcesAvailability.add(computeAvailability);
-        resourcesAvailability.add(volumeAvailability);
-        resourcesAvailability.add(networkAvailability);
-        return resourcesAvailability;
-    }
-
     private Pair<String, Float> getResourceAvailabilityValue(ResourceType type, Timestamp lastTimestampAwake, boolean firstTimeAwake){
-        Pair<String, String> pairFailedAfterSuccessful = fmaConverter.getAuditFromResource(OrderState.FAILED_AFTER_SUCCESSFUL_REQUEST, type,
+        Integer valueFailedAfterSuccessful = providerService.getAuditsFromResourceByState(OrderState.FAILED_AFTER_SUCCESSFUL_REQUEST, type,
             lastTimestampAwake, firstTimeAwake);
-        Pair<String, String> pairOfFulfilled = fmaConverter.getAuditFromResource(OrderState.FULFILLED, type,
+        Integer valueFulfilled = providerService.getAuditsFromResourceByState(OrderState.FULFILLED, type,
             lastTimestampAwake, firstTimeAwake);
-
-        Integer valueOfFailed = Integer.valueOf(pairFailedAfterSuccessful.getValue());
-        Integer valueOfFulfilled = Integer.valueOf(pairOfFulfilled.getValue());
-        Float availabilityData = (float) (valueOfFulfilled / (valueOfFailed + valueOfFulfilled));
-
-        Pair<String, Float> pair = new Pair<>(type.getValue(), availabilityData);
+        Float availabilityData = (float) (valueFulfilled / (valueFailedAfterSuccessful + valueFulfilled));
+        Pair<String, Float> pair = fmaConverter.convertToFmaValue(type.getValue(), availabilityData);
         return pair;
 
     }
