@@ -22,7 +22,7 @@ public class FmaSender {
             StringEntity body = toJson(observation);
             HttpWrapper.doRequest(HttpPost.METHOD_NAME, FMA_OBS_ENDPOINT, new ArrayList<>(), body);
         } catch (Exception e) {
-            LOGGER.error("Error while sender observation: " + e.getMessage(), e);
+            LOGGER.error("Error while sending observation: " + e.getMessage(), e);
         }
     }
 
