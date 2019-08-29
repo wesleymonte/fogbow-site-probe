@@ -1,6 +1,7 @@
 package cloud.fogbow.probes.core.probes;
 
 import cloud.fogbow.probes.core.Constants;
+import cloud.fogbow.probes.core.models.Observation;
 import cloud.fogbow.probes.core.models.Probe;
 import javafx.util.Pair;
 import javax.annotation.PostConstruct;
@@ -14,6 +15,7 @@ import java.util.List;
 public class FogbowServiceLatencyProbe extends Probe {
 
     private int SLEEP_TIME;
+    private static final String PROBE_LABEL = "service_latency_probe";
 
     @PostConstruct
     public void FogbowServiceLatencyProbe() {
@@ -59,5 +61,26 @@ public class FogbowServiceLatencyProbe extends Probe {
 
             sleep(SLEEP_TIME);
         }
+    }
+
+    public Observation getObservation(){
+        List<Pair<Number, Timestamp>>[] latencies = this.providerService.getLatencies(lastTimestampAwake, firstTimeAwake);
+        List<Pair<String, Float>> values = toValue(latencies);
+        Observation observation = new Observation(PROBE_LABEL, values, lastTimestampAwake);
+        return observation;
+    }
+
+    private List<Pair<String, Float>> toValue(List<Pair<Number, Timestamp>>[] latencies){
+        List<Pair<String, Float>> list = new ArrayList<>();
+        String key;
+        for(int i = 0; i < 3; i++){
+            if(i == 0) key = "COMPUTE";
+            else if(i == 1) key = "VOLUME";
+            else key = "NETWORK";
+            Float value = latencies[i].get(0).getKey().floatValue();
+            Pair<String, Float> p = new Pair<>(key, value);
+            list.add(p);
+        }
+        return list;
     }
 }
