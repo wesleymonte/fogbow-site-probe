@@ -12,17 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class FmaConverter {
 
-    public Pair<String, Float> convertToFmaValue(String key, Integer value){
-        Float fValue = (float) value;
-        Pair<String, Float> pair = new Pair<>(key, fValue);
-        return pair;
-    }
-
-    public Pair<String, Float> convertToFmaValue(String key, Float value){
-        Pair<String, Float> pair = new Pair<>(key, value);
-        return pair;
-    }
-
     public Observation createObservation(String label, List<Pair<String, Float>> values, Timestamp timestamp){
         if(Objects.isNull(label) || Objects.isNull(values) || Objects.isNull(timestamp)){
             throw new IllegalArgumentException("Any argument may be not null");

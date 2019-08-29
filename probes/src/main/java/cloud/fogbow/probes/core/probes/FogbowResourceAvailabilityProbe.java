@@ -41,9 +41,7 @@ public class FogbowResourceAvailabilityProbe extends FogbowDataProbe {
 
             lastTimestampAwake = currentTimestamp;
             sendResourceDataMessages(computeData, volumeData, networkData);
-
         }
-
     }
 
     private List<List<Pair<Number, Timestamp>>> getResourceAvailabilityData(ResourceType type, Timestamp currentTimestamp) {
@@ -69,7 +67,7 @@ public class FogbowResourceAvailabilityProbe extends FogbowDataProbe {
         Integer valueFulfilled = providerService.getAuditsFromResourceByState(OrderState.FULFILLED, type,
             lastTimestampAwake, firstTimeAwake);
         Float availabilityData = (float) (valueFulfilled / (valueFailedAfterSuccessful + valueFulfilled));
-        Pair<String, Float> pair = fmaConverter.convertToFmaValue(type.getValue(), availabilityData);
+        Pair<String, Float> pair = new Pair<>(type.getValue(), availabilityData);
         return pair;
 
     }
