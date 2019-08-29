@@ -17,7 +17,6 @@ import java.util.List;
 @Component
 public class FogbowResourceAvailabilityProbe extends FogbowDataProbe {
 
-    private FmaConverter fmaConverter;
     private static final String PROBE_LABEL = "resource_availability_probe";
 
     @PostConstruct
@@ -26,7 +25,6 @@ public class FogbowResourceAvailabilityProbe extends FogbowDataProbe {
         this.probeId = Integer.valueOf(properties.getProperty(Constants.RESOURCE_AVAILABILITY_PROBE_ID));
         this.firstTimeAwake = true;
         this.SLEEP_TIME = Integer.valueOf(properties.getProperty(Constants.SLEEP_TIME));
-        this.fmaConverter = new FmaConverter();
     }
 
     public void run() {
@@ -57,7 +55,7 @@ public class FogbowResourceAvailabilityProbe extends FogbowDataProbe {
         for(ResourceType r : resourceTypes){
             resourcesAvailability.add(getResourceAvailabilityValue(r, currentTimestamp, firstTimeAwake));
         }
-        Observation observation = fmaConverter.createObservation(PROBE_LABEL, resourcesAvailability, currentTimestamp);
+        Observation observation = FmaConverter.createObservation(PROBE_LABEL, resourcesAvailability, currentTimestamp);
         return observation;
     }
 
