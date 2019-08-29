@@ -1,6 +1,7 @@
 package cloud.fogbow.probes.core.probes;
 
 import cloud.fogbow.probes.core.Constants;
+import cloud.fogbow.probes.core.models.Observation;
 import cloud.fogbow.probes.core.models.Probe;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Component;
 public class FogbowServiceReachabilityProbe extends Probe {
 
     private static final Logger LOGGER = Logger.getLogger(FogbowServiceReachabilityProbe.class);
+    private static final String PROBE_LABEL = "service_reachability_probe";
     private final int N_REQUESTS_PER_CICLE = 1;
     private final int RESPONSE_CODE_LOWER_BOUND = 199;
     private final int RESPONSE_CODE_UPPER_BOUND = 300;
@@ -93,16 +95,40 @@ public class FogbowServiceReachabilityProbe extends Probe {
         }
     }
 
-    private void doGetRequest() {
+    private Observation getObservation() {
+        Map<String, Boolean> result = doGetRequest();
+        List<Pair<String, Float>> values = toValues(result);
+        Observation observation = new Observation(PROBE_LABEL, values, lastTimestampAwake);
+        return observation;
+    }
+
+    private List<Pair<String, Float>> toValues(Map<String, Boolean> result) {
+        List<Pair<String, Float>> values = new ArrayList<>();
+        for (Entry<String, Boolean> e : result.entrySet()) {
+            Pair<String, Float> p = new Pair<>(e.getKey(), parseToFloat(e.getValue()));
+            values.add(p);
+        }
+        return values;
+    }
+
+    private Float parseToFloat(boolean b) {
+        if (b) return (float) 1;
+        else return (float) 0;
+    }
+
+    private Map<String, Boolean> doGetRequest() {
+        Map<String, Boolean> result = new HashMap<>();
         try {
             Map<String, Integer> httpCodes = this.getHttpCodes();
-            boolean someFailed = this.checkHttpCodes(httpCodes);
+            result = this.checkHttpCodes(httpCodes);
+            boolean someFailed = result.values().contains(false);
             if (!someFailed) {
                 successfulRequests++;
             }
         } catch (Exception e) {
             LOGGER.error("Error while checking reachability of services", e);
         }
+        return result;
     }
 
     public Map<String, Integer> getHttpCodes() throws IOException {
@@ -121,17 +147,19 @@ public class FogbowServiceReachabilityProbe extends Probe {
         return connection.getResponseCode();
     }
 
-    public boolean checkHttpCodes(Map<String, Integer> httpCodes) {
-        boolean someFailed = false;
+    public Map<String, Boolean> checkHttpCodes(Map<String, Integer> httpCodes) {
+        Map<String, Boolean> result = new HashMap<>();
         for (Entry<String, Integer> code : httpCodes.entrySet()) {
             Service service = services.get(code.getKey());
             if (hasFailed(code.getValue())) {
                 String date = timestampToDate(Instant.now().getEpochSecond());
                 LOGGER.error("[" + date + "] : " + service.LABEL + " is down");
-                someFailed = true;
+                result.put(service.ID, false);
+            } else {
+                result.put(service.ID, true);
             }
         }
-        return someFailed;
+        return result;
     }
 
     private boolean hasFailed(int responseCode) {
