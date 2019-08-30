@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 public class FmaSender {
 
+    private static final String FMA_ADDRESS = "localhost:8090";
     private static final String FMA_OBS_ENDPOINT = "/observation";
     private static final String METRIC_LABEL_JSON_KEY = "metric_label";
     private static final String VALUES_JSON_KEY = "values";
