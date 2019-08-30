@@ -8,10 +8,7 @@ public class Constants {
     public static final String SERVICE_LATENCY_PROBE_ID = "service_latency_probe_id";
     public static final String SERVICE_REACHABILITY_PROBE_ID = "service_reachability_probe_id";
 
-    public static final String COMPUTE_RESOURCE_ID = "compute_resource_id";
-    public static final String VOLUME_RESOURCE_ID = "volume_resource_id";
-    public static final String NETWORK_RESOURCE_ID = "network_resource_id";
-    public static final String SITE_RESOURCE_ID = "site_resource_id";
+    public static final String FMA_ADDRESS = "fma_address";
 
     public static final String AS_ENDPOINT = "as_endpoint";
     public static final String RAS_ENDPOINT = "ras_endpoint";

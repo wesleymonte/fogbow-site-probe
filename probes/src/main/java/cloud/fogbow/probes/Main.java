@@ -4,6 +4,7 @@ import cloud.fogbow.probes.core.probes.FogbowResourceAvailabilityProbe;
 import cloud.fogbow.probes.core.probes.FogbowServiceLatencyProbe;
 import cloud.fogbow.probes.core.probes.FogbowServiceReachabilityProbe;
 import cloud.fogbow.probes.core.probes.FogbowServiceSuccessRateProbe;
+import cloud.fogbow.probes.core.utils.ProbeConstants.Properties;
 import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,7 @@ public class Main {
 
     @PostConstruct
     public void startProbes() {
+
         Thread firstProbe = new Thread(resourceAvailabilityProbe);
         firstProbe.start();
 
