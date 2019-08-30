@@ -1,6 +1,7 @@
 package cloud.fogbow.probes.core.probes;
 
 import cloud.fogbow.probes.core.Constants;
+import cloud.fogbow.probes.core.http.FmaSender;
 import cloud.fogbow.probes.core.models.Observation;
 import cloud.fogbow.probes.core.models.Probe;
 import javafx.util.Pair;
@@ -14,7 +15,6 @@ import java.util.List;
 @Component
 public class FogbowServiceLatencyProbe extends Probe {
 
-    private int SLEEP_TIME;
     private static final String PROBE_LABEL = "service_latency_probe";
 
     @PostConstruct
@@ -26,47 +26,19 @@ public class FogbowServiceLatencyProbe extends Probe {
     }
 
     public void run() {
-        setup();
-
         while(true) {
-            List<Pair<Number, Timestamp>>[] latencies = this.providerService.getLatencies(lastTimestampAwake, firstTimeAwake);
-
-            List<List<Pair<Number, Timestamp>>> latenciesWrapper = new ArrayList<>();
-            latenciesWrapper.add(latencies[0]);
-
-            this.firstTimeAwake = false;
-            this.lastTimestampAwake = new Timestamp(System.currentTimeMillis());
-
-            Integer resourceId;
-            if(!latencies[0].isEmpty()) {
-                resourceId = Integer.valueOf(properties.getProperty(Constants.COMPUTE_RESOURCE_ID));
-                sendMessage(resourceId, latenciesWrapper);
-            }
-
-            latenciesWrapper.clear();
-            latenciesWrapper.add(latencies[1]);
-
-            if(!latencies[1].isEmpty()) {
-                resourceId = Integer.valueOf(properties.getProperty(Constants.VOLUME_RESOURCE_ID));
-                sendMessage(resourceId, latenciesWrapper);
-            }
-
-            latenciesWrapper.clear();
-            latenciesWrapper.add(latencies[2]);
-
-            if(!latencies[2].isEmpty()) {
-                resourceId = Integer.valueOf(properties.getProperty(Constants.NETWORK_RESOURCE_ID));
-                sendMessage(resourceId, latenciesWrapper);
-            }
-
+            Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
+            Observation observation = makeObservation(currentTimestamp);
+            FmaSender.sendObservation(observation);
+            lastTimestampAwake = currentTimestamp;
             sleep(SLEEP_TIME);
         }
     }
 
-    public Observation makeObservation(){
-        List<Pair<Number, Timestamp>>[] latencies = this.providerService.getLatencies(lastTimestampAwake, firstTimeAwake);
+    public Observation makeObservation(Timestamp currentTimestamp){
+        List<Pair<Number, Timestamp>>[] latencies = this.providerService.getLatencies(currentTimestamp, firstTimeAwake);
         List<Pair<String, Float>> values = toValue(latencies);
-        Observation observation = new Observation(PROBE_LABEL, values, lastTimestampAwake);
+        Observation observation = new Observation(PROBE_LABEL, values, currentTimestamp);
         return observation;
     }
 

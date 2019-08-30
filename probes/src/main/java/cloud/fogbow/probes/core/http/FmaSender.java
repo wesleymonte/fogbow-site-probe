@@ -17,7 +17,7 @@ public class FmaSender {
     private static final String TIMESTAMP_JSON_KEY = "timestamp";
     private static final Logger LOGGER = Logger.getLogger(FmaSender.class);
 
-    public void sendObservation(Observation observation) {
+    public static void sendObservation(Observation observation) {
         try {
             StringEntity body = toJson(observation);
             HttpWrapper.doRequest(HttpPost.METHOD_NAME, FMA_OBS_ENDPOINT, new ArrayList<>(), body);
@@ -26,7 +26,7 @@ public class FmaSender {
         }
     }
 
-    public StringEntity toJson(Observation observation) throws UnsupportedEncodingException {
+    private static StringEntity toJson(Observation observation) throws UnsupportedEncodingException {
         JSONObject jsonObject = new JSONObject();
         AppUtil.makeBodyField(jsonObject, METRIC_LABEL_JSON_KEY, observation.getLabel());
         AppUtil.makeBodyField(jsonObject, VALUES_JSON_KEY, observation.getValues());

@@ -2,9 +2,9 @@ package cloud.fogbow.probes.core.probes;
 
 import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.http.FmaConverter;
-import cloud.fogbow.probes.core.models.FogbowDataProbe;
 import cloud.fogbow.probes.core.models.Observation;
 import cloud.fogbow.probes.core.models.OrderState;
+import cloud.fogbow.probes.core.models.Probe;
 import cloud.fogbow.probes.core.models.ResourceType;
 import java.util.ArrayList;
 import javafx.util.Pair;
@@ -15,7 +15,7 @@ import java.sql.Timestamp;
 import java.util.List;
 
 @Component
-public class FogbowServiceSuccessRateProbe extends FogbowDataProbe {
+public class FogbowServiceSuccessRateProbe extends Probe {
 
     private static final String PROBE_LABEL = "service_success_rate";
 
@@ -28,41 +28,26 @@ public class FogbowServiceSuccessRateProbe extends FogbowDataProbe {
     }
 
     public void run() {
-        setup();
-
         while(true) {
             Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
-
-            List<List<Pair<Number, Timestamp>>> computeData = getSuccessRateData(ResourceType.COMPUTE, currentTimestamp);
-            List<List<Pair<Number, Timestamp>>> volumeData = getSuccessRateData(ResourceType.VOLUME, currentTimestamp);
-            List<List<Pair<Number, Timestamp>>> networkData = getSuccessRateData(ResourceType.NETWORK, currentTimestamp);
-
             lastTimestampAwake = currentTimestamp;
-            sendResourceDataMessages(computeData, volumeData, networkData);
-
+            makeObservation(lastTimestampAwake);
             sleep(SLEEP_TIME);
         }
-    }
-
-    private List<List<Pair<Number, Timestamp>>> getSuccessRateData(ResourceType type, Timestamp currentTimestamp) {
-        List<List<Pair<Number, Timestamp>>> results;
-        OrderState[] states = {OrderState.FAILED_ON_REQUEST, OrderState.OPEN};
-        results = super.getData(states, type, currentTimestamp);
-        return results;
     }
 
     private Observation makeObservation(Timestamp currentTimestamp){
         List<Pair<String, Float>> resourcesAvailability = new ArrayList<>();
         ResourceType resourceTypes[] = {ResourceType.COMPUTE, ResourceType.VOLUME, ResourceType.NETWORK};
         for(ResourceType r : resourceTypes){
-            resourcesAvailability.add(getResourceAvailabilityValue(r, currentTimestamp, firstTimeAwake));
+            resourcesAvailability.add(getResourceAvailabilityValue(r));
         }
         Observation observation = FmaConverter
             .createObservation(PROBE_LABEL, resourcesAvailability, currentTimestamp);
         return observation;
     }
 
-    private Pair<String, Float> getResourceAvailabilityValue(ResourceType type, Timestamp lastTimestampAwake, boolean firstTimeAwake){
+    private Pair<String, Float> getResourceAvailabilityValue(ResourceType type){
         Integer valueFailed = providerService.getAuditsFromResourceByState(OrderState.FAILED_ON_REQUEST, type,
             lastTimestampAwake, firstTimeAwake);
         Integer valueOpen = providerService.getAuditsFromResourceByState(OrderState.OPEN, type,

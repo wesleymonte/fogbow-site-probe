@@ -1,6 +1,7 @@
 package cloud.fogbow.probes.core.probes;
 
 import cloud.fogbow.probes.core.Constants;
+import cloud.fogbow.probes.core.http.FmaSender;
 import cloud.fogbow.probes.core.models.Observation;
 import cloud.fogbow.probes.core.models.Probe;
 import java.io.IOException;
@@ -26,11 +27,8 @@ public class FogbowServiceReachabilityProbe extends Probe {
 
     private static final Logger LOGGER = Logger.getLogger(FogbowServiceReachabilityProbe.class);
     private static final String PROBE_LABEL = "service_reachability_probe";
-    private final int N_REQUESTS_PER_CICLE = 1;
     private final int RESPONSE_CODE_LOWER_BOUND = 199;
     private final int RESPONSE_CODE_UPPER_BOUND = 300;
-    protected int SLEEP_TIME;
-    private int successfulRequests = 0;
     private String AS_ENDPOINT;
     private String RAS_ENDPOINT;
     private String FNS_ENDPOINT;
@@ -72,33 +70,19 @@ public class FogbowServiceReachabilityProbe extends Probe {
 
     @Override
     public void run() {
-        setup();
-
         while (true) {
-            lastTimestampAwake = new Timestamp(System.currentTimeMillis());
-
-            for (int i = 0; i < N_REQUESTS_PER_CICLE; i++) {
-                doGetRequest();
-            }
-
-            List<Pair<Number, Timestamp>> data = new ArrayList<>();
-            data.add(new Pair<>(successfulRequests / N_REQUESTS_PER_CICLE, lastTimestampAwake));
-
-            List<List<Pair<Number, Timestamp>>> dataWrapper = new ArrayList<>();
-            dataWrapper.add(data);
-            int resourceId = Integer.valueOf(properties.getProperty(Constants.SITE_RESOURCE_ID));
-            sendMessage(resourceId, dataWrapper);
-
-            this.successfulRequests = 0;
-
+            Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
+            Observation observation = makeObservation(currentTimestamp);
+            FmaSender.sendObservation(observation);
+            lastTimestampAwake = currentTimestamp;
             sleep(SLEEP_TIME);
         }
     }
 
-    private Observation makeObservation() {
+    private Observation makeObservation(Timestamp currentTimestamp) {
         Map<String, Boolean> result = doGetRequest();
         List<Pair<String, Float>> values = toValues(result);
-        Observation observation = new Observation(PROBE_LABEL, values, lastTimestampAwake);
+        Observation observation = new Observation(PROBE_LABEL, values, currentTimestamp);
         return observation;
     }
 
@@ -121,17 +105,13 @@ public class FogbowServiceReachabilityProbe extends Probe {
         try {
             Map<String, Integer> httpCodes = this.getHttpCodes();
             result = this.checkHttpCodes(httpCodes);
-            boolean someFailed = result.values().contains(false);
-            if (!someFailed) {
-                successfulRequests++;
-            }
         } catch (Exception e) {
             LOGGER.error("Error while checking reachability of services", e);
         }
         return result;
     }
 
-    public Map<String, Integer> getHttpCodes() throws IOException {
+    private Map<String, Integer> getHttpCodes() throws IOException {
         Map<String, Integer> httpCodes = new HashMap<>();
         for (Service service : services.values()) {
             Integer response = getResponseCode(service.ENDPOINT);
@@ -147,7 +127,7 @@ public class FogbowServiceReachabilityProbe extends Probe {
         return connection.getResponseCode();
     }
 
-    public Map<String, Boolean> checkHttpCodes(Map<String, Integer> httpCodes) {
+    private Map<String, Boolean> checkHttpCodes(Map<String, Integer> httpCodes) {
         Map<String, Boolean> result = new HashMap<>();
         for (Entry<String, Integer> code : httpCodes.entrySet()) {
             Service service = services.get(code.getKey());
