@@ -95,7 +95,7 @@ public class FogbowServiceReachabilityProbe extends Probe {
         }
     }
 
-    private Observation getObservation() {
+    private Observation makeObservation() {
         Map<String, Boolean> result = doGetRequest();
         List<Pair<String, Float>> values = toValues(result);
         Observation observation = new Observation(PROBE_LABEL, values, lastTimestampAwake);

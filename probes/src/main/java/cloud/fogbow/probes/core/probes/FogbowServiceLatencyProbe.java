@@ -63,7 +63,7 @@ public class FogbowServiceLatencyProbe extends Probe {
         }
     }
 
-    public Observation getObservation(){
+    public Observation makeObservation(){
         List<Pair<Number, Timestamp>>[] latencies = this.providerService.getLatencies(lastTimestampAwake, firstTimeAwake);
         List<Pair<String, Float>> values = toValue(latencies);
         Observation observation = new Observation(PROBE_LABEL, values, lastTimestampAwake);

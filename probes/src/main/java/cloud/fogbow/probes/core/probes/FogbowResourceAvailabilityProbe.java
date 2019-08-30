@@ -49,7 +49,7 @@ public class FogbowResourceAvailabilityProbe extends FogbowDataProbe {
         return results;
     }
 
-    private Observation getObservation(Timestamp currentTimestamp){
+    private Observation makeObservation(Timestamp currentTimestamp){
         List<Pair<String, Float>> resourcesAvailability = new ArrayList<>();
         ResourceType resourceTypes[] = {ResourceType.COMPUTE, ResourceType.VOLUME, ResourceType.NETWORK};
         for(ResourceType r : resourceTypes){
