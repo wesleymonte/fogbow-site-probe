@@ -23,13 +23,14 @@ public class FogbowServiceLatencyProbe extends Probe {
         this.probeId = Integer.valueOf(properties.getProperty(Constants.SERVICE_LATENCY_PROBE_ID));
         this.firstTimeAwake = true;
         this.SLEEP_TIME = Integer.valueOf(properties.getProperty(Constants.SLEEP_TIME));
+        this.FMA_ADDRESS = properties.getProperty(Constants.FMA_ADDRESS).trim();
     }
 
     public void run() {
         while(true) {
             Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
             Observation observation = makeObservation(currentTimestamp);
-            FmaSender.sendObservation(observation);
+            FmaSender.sendObservation(FMA_ADDRESS, observation);
             lastTimestampAwake = currentTimestamp;
             sleep(SLEEP_TIME);
         }

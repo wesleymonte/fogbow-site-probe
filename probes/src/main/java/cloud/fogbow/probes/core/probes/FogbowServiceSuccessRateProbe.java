@@ -2,6 +2,7 @@ package cloud.fogbow.probes.core.probes;
 
 import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.http.FmaConverter;
+import cloud.fogbow.probes.core.http.FmaSender;
 import cloud.fogbow.probes.core.models.Observation;
 import cloud.fogbow.probes.core.models.OrderState;
 import cloud.fogbow.probes.core.models.Probe;
@@ -25,13 +26,15 @@ public class FogbowServiceSuccessRateProbe extends Probe {
         this.probeId = Integer.valueOf(properties.getProperty(Constants.SERVICE_SUCCESS_RATE_PROBE_ID));
         this.firstTimeAwake = true;
         this.SLEEP_TIME = Integer.valueOf(properties.getProperty(Constants.SLEEP_TIME));
+        this.FMA_ADDRESS = properties.getProperty(Constants.FMA_ADDRESS).trim();
     }
 
     public void run() {
         while(true) {
             Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
             lastTimestampAwake = currentTimestamp;
-            makeObservation(lastTimestampAwake);
+            Observation observation = makeObservation(lastTimestampAwake);
+            FmaSender.sendObservation(FMA_ADDRESS, observation);
             sleep(SLEEP_TIME);
         }
     }

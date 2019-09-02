@@ -46,6 +46,7 @@ public class FogbowServiceReachabilityProbe extends Probe {
         this.FNS_ENDPOINT = properties.getProperty(Constants.FNS_ENDPOINT);
         this.MS_ENDPOINT = properties.getProperty(Constants.MS_ENDPOINT);
         this.services = Collections.unmodifiableMap(buildServices());
+        this.FMA_ADDRESS = properties.getProperty(Constants.FMA_ADDRESS).trim();
     }
 
     private Map<String, Service> buildServices() {
@@ -73,7 +74,7 @@ public class FogbowServiceReachabilityProbe extends Probe {
         while (true) {
             Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
             Observation observation = makeObservation(currentTimestamp);
-            FmaSender.sendObservation(observation);
+            FmaSender.sendObservation(FMA_ADDRESS, observation);
             lastTimestampAwake = currentTimestamp;
             sleep(SLEEP_TIME);
         }

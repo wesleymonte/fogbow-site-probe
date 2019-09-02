@@ -20,12 +20,8 @@ public class FmaSender {
     private static final String TIMESTAMP_JSON_KEY = "timestamp";
     private static final Logger LOGGER = Logger.getLogger(FmaSender.class);
 
-    @Autowired
-    private static Properties properties;
-
-    public static void sendObservation(Observation observation) {
+    public static void sendObservation(String address, Observation observation) {
         try {
-            String address = properties.getProperty(Constants.FMA_ADDRESS).trim();
             StringEntity body = toJson(observation);
             HttpWrapper.doRequest(HttpPost.METHOD_NAME, address, new ArrayList<>(), body);
         } catch (Exception e) {
