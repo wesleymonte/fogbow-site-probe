@@ -1,6 +1,8 @@
 package cloud.fogbow.probes.core.utils;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import javafx.util.Pair;
@@ -45,5 +47,12 @@ public class AppUtil {
         if (timestamp != null) {
             json.put(key, timestamp);
         }
+    }
+
+    public static String timestampToDate(long timestamp) {
+        Date date = new java.util.Date(timestamp * 1000L);
+        SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        sdf.setTimeZone(java.util.TimeZone.getTimeZone("GMT-3"));
+        return sdf.format(date);
     }
 }

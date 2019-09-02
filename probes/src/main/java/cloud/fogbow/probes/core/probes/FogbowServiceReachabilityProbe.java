@@ -4,6 +4,7 @@ import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.fta.FtaSender;
 import cloud.fogbow.probes.core.models.Observation;
 import cloud.fogbow.probes.core.models.Probe;
+import cloud.fogbow.probes.core.utils.AppUtil;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -137,7 +138,7 @@ public class FogbowServiceReachabilityProbe extends Probe {
         Map<String, Boolean> result = new HashMap<>();
         for (Entry<String, Integer> code : httpCodes.entrySet()) {
             Service service = services.get(code.getKey());
-            String date = timestampToDate(Instant.now().getEpochSecond());
+            String date = AppUtil.timestampToDate(Instant.now().getEpochSecond());
             if (hasFailed(code.getValue())) {
                 LOGGER.error("[" + date + "] : " + service.LABEL + " is down");
                 result.put(service.ID, false);
@@ -151,13 +152,6 @@ public class FogbowServiceReachabilityProbe extends Probe {
 
     private boolean hasFailed(int responseCode) {
         return responseCode > RESPONSE_CODE_UPPER_BOUND || responseCode < RESPONSE_CODE_LOWER_BOUND;
-    }
-
-    private String timestampToDate(long timestamp) {
-        Date date = new java.util.Date(timestamp * 1000L);
-        SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        sdf.setTimeZone(java.util.TimeZone.getTimeZone("GMT-3"));
-        return sdf.format(date);
     }
 
     private class Service {
