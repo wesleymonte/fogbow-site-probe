@@ -4,6 +4,7 @@ import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.fta.FtaSender;
 import cloud.fogbow.probes.core.models.Observation;
 import cloud.fogbow.probes.core.models.Probe;
+import java.util.Arrays;
 import javafx.util.Pair;
 import javax.annotation.PostConstruct;
 import org.apache.logging.log4j.LogManager;
@@ -40,25 +41,19 @@ public class FogbowServiceLatencyProbe extends Probe {
     }
 
     protected Observation makeObservation(Timestamp currentTimestamp){
-        List<Pair<Number, Timestamp>>[] latencies = this.providerService.getLatencies(currentTimestamp, firstTimeAwake);
+        Long[] latencies = this.providerService.getLatencies(currentTimestamp, firstTimeAwake);
         List<Pair<String, Float>> values = toValue(latencies);
         Observation observation = new Observation(PROBE_LABEL, values, currentTimestamp);
         LOGGER.info("Made a observation with label [" + observation.getLabel() + "] at [" + currentTimestamp.toString() + "]");
         return observation;
     }
 
-    private List<Pair<String, Float>> toValue(List<Pair<Number, Timestamp>>[] latencies){
-        List<Pair<String, Float>> list = new ArrayList<>();
-        String key;
-        for(int i = 0; i < 3; i++){
-            if(i == 0) key = COMPUTE_JSON_KEY;
-            else if(i == 1) key = VOLUME_JSON_KEY;
-            else key = NETWORK_JSON_KEY;
-            Float value = latencies[i].get(0).getKey().floatValue();
-            LOGGER.info("Got latency of [" + key + "] with value [" + value + "]");
-            Pair<String, Float> p = new Pair<>(key, value);
-            list.add(p);
-        }
+    private List<Pair<String, Float>> toValue(Long[] latencies){
+        Pair<String, Float> computeLatency = new Pair<>(COMPUTE_JSON_KEY, (float) latencies[0]);
+        Pair<String, Float> networkLatency = new Pair<>(NETWORK_JSON_KEY, (float) latencies[1]);
+        Pair<String, Float> volumeLatency = new Pair<>(VOLUME_JSON_KEY, (float) latencies[2]);
+        List<Pair<String, Float>> list = new ArrayList<>(
+            Arrays.asList(computeLatency, networkLatency, volumeLatency));
         return list;
     }
 }
