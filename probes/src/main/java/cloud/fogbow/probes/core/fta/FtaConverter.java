@@ -1,4 +1,4 @@
-package cloud.fogbow.probes.core.http;
+package cloud.fogbow.probes.core.fta;
 
 import cloud.fogbow.probes.core.models.Observation;
 import cloud.fogbow.probes.core.models.OrderState;
@@ -10,7 +10,7 @@ import java.util.Objects;
 import javafx.util.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class FmaConverter {
+public class FtaConverter {
 
     public static Observation createObservation(String label, List<Pair<String, Float>> values, Timestamp timestamp){
         if(Objects.isNull(label) || Objects.isNull(values) || Objects.isNull(timestamp)){

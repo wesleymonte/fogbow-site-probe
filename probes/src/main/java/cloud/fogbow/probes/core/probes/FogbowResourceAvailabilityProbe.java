@@ -1,8 +1,8 @@
 package cloud.fogbow.probes.core.probes;
 
 import cloud.fogbow.probes.core.Constants;
-import cloud.fogbow.probes.core.http.FmaConverter;
-import cloud.fogbow.probes.core.http.FmaSender;
+import cloud.fogbow.probes.core.fta.FtaConverter;
+import cloud.fogbow.probes.core.fta.FtaSender;
 import cloud.fogbow.probes.core.models.Observation;
 import cloud.fogbow.probes.core.models.OrderState;
 import cloud.fogbow.probes.core.models.Probe;
@@ -33,7 +33,7 @@ public class FogbowResourceAvailabilityProbe extends Probe {
         while(true) {
             Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
             Observation observation = makeObservation(currentTimestamp);
-            FmaSender.sendObservation(FMA_ADDRESS, observation);
+            FtaSender.sendObservation(FMA_ADDRESS, observation);
             lastTimestampAwake = currentTimestamp;
         }
     }
@@ -44,7 +44,8 @@ public class FogbowResourceAvailabilityProbe extends Probe {
         for(ResourceType r : resourceTypes){
             resourcesAvailability.add(getResourceAvailabilityValue(r));
         }
-        Observation observation = FmaConverter.createObservation(PROBE_LABEL, resourcesAvailability, currentTimestamp);
+        Observation observation = FtaConverter
+            .createObservation(PROBE_LABEL, resourcesAvailability, currentTimestamp);
         return observation;
     }
 

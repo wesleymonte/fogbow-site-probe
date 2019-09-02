@@ -1,24 +1,21 @@
-package cloud.fogbow.probes.core.http;
+package cloud.fogbow.probes.core.fta;
 
-import cloud.fogbow.probes.core.Constants;
+import cloud.fogbow.probes.core.fta.http.HttpWrapper;
 import cloud.fogbow.probes.core.models.Observation;
 import cloud.fogbow.probes.core.utils.AppUtil;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.Properties;
-import javax.annotation.PostConstruct;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 
-public class FmaSender {
+public class FtaSender {
 
     private static final String METRIC_LABEL_JSON_KEY = "metric_label";
     private static final String VALUES_JSON_KEY = "values";
     private static final String TIMESTAMP_JSON_KEY = "timestamp";
-    private static final Logger LOGGER = Logger.getLogger(FmaSender.class);
+    private static final Logger LOGGER = Logger.getLogger(FtaSender.class);
 
     public static void sendObservation(String address, Observation observation) {
         try {

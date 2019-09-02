@@ -1,7 +1,7 @@
 package cloud.fogbow.probes.core.probes;
 
 import cloud.fogbow.probes.core.Constants;
-import cloud.fogbow.probes.core.http.FmaSender;
+import cloud.fogbow.probes.core.fta.FtaSender;
 import cloud.fogbow.probes.core.models.Observation;
 import cloud.fogbow.probes.core.models.Probe;
 import java.io.IOException;
@@ -74,7 +74,7 @@ public class FogbowServiceReachabilityProbe extends Probe {
         while (true) {
             Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
             Observation observation = makeObservation(currentTimestamp);
-            FmaSender.sendObservation(FMA_ADDRESS, observation);
+            FtaSender.sendObservation(FMA_ADDRESS, observation);
             lastTimestampAwake = currentTimestamp;
             sleep(SLEEP_TIME);
         }
