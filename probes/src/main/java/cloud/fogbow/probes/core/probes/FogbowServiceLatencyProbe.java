@@ -19,6 +19,9 @@ public class FogbowServiceLatencyProbe extends Probe {
 
     private static final String PROBE_LABEL = "service_latency_probe";
     private static final Logger LOGGER = LogManager.getLogger(FogbowServiceLatencyProbe.class);
+    private static final String COMPUTE_JSON_KEY = "COMPUTE";
+    private static final String NETWORK_JSON_KEY = "NETWORK";
+    private static final String VOLUME_JSON_KEY = "VOLUME";
 
     @PostConstruct
     public void FogbowServiceLatencyProbe() {
@@ -53,9 +56,9 @@ public class FogbowServiceLatencyProbe extends Probe {
         List<Pair<String, Float>> list = new ArrayList<>();
         String key;
         for(int i = 0; i < 3; i++){
-            if(i == 0) key = "COMPUTE";
-            else if(i == 1) key = "VOLUME";
-            else key = "NETWORK";
+            if(i == 0) key = COMPUTE_JSON_KEY;
+            else if(i == 1) key = VOLUME_JSON_KEY;
+            else key = NETWORK_JSON_KEY;
             Float value = latencies[i].get(0).getKey().floatValue();
             LOGGER.info("Got latency of [" + key + "] with value [" + value + "]");
             Pair<String, Float> p = new Pair<>(key, value);
