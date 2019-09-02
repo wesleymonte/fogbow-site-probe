@@ -35,9 +35,11 @@ public class FogbowServiceSuccessRateProbe extends Probe {
 
     public void run() {
         while(true) {
+            LOGGER.info("----> Starting Fogbow Service Success Rate Probe");
             Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
             lastTimestampAwake = currentTimestamp;
             Observation observation = makeObservation(lastTimestampAwake);
+            LOGGER.info("Probe[" + this.probeId + "] made a observation at [" + observation.getTimestamp().toString() + "]");
             FtaSender.sendObservation(FTA_ADDRESS, observation);
             sleep(SLEEP_TIME);
         }
@@ -51,15 +53,18 @@ public class FogbowServiceSuccessRateProbe extends Probe {
         }
         Observation observation = FtaConverter
             .createObservation(PROBE_LABEL, resourcesAvailability, currentTimestamp);
+        LOGGER.info("Made a observation with label [" + observation.getLabel() + "] at [" + currentTimestamp.toString() + "]");
         return observation;
     }
 
     private Pair<String, Float> getResourceAvailabilityValue(ResourceType type){
+        LOGGER.debug("Getting audits from resource of type [" + type.getValue() + "]");
         Integer valueFailed = providerService.getAuditsFromResourceByState(OrderState.FAILED_ON_REQUEST, type,
             lastTimestampAwake, firstTimeAwake);
         Integer valueOpen = providerService.getAuditsFromResourceByState(OrderState.OPEN, type,
             lastTimestampAwake, firstTimeAwake);
         Float availabilityData = (float) (valueOpen / (valueFailed + valueOpen));
+        LOGGER.debug("Value of availability data [" + availabilityData + "]");
         Pair<String, Float> pair = new Pair<>(type.getValue(), availabilityData);
         return pair;
     }

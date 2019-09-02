@@ -31,8 +31,10 @@ public class FogbowServiceLatencyProbe extends Probe {
 
     public void run() {
         while(true) {
+            LOGGER.info("----> Starting Fogbow Service Latency Probe...");
             Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
             Observation observation = makeObservation(currentTimestamp);
+            LOGGER.info("Probe[" + this.probeId + "] made a observation at [" + observation.getTimestamp().toString() + "]");
             FtaSender.sendObservation(FTA_ADDRESS, observation);
             lastTimestampAwake = currentTimestamp;
             sleep(SLEEP_TIME);
@@ -43,6 +45,7 @@ public class FogbowServiceLatencyProbe extends Probe {
         List<Pair<Number, Timestamp>>[] latencies = this.providerService.getLatencies(currentTimestamp, firstTimeAwake);
         List<Pair<String, Float>> values = toValue(latencies);
         Observation observation = new Observation(PROBE_LABEL, values, currentTimestamp);
+        LOGGER.info("Made a observation with label [" + observation.getLabel() + "] at [" + currentTimestamp.toString() + "]");
         return observation;
     }
 
@@ -54,6 +57,7 @@ public class FogbowServiceLatencyProbe extends Probe {
             else if(i == 1) key = "VOLUME";
             else key = "NETWORK";
             Float value = latencies[i].get(0).getKey().floatValue();
+            LOGGER.info("Got latency of [" + key + "] with value [" + value + "]");
             Pair<String, Float> p = new Pair<>(key, value);
             list.add(p);
         }

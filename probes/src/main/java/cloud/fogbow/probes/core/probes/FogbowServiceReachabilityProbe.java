@@ -73,9 +73,10 @@ public class FogbowServiceReachabilityProbe extends Probe {
     @Override
     public void run() {
         while (true) {
-            LOGGER.info("Starting Fogbow Service Reachability Probe");
+            LOGGER.info("----> Starting Fogbow Service Reachability Probe...");
             Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
             Observation observation = makeObservation(currentTimestamp);
+            LOGGER.info("Probe[" + this.probeId + "] made a observation at [" + observation.getTimestamp().toString() + "]");
             FtaSender.sendObservation(FTA_ADDRESS, observation);
             lastTimestampAwake = currentTimestamp;
             sleep(SLEEP_TIME);
@@ -86,6 +87,7 @@ public class FogbowServiceReachabilityProbe extends Probe {
         Map<String, Boolean> result = doGetRequest();
         List<Pair<String, Float>> values = toValues(result);
         Observation observation = new Observation(PROBE_LABEL, values, currentTimestamp);
+        LOGGER.info("Made a observation with label [" + observation.getLabel() + "] at [" + currentTimestamp.toString() + "]");
         return observation;
     }
 
@@ -119,6 +121,7 @@ public class FogbowServiceReachabilityProbe extends Probe {
         for (Service service : services.values()) {
             Integer response = getResponseCode(service.ENDPOINT);
             httpCodes.put(service.ID, response);
+            LOGGER.debug("Http code [" + response + "] of service [" + service.LABEL + "]");
         }
         return httpCodes;
     }
@@ -134,11 +137,12 @@ public class FogbowServiceReachabilityProbe extends Probe {
         Map<String, Boolean> result = new HashMap<>();
         for (Entry<String, Integer> code : httpCodes.entrySet()) {
             Service service = services.get(code.getKey());
+            String date = timestampToDate(Instant.now().getEpochSecond());
             if (hasFailed(code.getValue())) {
-                String date = timestampToDate(Instant.now().getEpochSecond());
                 LOGGER.error("[" + date + "] : " + service.LABEL + " is down");
                 result.put(service.ID, false);
             } else {
+                LOGGER.error("[" + date + "] : " + service.LABEL + " is up");
                 result.put(service.ID, true);
             }
         }

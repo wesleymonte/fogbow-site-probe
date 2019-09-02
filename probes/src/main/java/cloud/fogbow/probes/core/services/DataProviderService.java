@@ -5,6 +5,8 @@ import cloud.fogbow.probes.core.models.OrderState;
 import cloud.fogbow.probes.core.models.ResourceType;
 import cloud.fogbow.probes.datastore.DatabaseManager;
 import javafx.util.Pair;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,8 @@ public class DataProviderService {
 
     @Autowired
     private DatabaseManager dbManager;
+
+    private static final Logger LOGGER = LogManager.getLogger(DataProviderService.class);
 
     public DataProviderService() {
 
@@ -125,6 +129,7 @@ public class DataProviderService {
             default:
                 throw new IllegalStateException("Unexpected value: " + orderState);
         }
+        LOGGER.info("Got audits of resource type [" + type.getValue() + "] from state [" + orderState.name() + "] with result value [" + value + "]");
         return value;
     }
 
