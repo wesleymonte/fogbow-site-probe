@@ -6,6 +6,8 @@ import cloud.fogbow.probes.core.models.Observation;
 import cloud.fogbow.probes.core.models.Probe;
 import javafx.util.Pair;
 import javax.annotation.PostConstruct;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
@@ -16,6 +18,7 @@ import java.util.List;
 public class FogbowServiceLatencyProbe extends Probe {
 
     private static final String PROBE_LABEL = "service_latency_probe";
+    private static final Logger LOGGER = LogManager.getLogger(FogbowServiceLatencyProbe.class);
 
     @PostConstruct
     public void FogbowServiceLatencyProbe() {

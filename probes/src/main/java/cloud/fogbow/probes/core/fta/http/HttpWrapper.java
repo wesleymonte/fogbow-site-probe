@@ -12,11 +12,12 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class HttpWrapper {
 
-    private static final Logger logger = Logger.getLogger(HttpWrapper.class);
+    private static final Logger LOGGER = LogManager.getLogger(HttpWrapper.class);
 
     private static final String APPLICATION_JSON = "application/json";
     private static final String CONTENT_TYPE = "Content-Type";
@@ -60,7 +61,7 @@ public class HttpWrapper {
                 && statusCode <= HttpStatus.SC_HTTP_VERSION_NOT_SUPPORTED) {
                 final String errMsg =
                     "Request to " + request.getURI() + " failed with status code " + statusCode;
-                logger.error(errMsg);
+                LOGGER.error(errMsg);
                 throw new Exception(errMsg);
             } else {
                 return response.getStatusLine().toString();

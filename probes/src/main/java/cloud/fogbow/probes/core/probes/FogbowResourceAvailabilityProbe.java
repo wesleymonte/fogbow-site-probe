@@ -10,6 +10,8 @@ import cloud.fogbow.probes.core.models.ResourceType;
 import java.util.ArrayList;
 import javafx.util.Pair;
 import javax.annotation.PostConstruct;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
@@ -19,6 +21,7 @@ import java.util.List;
 public class FogbowResourceAvailabilityProbe extends Probe {
 
     private static final String PROBE_LABEL = "resource_availability_probe";
+    private static final Logger LOGGER = LogManager.getLogger(FogbowResourceAvailabilityProbe.class);
 
     @PostConstruct
     public void FogbowResourceAvailabilityProbe(){

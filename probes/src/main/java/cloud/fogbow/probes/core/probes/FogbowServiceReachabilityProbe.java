@@ -19,13 +19,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import javafx.util.Pair;
 import javax.annotation.PostConstruct;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 @Component
 public class FogbowServiceReachabilityProbe extends Probe {
 
-    private static final Logger LOGGER = Logger.getLogger(FogbowServiceReachabilityProbe.class);
+    private static final Logger LOGGER = LogManager.getLogger(FogbowServiceReachabilityProbe.class);
     private static final String PROBE_LABEL = "service_reachability_probe";
     private final int RESPONSE_CODE_LOWER_BOUND = 199;
     private final int RESPONSE_CODE_UPPER_BOUND = 300;
@@ -72,6 +73,7 @@ public class FogbowServiceReachabilityProbe extends Probe {
     @Override
     public void run() {
         while (true) {
+            LOGGER.info("Starting Fogbow Service Reachability Probe");
             Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
             Observation observation = makeObservation(currentTimestamp);
             FtaSender.sendObservation(FMA_ADDRESS, observation);

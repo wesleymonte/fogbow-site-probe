@@ -10,6 +10,8 @@ import cloud.fogbow.probes.core.models.ResourceType;
 import java.util.ArrayList;
 import javafx.util.Pair;
 import javax.annotation.PostConstruct;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
@@ -19,6 +21,8 @@ import java.util.List;
 public class FogbowServiceSuccessRateProbe extends Probe {
 
     private static final String PROBE_LABEL = "service_success_rate";
+    private static final Logger LOGGER = LogManager.getLogger(FogbowServiceSuccessRateProbe.class);
+
 
     @PostConstruct
     public void FogbowServiceSuccessRateProbe() {
