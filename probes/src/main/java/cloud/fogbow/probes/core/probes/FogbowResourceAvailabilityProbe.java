@@ -35,15 +35,11 @@ public class FogbowResourceAvailabilityProbe extends Probe {
     public void run() {
         while(true) {
             LOGGER.info("----> Starting Fogbow Resource Availability Probe...");
-            Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
-            Observation observation = makeObservation(currentTimestamp);
-            LOGGER.info("Probe[" + this.probeId + "] made a observation at [" + observation.getTimestamp().toString() + "]");
-            FtaSender.sendObservation(FTA_ADDRESS, observation);
-            lastTimestampAwake = currentTimestamp;
+            super.run();
         }
     }
 
-    private Observation makeObservation(Timestamp currentTimestamp){
+    protected Observation makeObservation(Timestamp currentTimestamp){
         List<Pair<String, Float>> resourcesAvailability = new ArrayList<>();
         ResourceType resourceTypes[] = {ResourceType.COMPUTE, ResourceType.VOLUME, ResourceType.NETWORK};
         for(ResourceType r : resourceTypes){

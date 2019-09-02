@@ -75,16 +75,11 @@ public class FogbowServiceReachabilityProbe extends Probe {
     public void run() {
         while (true) {
             LOGGER.info("----> Starting Fogbow Service Reachability Probe...");
-            Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
-            Observation observation = makeObservation(currentTimestamp);
-            LOGGER.info("Probe[" + this.probeId + "] made a observation at [" + observation.getTimestamp().toString() + "]");
-            FtaSender.sendObservation(FTA_ADDRESS, observation);
-            lastTimestampAwake = currentTimestamp;
-            sleep(SLEEP_TIME);
+            super.run();
         }
     }
 
-    private Observation makeObservation(Timestamp currentTimestamp) {
+    protected Observation makeObservation(Timestamp currentTimestamp) {
         Map<String, Boolean> result = doGetRequest();
         List<Pair<String, Float>> values = toValues(result);
         Observation observation = new Observation(PROBE_LABEL, values, currentTimestamp);
