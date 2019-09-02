@@ -30,7 +30,7 @@ public class FogbowServiceSuccessRateProbe extends Probe {
         this.probeId = Integer.valueOf(properties.getProperty(Constants.SERVICE_SUCCESS_RATE_PROBE_ID));
         this.firstTimeAwake = true;
         this.SLEEP_TIME = Integer.valueOf(properties.getProperty(Constants.SLEEP_TIME));
-        this.FMA_ADDRESS = properties.getProperty(Constants.FMA_ADDRESS).trim();
+        this.FTA_ADDRESS = properties.getProperty(Constants.FMA_ADDRESS).trim();
     }
 
     public void run() {
@@ -38,7 +38,7 @@ public class FogbowServiceSuccessRateProbe extends Probe {
             Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
             lastTimestampAwake = currentTimestamp;
             Observation observation = makeObservation(lastTimestampAwake);
-            FtaSender.sendObservation(FMA_ADDRESS, observation);
+            FtaSender.sendObservation(FTA_ADDRESS, observation);
             sleep(SLEEP_TIME);
         }
     }

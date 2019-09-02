@@ -18,7 +18,7 @@ public abstract class Probe implements Runnable {
     protected DataProviderService providerService;
 
     protected Integer SLEEP_TIME;
-    protected String FMA_ADDRESS;
+    protected String FTA_ADDRESS;
 
     protected void sleep(int sleepTime) {
         try {
