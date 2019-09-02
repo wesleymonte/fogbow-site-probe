@@ -23,15 +23,6 @@ public class FogbowResourceAvailabilityProbe extends Probe {
     private static final String PROBE_LABEL = "resource_availability_probe";
     private static final Logger LOGGER = LogManager.getLogger(FogbowResourceAvailabilityProbe.class);
 
-    @PostConstruct
-    public void FogbowResourceAvailabilityProbe(){
-        this.lastTimestampAwake = new Timestamp(System.currentTimeMillis());
-        this.probeId = Integer.valueOf(properties.getProperty(Constants.RESOURCE_AVAILABILITY_PROBE_ID));
-        this.firstTimeAwake = true;
-        this.SLEEP_TIME = Integer.valueOf(properties.getProperty(Constants.SLEEP_TIME));
-        this.FTA_ADDRESS = properties.getProperty(Constants.FMA_ADDRESS).trim();
-    }
-
     public void run() {
         while(true) {
             LOGGER.info("----> Starting Fogbow Resource Availability Probe...");

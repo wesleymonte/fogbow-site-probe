@@ -2,7 +2,6 @@ package cloud.fogbow.probes.core.probes;
 
 import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.fta.FtaConverter;
-import cloud.fogbow.probes.core.fta.FtaSender;
 import cloud.fogbow.probes.core.models.Observation;
 import cloud.fogbow.probes.core.models.OrderState;
 import cloud.fogbow.probes.core.models.Probe;
@@ -22,16 +21,6 @@ public class FogbowServiceSuccessRateProbe extends Probe {
 
     private static final String PROBE_LABEL = "service_success_rate";
     private static final Logger LOGGER = LogManager.getLogger(FogbowServiceSuccessRateProbe.class);
-
-
-    @PostConstruct
-    public void FogbowServiceSuccessRateProbe() {
-        this.lastTimestampAwake = new Timestamp(System.currentTimeMillis());
-        this.probeId = Integer.valueOf(properties.getProperty(Constants.SERVICE_SUCCESS_RATE_PROBE_ID));
-        this.firstTimeAwake = true;
-        this.SLEEP_TIME = Integer.valueOf(properties.getProperty(Constants.SLEEP_TIME));
-        this.FTA_ADDRESS = properties.getProperty(Constants.FMA_ADDRESS).trim();
-    }
 
     public void run() {
         while(true) {

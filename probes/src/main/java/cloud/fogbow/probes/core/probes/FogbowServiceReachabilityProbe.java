@@ -1,7 +1,6 @@
 package cloud.fogbow.probes.core.probes;
 
 import cloud.fogbow.probes.core.Constants;
-import cloud.fogbow.probes.core.fta.FtaSender;
 import cloud.fogbow.probes.core.models.Observation;
 import cloud.fogbow.probes.core.models.Probe;
 import cloud.fogbow.probes.core.utils.AppUtil;
@@ -9,11 +8,9 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,16 +36,11 @@ public class FogbowServiceReachabilityProbe extends Probe {
 
     @PostConstruct
     public void FogbowServiceReachabilityProbe() {
-        this.lastTimestampAwake = new Timestamp(System.currentTimeMillis());
-        this.probeId = Integer
-            .valueOf(properties.getProperty(Constants.SERVICE_REACHABILITY_PROBE_ID));
-        this.SLEEP_TIME = Integer.valueOf(properties.getProperty(Constants.SLEEP_TIME));
         this.AS_ENDPOINT = properties.getProperty(Constants.AS_ENDPOINT);
         this.RAS_ENDPOINT = properties.getProperty(Constants.RAS_ENDPOINT);
         this.FNS_ENDPOINT = properties.getProperty(Constants.FNS_ENDPOINT);
         this.MS_ENDPOINT = properties.getProperty(Constants.MS_ENDPOINT);
         this.services = Collections.unmodifiableMap(buildServices());
-        this.FTA_ADDRESS = properties.getProperty(Constants.FMA_ADDRESS).trim();
     }
 
     private Map<String, Service> buildServices() {
