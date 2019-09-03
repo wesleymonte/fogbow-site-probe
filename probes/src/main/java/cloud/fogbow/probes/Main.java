@@ -39,8 +39,8 @@ public class Main {
         Thread thirdProbe = new Thread(serviceAvailabilityProbe);
         thirdProbe.start();
 
-        Thread asReachabilityProbe = new Thread(serviceReachabilityProbe);
-        asReachabilityProbe.start();
+        Thread fourthProbe = new Thread(serviceReachabilityProbe);
+        fourthProbe.start();
     }
 
 
