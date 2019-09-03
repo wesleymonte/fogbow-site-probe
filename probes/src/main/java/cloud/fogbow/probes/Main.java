@@ -30,16 +30,16 @@ public class Main {
     @PostConstruct
     public void startProbes() {
 
-        Thread firstProbe = new Thread(resourceAvailabilityProbe);
+        Thread firstProbe = new Thread(resourceAvailabilityProbe, "Thread-Resource-Availability-Probe");
         firstProbe.start();
 
-        Thread secondProbe = new Thread(serviceLatencyProbe);
+        Thread secondProbe = new Thread(serviceLatencyProbe, "Thread-Service-Latency-Probe");
         secondProbe.start();
 
-        Thread thirdProbe = new Thread(serviceAvailabilityProbe);
+        Thread thirdProbe = new Thread(serviceAvailabilityProbe, "Thread-Service-Availability-Probe");
         thirdProbe.start();
 
-        Thread fourthProbe = new Thread(serviceReachabilityProbe);
+        Thread fourthProbe = new Thread(serviceReachabilityProbe, "Thread-Service-Reachability-Probe");
         fourthProbe.start();
     }
 
