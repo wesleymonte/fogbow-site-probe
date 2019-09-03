@@ -1,6 +1,5 @@
 package cloud.fogbow.probes.core.probes;
 
-import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.fta.FtaConverter;
 import cloud.fogbow.probes.core.models.Observation;
 import cloud.fogbow.probes.core.models.OrderState;
@@ -8,7 +7,6 @@ import cloud.fogbow.probes.core.models.Probe;
 import cloud.fogbow.probes.core.models.ResourceType;
 import java.util.ArrayList;
 import javafx.util.Pair;
-import javax.annotation.PostConstruct;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
