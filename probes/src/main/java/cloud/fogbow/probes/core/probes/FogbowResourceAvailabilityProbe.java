@@ -57,7 +57,7 @@ public class FogbowResourceAvailabilityProbe extends Probe {
     private Float calculateAvailabilityData(Integer valueFailedAfterSuccessful, Integer valueFulfilled){
         float result = 100;
         if(valueFulfilled != 0){
-            result = 100 * (1 - valueFailedAfterSuccessful / valueFulfilled);
+            result = 100 * (1 - (float) valueFailedAfterSuccessful / (float) valueFulfilled);
         }
         return result;
     }

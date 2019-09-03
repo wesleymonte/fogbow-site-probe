@@ -56,7 +56,7 @@ public class FogbowServiceSuccessRateProbe extends Probe {
     private Float calculateAvailabilityData(Integer valueFailed, Integer valueOpen){
         float result = 100;
         if(valueOpen != 0){
-           result = 100 * (1 - valueFailed / valueOpen);
+           result = 100 * (1 - (float) valueFailed / (float) valueOpen);
         }
         return result;
     }
