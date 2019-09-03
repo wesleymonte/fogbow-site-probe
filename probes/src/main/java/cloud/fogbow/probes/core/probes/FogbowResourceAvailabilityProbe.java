@@ -48,11 +48,18 @@ public class FogbowResourceAvailabilityProbe extends Probe {
             lastTimestampAwake, firstTimeAwake);
         Integer valueFulfilled = providerService.getAuditsFromResourceByState(OrderState.FULFILLED, type,
             lastTimestampAwake, firstTimeAwake);
-        Float availabilityData = (float) (valueFulfilled / (valueFailedAfterSuccessful + valueFulfilled));
+        Float availabilityData = calculateAvailabilityData(valueFailedAfterSuccessful, valueFulfilled);
         LOGGER.debug("Value of availability data [" + availabilityData + "]");
         Pair<String, Float> pair = new Pair<>(type.getValue(), availabilityData);
         return pair;
+    }
 
+    private Float calculateAvailabilityData(Integer valueFailedAfterSuccessful, Integer valueFulfilled){
+        float result = 100;
+        if(valueFulfilled != 0){
+            result = 100 * (1 - valueFailedAfterSuccessful / valueFulfilled);
+        }
+        return result;
     }
 
 

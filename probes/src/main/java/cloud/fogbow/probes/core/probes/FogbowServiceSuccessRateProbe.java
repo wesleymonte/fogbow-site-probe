@@ -47,9 +47,17 @@ public class FogbowServiceSuccessRateProbe extends Probe {
             lastTimestampAwake, firstTimeAwake);
         Integer valueOpen = providerService.getAuditsFromResourceByState(OrderState.OPEN, type,
             lastTimestampAwake, firstTimeAwake);
-        Float availabilityData = (float) (valueOpen / (valueFailed + valueOpen));
+        Float availabilityData = calculateAvailabilityData(valueFailed, valueOpen);
         LOGGER.debug("Value of availability data [" + availabilityData + "]");
         Pair<String, Float> pair = new Pair<>(type.getValue(), availabilityData);
         return pair;
+    }
+
+    private Float calculateAvailabilityData(Integer valueFailed, Integer valueOpen){
+        float result = 100;
+        if(valueOpen != 0){
+           result = 100 * (1 - valueFailed / valueOpen);
+        }
+        return result;
     }
 }
