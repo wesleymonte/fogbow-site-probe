@@ -1,14 +1,10 @@
 package cloud.fogbow.probes.core.fta;
 
 import cloud.fogbow.probes.core.models.Observation;
-import cloud.fogbow.probes.core.models.OrderState;
-import cloud.fogbow.probes.core.models.ResourceType;
-import cloud.fogbow.probes.core.services.DataProviderService;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
-import javafx.util.Pair;
-import org.springframework.beans.factory.annotation.Autowired;
+import cloud.fogbow.probes.core.utils.Pair;
 
 public class FtaConverter {
 
