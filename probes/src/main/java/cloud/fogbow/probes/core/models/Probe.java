@@ -42,11 +42,15 @@ public abstract class Probe implements Runnable {
 
     public void run() {
         Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
-        Observation observation = makeObservation(currentTimestamp);
-        LOGGER.info(
-            "Probe[" + this.PROBE_ID + "] made a observation at [" + observation.getTimestamp()
-                .toString() + "]");
-        FtaSender.sendObservation(FTA_ADDRESS, observation);
+        try {
+            Observation observation = makeObservation(currentTimestamp);
+            LOGGER.info(
+                "Probe[" + this.PROBE_ID + "] made a observation at [" + observation.getTimestamp()
+                    .toString() + "]");
+            FtaSender.sendObservation(FTA_ADDRESS, observation);
+        } catch (IllegalArgumentException e){
+            LOGGER.error("Error while probe[" + PROBE_ID + "] making a observation at [" + currentTimestamp + "]: " + e.getMessage());
+        }
         lastTimestampAwake = currentTimestamp;
         sleep(SLEEP_TIME);
     }

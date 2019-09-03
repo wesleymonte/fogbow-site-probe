@@ -1,6 +1,7 @@
 package cloud.fogbow.probes.core.probes;
 
 import cloud.fogbow.probes.core.Constants;
+import cloud.fogbow.probes.core.fta.FtaConverter;
 import cloud.fogbow.probes.core.models.Observation;
 import cloud.fogbow.probes.core.models.Probe;
 import cloud.fogbow.probes.core.utils.AppUtil;
@@ -74,7 +75,7 @@ public class FogbowServiceReachabilityProbe extends Probe {
     protected Observation makeObservation(Timestamp currentTimestamp) {
         Map<String, Boolean> result = doGetRequest();
         List<Pair<String, Float>> values = toValues(result);
-        Observation observation = new Observation(PROBE_LABEL, values, currentTimestamp);
+        Observation observation = FtaConverter.createObservation(PROBE_LABEL, values, currentTimestamp);
         LOGGER.info("Made a observation with label [" + observation.getLabel() + "] at [" + currentTimestamp.toString() + "]");
         return observation;
     }
@@ -94,22 +95,21 @@ public class FogbowServiceReachabilityProbe extends Probe {
     }
 
     private Map<String, Boolean> doGetRequest() {
-        Map<String, Boolean> result = new HashMap<>();
-        try {
-            Map<String, Integer> httpCodes = this.getHttpCodes();
-            result = this.checkHttpCodes(httpCodes);
-        } catch (Exception e) {
-            LOGGER.error("Error while checking reachability of services", e);
-        }
+        Map<String, Integer> httpCodes = this.getHttpCodes();
+        Map<String, Boolean> result = this.checkHttpCodes(httpCodes);
         return result;
     }
 
-    private Map<String, Integer> getHttpCodes() throws IOException {
+    private Map<String, Integer> getHttpCodes() {
         Map<String, Integer> httpCodes = new HashMap<>();
         for (Service service : services.values()) {
-            Integer response = getResponseCode(service.ENDPOINT);
-            httpCodes.put(service.ID, response);
-            LOGGER.debug("Http code [" + response + "] of service [" + service.LABEL + "]");
+            try {
+                Integer response = getResponseCode(service.ENDPOINT);
+                httpCodes.put(service.ID, response);
+                LOGGER.debug("Http code [" + response + "] of service [" + service.LABEL + "]");
+            } catch (IOException e){
+                LOGGER.error("Error while do get request to fogbow service [" + service.LABEL + "]: " + e.getMessage());
+            }
         }
         return httpCodes;
     }
