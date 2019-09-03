@@ -24,7 +24,7 @@ public class FtaSender {
             StringEntity body = toJson(observation);
             HttpWrapper.doRequest(HttpPost.METHOD_NAME, address, new ArrayList<>(), body);
         } catch (Exception e) {
-            LOGGER.error("Error while sending observation: " + e.getMessage(), e);
+            LOGGER.error("Error while sending observation: " + e.getMessage());
         }
     }
 
