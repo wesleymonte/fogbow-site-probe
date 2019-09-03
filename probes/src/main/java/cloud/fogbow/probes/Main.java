@@ -22,7 +22,7 @@ public class Main {
     FogbowServiceLatencyProbe serviceLatencyProbe;
 
     @Autowired
-    FogbowServiceSuccessRateProbe serviceAvailabilityProbe;
+    FogbowServiceSuccessRateProbe serviceSuccessRateProbe;
 
     @Autowired
     FogbowServiceReachabilityProbe serviceReachabilityProbe;
@@ -36,7 +36,7 @@ public class Main {
         Thread secondProbe = new Thread(serviceLatencyProbe, "Thread-Service-Latency-Probe");
         secondProbe.start();
 
-        Thread thirdProbe = new Thread(serviceAvailabilityProbe, "Thread-Service-Availability-Probe");
+        Thread thirdProbe = new Thread(serviceSuccessRateProbe, "Thread-Service-Success-Rate-Probe");
         thirdProbe.start();
 
         Thread fourthProbe = new Thread(serviceReachabilityProbe, "Thread-Service-Reachability-Probe");
