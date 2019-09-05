@@ -60,6 +60,12 @@ public class FogbowServiceSuccessRateProbe extends Probe {
         return pair;
     }
 
+    /**
+     * Calculates the percentage of Orders that did not fail on the request.
+     * @param valueFailed Quantity of orders in {@link OrderState#FAILED_ON_REQUEST}
+     * @param valueOpen Quantity of orders in {@link OrderState#OPEN}
+     * @return float with the resulting percentage
+     */
     private Float calculateAvailabilityData(Integer valueFailed, Integer valueOpen) {
         float result = 100;
         if (valueOpen != 0) {

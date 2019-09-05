@@ -63,6 +63,12 @@ public class FogbowResourceAvailabilityProbe extends Probe {
         return pair;
     }
 
+    /**
+     * Calculates the percentage of Orders that did not fail after the request.
+     * @param valueFailedAfterSuccessful Quantity of orders in {@link OrderState#FAILED_AFTER_SUCCESSFUL_REQUEST}
+     * @param valueFulfilled Quantity of orders in {@link OrderState#FULFILLED}
+     * @return float with the resulting percentage
+     */
     private Float calculateAvailabilityData(Integer valueFailedAfterSuccessful,
         Integer valueFulfilled) {
         float result = 100;
