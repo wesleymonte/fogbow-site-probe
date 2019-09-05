@@ -1,5 +1,6 @@
 package cloud.fogbow.probes.core.probes;
 
+import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.fta.FtaConverter;
 import cloud.fogbow.probes.core.models.Observation;
 import cloud.fogbow.probes.core.models.OrderState;
@@ -9,6 +10,7 @@ import cloud.fogbow.probes.core.utils.Pair;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -25,6 +27,11 @@ public class FogbowResourceAvailabilityProbe extends Probe {
     private static final String PROBE_LABEL = "resource_availability_probe";
     private static final Logger LOGGER = LogManager
         .getLogger(FogbowResourceAvailabilityProbe.class);
+
+    @PostConstruct
+    public void FogbowResourceAvailabilityProbe(){
+        this.PROBE_ID = Integer.valueOf(properties.getProperty(Constants.RESOURCE_AVAILABILITY_PROBE_ID));
+    }
 
     public void run() {
         while (true) {

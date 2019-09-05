@@ -3,6 +3,7 @@ package cloud.fogbow.probes.core.models;
 import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.fta.FtaSender;
 import cloud.fogbow.probes.core.services.DataProviderService;
+import cloud.fogbow.probes.core.utils.AppUtil;
 import java.sql.Timestamp;
 import java.util.Properties;
 import javax.annotation.PostConstruct;
@@ -31,19 +32,9 @@ public abstract class Probe implements Runnable {
     @PostConstruct
     public void Probe() {
         this.lastTimestampAwake = new Timestamp(System.currentTimeMillis());
-        this.PROBE_ID = Integer
-            .valueOf(properties.getProperty(Constants.RESOURCE_AVAILABILITY_PROBE_ID));
         this.SLEEP_TIME = Integer.valueOf(properties.getProperty(Constants.SLEEP_TIME));
         this.FTA_ADDRESS = properties.getProperty(Constants.FMA_ADDRESS);
         this.firstTimeAwake = true;
-    }
-
-    protected void sleep(int sleepTime) {
-        try {
-            Thread.sleep(sleepTime);
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
-        }
     }
 
     public void run() {
@@ -60,7 +51,7 @@ public abstract class Probe implements Runnable {
                     + "]: " + e.getMessage());
         }
         lastTimestampAwake = currentTimestamp;
-        sleep(SLEEP_TIME);
+        AppUtil.sleep(SLEEP_TIME);
     }
 
     protected abstract Observation makeObservation(Timestamp timestamp);

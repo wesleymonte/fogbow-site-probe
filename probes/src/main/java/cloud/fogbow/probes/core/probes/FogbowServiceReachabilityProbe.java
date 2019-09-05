@@ -38,10 +38,11 @@ public class FogbowServiceReachabilityProbe extends Probe {
     private String RAS_ENDPOINT;
     private String FNS_ENDPOINT;
     private String MS_ENDPOINT;
-    private Map<String, Service> services;
+    private Map<String, FogbowService> services;
 
     @PostConstruct
     public void FogbowServiceReachabilityProbe() {
+        this.PROBE_ID = Integer.valueOf(properties.getProperty(Constants.SERVICE_REACHABILITY_PROBE_ID));
         this.AS_ENDPOINT = properties.getProperty(Constants.AS_ENDPOINT);
         this.RAS_ENDPOINT = properties.getProperty(Constants.RAS_ENDPOINT);
         this.FNS_ENDPOINT = properties.getProperty(Constants.FNS_ENDPOINT);
@@ -49,17 +50,17 @@ public class FogbowServiceReachabilityProbe extends Probe {
         this.services = Collections.unmodifiableMap(buildServices());
     }
 
-    private Map<String, Service> buildServices() {
-        Map<String, Service> services = new HashMap<>();
+    private Map<String, FogbowService> buildServices() {
+        Map<String, FogbowService> services = new HashMap<>();
         final String AS_ID = "AS";
         final String RAS_ID = "RAS";
         final String FNS_ID = "FNS";
         final String MS_ID = "MS";
 
-        Service AS_SERVICE = new Service(AS_ID, "Authentication Service", AS_ENDPOINT);
-        Service RAS_SERVICE = new Service(RAS_ID, "Resource Allocation Service", RAS_ENDPOINT);
-        Service FNS_SERVICE = new Service(FNS_ID, "Federated Network Service", FNS_ENDPOINT);
-        Service MS_SERVICE = new Service(MS_ID, "Membership Service", MS_ENDPOINT);
+        FogbowService AS_SERVICE = new FogbowService(AS_ID, "Authentication Service", AS_ENDPOINT);
+        FogbowService RAS_SERVICE = new FogbowService(RAS_ID, "Resource Allocation Service", RAS_ENDPOINT);
+        FogbowService FNS_SERVICE = new FogbowService(FNS_ID, "Federated Network Service", FNS_ENDPOINT);
+        FogbowService MS_SERVICE = new FogbowService(MS_ID, "Membership Service", MS_ENDPOINT);
 
         services.put(AS_ID, AS_SERVICE);
         services.put(RAS_ID, RAS_SERVICE);
@@ -113,7 +114,7 @@ public class FogbowServiceReachabilityProbe extends Probe {
 
     private Map<String, Integer> getHttpCodes() {
         Map<String, Integer> httpCodes = new HashMap<>();
-        for (Service service : services.values()) {
+        for (FogbowService service : services.values()) {
             try {
                 Integer response = getResponseCode(service.ENDPOINT);
                 httpCodes.put(service.ID, response);
@@ -137,7 +138,7 @@ public class FogbowServiceReachabilityProbe extends Probe {
     private Map<String, Boolean> checkHttpCodes(Map<String, Integer> httpCodes) {
         Map<String, Boolean> result = new HashMap<>();
         for (Entry<String, Integer> code : httpCodes.entrySet()) {
-            Service service = services.get(code.getKey());
+            FogbowService service = services.get(code.getKey());
             String date = AppUtil.timestampToDate(Instant.now().getEpochSecond());
             if (hasFailed(code.getValue())) {
                 LOGGER.error("[" + date + "] : " + service.LABEL + " is down");
@@ -154,13 +155,13 @@ public class FogbowServiceReachabilityProbe extends Probe {
         return responseCode > RESPONSE_CODE_UPPER_BOUND || responseCode < RESPONSE_CODE_LOWER_BOUND;
     }
 
-    private class Service {
+    private class FogbowService {
 
         private final String ID;
         private final String LABEL;
         private final String ENDPOINT;
 
-        public Service(String ID, String LABEL, String ENDPOINT) {
+        public FogbowService(String ID, String LABEL, String ENDPOINT) {
             this.ID = ID;
             this.LABEL = LABEL;
             this.ENDPOINT = ENDPOINT;

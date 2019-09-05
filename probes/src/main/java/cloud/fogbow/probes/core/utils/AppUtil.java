@@ -54,4 +54,12 @@ public class AppUtil {
         sdf.setTimeZone(java.util.TimeZone.getTimeZone("GMT-3"));
         return sdf.format(date);
     }
+
+    public static void sleep(int sleepTime) {
+        try {
+            Thread.sleep(sleepTime);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        }
+    }
 }
