@@ -3,6 +3,7 @@ package cloud.fogbow.probes.core.models;
 import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.fta.FtaSender;
 import cloud.fogbow.probes.core.services.DataProviderService;
+import cloud.fogbow.probes.core.utils.AppUtil;
 import java.sql.Timestamp;
 import java.util.Properties;
 import javax.annotation.PostConstruct;
@@ -32,14 +33,6 @@ public abstract class Probe implements Runnable {
         this.firstTimeAwake = true;
     }
 
-    protected void sleep(int sleepTime) {
-        try {
-            Thread.sleep(sleepTime);
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
-        }
-    }
-
     public void run() {
         Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
         try {
@@ -52,7 +45,7 @@ public abstract class Probe implements Runnable {
             LOGGER.error("Error while probe[" + PROBE_ID + "] making a observation at [" + currentTimestamp + "]: " + e.getMessage());
         }
         lastTimestampAwake = currentTimestamp;
-        sleep(SLEEP_TIME);
+        AppUtil.sleep(SLEEP_TIME);
     }
 
     protected abstract Observation makeObservation(Timestamp timestamp);
