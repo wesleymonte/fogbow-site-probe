@@ -37,6 +37,7 @@ public class FogbowServiceReachabilityProbe extends Probe {
 
     @PostConstruct
     public void FogbowServiceReachabilityProbe() {
+        this.PROBE_ID = Integer.valueOf(properties.getProperty(Constants.SERVICE_REACHABILITY_PROBE_ID));
         this.AS_ENDPOINT = properties.getProperty(Constants.AS_ENDPOINT);
         this.RAS_ENDPOINT = properties.getProperty(Constants.RAS_ENDPOINT);
         this.FNS_ENDPOINT = properties.getProperty(Constants.FNS_ENDPOINT);

@@ -1,9 +1,11 @@
 package cloud.fogbow.probes.core.probes;
 
+import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.models.Observation;
 import cloud.fogbow.probes.core.models.Probe;
 import java.util.Arrays;
 import cloud.fogbow.probes.core.utils.Pair;
+import javax.annotation.PostConstruct;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -20,6 +22,11 @@ public class FogbowServiceLatencyProbe extends Probe {
     private static final String COMPUTE_JSON_KEY = "COMPUTE";
     private static final String NETWORK_JSON_KEY = "NETWORK";
     private static final String VOLUME_JSON_KEY = "VOLUME";
+
+    @PostConstruct
+    public void FogbowServiceLatencyProbe(){
+        this.PROBE_ID = Integer.valueOf(properties.getProperty(Constants.SERVICE_LATENCY_PROBE_ID));
+    }
 
     public void run() {
         while(true) {

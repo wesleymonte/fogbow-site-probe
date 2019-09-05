@@ -27,7 +27,6 @@ public abstract class Probe implements Runnable {
     @PostConstruct
     public void Probe(){
         this.lastTimestampAwake = new Timestamp(System.currentTimeMillis());
-        this.PROBE_ID = Integer.valueOf(properties.getProperty(Constants.RESOURCE_AVAILABILITY_PROBE_ID));
         this.SLEEP_TIME = Integer.valueOf(properties.getProperty(Constants.SLEEP_TIME));
         this.FTA_ADDRESS = properties.getProperty(Constants.FMA_ADDRESS);
         this.firstTimeAwake = true;

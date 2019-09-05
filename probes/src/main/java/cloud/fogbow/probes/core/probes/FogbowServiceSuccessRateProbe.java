@@ -1,5 +1,6 @@
 package cloud.fogbow.probes.core.probes;
 
+import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.fta.FtaConverter;
 import cloud.fogbow.probes.core.models.Observation;
 import cloud.fogbow.probes.core.models.OrderState;
@@ -7,6 +8,7 @@ import cloud.fogbow.probes.core.models.Probe;
 import cloud.fogbow.probes.core.models.ResourceType;
 import java.util.ArrayList;
 import cloud.fogbow.probes.core.utils.Pair;
+import javax.annotation.PostConstruct;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -19,6 +21,12 @@ public class FogbowServiceSuccessRateProbe extends Probe {
 
     private static final String PROBE_LABEL = "service_success_rate";
     private static final Logger LOGGER = LogManager.getLogger(FogbowServiceSuccessRateProbe.class);
+
+    @PostConstruct
+    public void FogbowServiceSuccessRateProbe(){
+        this.PROBE_ID = Integer.valueOf(properties.getProperty(Constants.SERVICE_SUCCESS_RATE_PROBE_ID));
+    }
+
 
     public void run() {
         while(true) {
