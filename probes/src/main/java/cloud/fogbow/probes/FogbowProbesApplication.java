@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Bean;
 public class FogbowProbesApplication {
 
     private static final Logger LOGGER = LogManager.getLogger(FogbowProbesApplication.class);
+    private static final String CONF_FILE_PROPERTY = "conf_file";
 
     public static void main(String[] args) {
         loadArguments(args);
@@ -30,7 +31,7 @@ public class FogbowProbesApplication {
     @Bean
     public Properties properties() {
         Properties properties = null;
-        String confFilePath = System.getProperty("conf_file");
+        String confFilePath = System.getProperty(CONF_FILE_PROPERTY);
 
         try {
             if (Objects.isNull(confFilePath)) {
@@ -54,7 +55,7 @@ public class FogbowProbesApplication {
         Options options = new Options();
 
         String opt = "c";
-        String longOpt = "conf_file";
+        String longOpt = CONF_FILE_PROPERTY;
         String description = "Configuration file path";
         Option confFilePath = new Option(opt, longOpt, true, description);
         confFilePath.setRequired(false);
@@ -66,7 +67,7 @@ public class FogbowProbesApplication {
         try {
             cmd = parser.parse(options, args);
             String inputFilePath = cmd.getOptionValue(longOpt);
-            System.setProperty(longOpt, inputFilePath);
+            System.setProperty(CONF_FILE_PROPERTY, inputFilePath);
         } catch (ParseException e) {
             LOGGER.error("Error while loading command line arguments: " + e.getMessage(), e);
             System.exit(1);
