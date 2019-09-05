@@ -5,15 +5,15 @@ import cloud.fogbow.probes.core.probes.FogbowServiceLatencyProbe;
 import cloud.fogbow.probes.core.probes.FogbowServiceReachabilityProbe;
 import cloud.fogbow.probes.core.probes.FogbowServiceSuccessRateProbe;
 import javax.annotation.PostConstruct;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class Main {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
+    private static final Logger LOGGER = LogManager.getLogger(Main.class);
 
     @Autowired
     FogbowResourceAvailabilityProbe resourceAvailabilityProbe;
@@ -22,24 +22,25 @@ public class Main {
     FogbowServiceLatencyProbe serviceLatencyProbe;
 
     @Autowired
-    FogbowServiceSuccessRateProbe serviceAvailabilityProbe;
+    FogbowServiceSuccessRateProbe serviceSuccessRateProbe;
 
     @Autowired
     FogbowServiceReachabilityProbe serviceReachabilityProbe;
 
     @PostConstruct
     public void startProbes() {
-        Thread firstProbe = new Thread(resourceAvailabilityProbe);
+
+        Thread firstProbe = new Thread(resourceAvailabilityProbe, "Thread-Resource-Availability-Probe");
         firstProbe.start();
 
-        Thread secondProbe = new Thread(serviceLatencyProbe);
+        Thread secondProbe = new Thread(serviceLatencyProbe, "Thread-Service-Latency-Probe");
         secondProbe.start();
 
-        Thread thirdProbe = new Thread(serviceAvailabilityProbe);
+        Thread thirdProbe = new Thread(serviceSuccessRateProbe, "Thread-Service-Success-Rate-Probe");
         thirdProbe.start();
 
-        Thread asReachabilityProbe = new Thread(serviceReachabilityProbe);
-        asReachabilityProbe.start();
+        Thread fourthProbe = new Thread(serviceReachabilityProbe, "Thread-Service-Reachability-Probe");
+        fourthProbe.start();
     }
 
 

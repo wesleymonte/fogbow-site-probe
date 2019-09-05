@@ -1,48 +1,43 @@
 package cloud.fogbow.probes.core.probes;
 
 import cloud.fogbow.probes.core.Constants;
+import cloud.fogbow.probes.core.fta.FtaConverter;
 import cloud.fogbow.probes.core.models.Observation;
 import cloud.fogbow.probes.core.models.Probe;
+import cloud.fogbow.probes.core.utils.AppUtil;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import javafx.util.Pair;
+import cloud.fogbow.probes.core.utils.Pair;
 import javax.annotation.PostConstruct;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 @Component
 public class FogbowServiceReachabilityProbe extends Probe {
 
-    private static final Logger LOGGER = Logger.getLogger(FogbowServiceReachabilityProbe.class);
+    private static final Logger LOGGER = LogManager.getLogger(FogbowServiceReachabilityProbe.class);
     private static final String PROBE_LABEL = "service_reachability_probe";
-    private final int N_REQUESTS_PER_CICLE = 1;
     private final int RESPONSE_CODE_LOWER_BOUND = 199;
     private final int RESPONSE_CODE_UPPER_BOUND = 300;
-    protected int SLEEP_TIME;
-    private int successfulRequests = 0;
     private String AS_ENDPOINT;
     private String RAS_ENDPOINT;
     private String FNS_ENDPOINT;
     private String MS_ENDPOINT;
-    private Map<String, Service> services;
+    private Map<String, FogbowService> services;
 
     @PostConstruct
     public void FogbowServiceReachabilityProbe() {
-        this.lastTimestampAwake = new Timestamp(System.currentTimeMillis());
-        this.probeId = Integer
-            .valueOf(properties.getProperty(Constants.SERVICE_REACHABILITY_PROBE_ID));
-        this.SLEEP_TIME = Integer.valueOf(properties.getProperty(Constants.SLEEP_TIME));
+        this.PROBE_ID = Integer.valueOf(properties.getProperty(Constants.SERVICE_REACHABILITY_PROBE_ID));
         this.AS_ENDPOINT = properties.getProperty(Constants.AS_ENDPOINT);
         this.RAS_ENDPOINT = properties.getProperty(Constants.RAS_ENDPOINT);
         this.FNS_ENDPOINT = properties.getProperty(Constants.FNS_ENDPOINT);
@@ -50,17 +45,17 @@ public class FogbowServiceReachabilityProbe extends Probe {
         this.services = Collections.unmodifiableMap(buildServices());
     }
 
-    private Map<String, Service> buildServices() {
-        Map<String, Service> services = new HashMap<>();
+    private Map<String, FogbowService> buildServices() {
+        Map<String, FogbowService> services = new HashMap<>();
         final String AS_ID = "AS";
         final String RAS_ID = "RAS";
         final String FNS_ID = "FNS";
         final String MS_ID = "MS";
 
-        Service AS_SERVICE = new Service(AS_ID, "Authentication Service", AS_ENDPOINT);
-        Service RAS_SERVICE = new Service(RAS_ID, "Resource Allocation Service", RAS_ENDPOINT);
-        Service FNS_SERVICE = new Service(FNS_ID, "Federated Network Service", FNS_ENDPOINT);
-        Service MS_SERVICE = new Service(MS_ID, "Membership Service", MS_ENDPOINT);
+        FogbowService AS_SERVICE = new FogbowService(AS_ID, "Authentication Service", AS_ENDPOINT);
+        FogbowService RAS_SERVICE = new FogbowService(RAS_ID, "Resource Allocation Service", RAS_ENDPOINT);
+        FogbowService FNS_SERVICE = new FogbowService(FNS_ID, "Federated Network Service", FNS_ENDPOINT);
+        FogbowService MS_SERVICE = new FogbowService(MS_ID, "Membership Service", MS_ENDPOINT);
 
         services.put(AS_ID, AS_SERVICE);
         services.put(RAS_ID, RAS_SERVICE);
@@ -72,33 +67,17 @@ public class FogbowServiceReachabilityProbe extends Probe {
 
     @Override
     public void run() {
-        setup();
-
         while (true) {
-            lastTimestampAwake = new Timestamp(System.currentTimeMillis());
-
-            for (int i = 0; i < N_REQUESTS_PER_CICLE; i++) {
-                doGetRequest();
-            }
-
-            List<Pair<Number, Timestamp>> data = new ArrayList<>();
-            data.add(new Pair<>(successfulRequests / N_REQUESTS_PER_CICLE, lastTimestampAwake));
-
-            List<List<Pair<Number, Timestamp>>> dataWrapper = new ArrayList<>();
-            dataWrapper.add(data);
-            int resourceId = Integer.valueOf(properties.getProperty(Constants.SITE_RESOURCE_ID));
-            sendMessage(resourceId, dataWrapper);
-
-            this.successfulRequests = 0;
-
-            sleep(SLEEP_TIME);
+            LOGGER.info("----> Starting Fogbow Service Reachability Probe...");
+            super.run();
         }
     }
 
-    private Observation makeObservation() {
+    protected Observation makeObservation(Timestamp currentTimestamp) {
         Map<String, Boolean> result = doGetRequest();
         List<Pair<String, Float>> values = toValues(result);
-        Observation observation = new Observation(PROBE_LABEL, values, lastTimestampAwake);
+        Observation observation = FtaConverter.createObservation(PROBE_LABEL, values, currentTimestamp);
+        LOGGER.info("Made a observation with label [" + observation.getLabel() + "] at [" + currentTimestamp.toString() + "]");
         return observation;
     }
 
@@ -117,25 +96,21 @@ public class FogbowServiceReachabilityProbe extends Probe {
     }
 
     private Map<String, Boolean> doGetRequest() {
-        Map<String, Boolean> result = new HashMap<>();
-        try {
-            Map<String, Integer> httpCodes = this.getHttpCodes();
-            result = this.checkHttpCodes(httpCodes);
-            boolean someFailed = result.values().contains(false);
-            if (!someFailed) {
-                successfulRequests++;
-            }
-        } catch (Exception e) {
-            LOGGER.error("Error while checking reachability of services", e);
-        }
+        Map<String, Integer> httpCodes = this.getHttpCodes();
+        Map<String, Boolean> result = this.checkHttpCodes(httpCodes);
         return result;
     }
 
-    public Map<String, Integer> getHttpCodes() throws IOException {
+    private Map<String, Integer> getHttpCodes() {
         Map<String, Integer> httpCodes = new HashMap<>();
-        for (Service service : services.values()) {
-            Integer response = getResponseCode(service.ENDPOINT);
-            httpCodes.put(service.ID, response);
+        for (FogbowService service : services.values()) {
+            try {
+                Integer response = getResponseCode(service.ENDPOINT);
+                httpCodes.put(service.ID, response);
+                LOGGER.debug("Http code [" + response + "] of service [" + service.LABEL + "]");
+            } catch (IOException e){
+                LOGGER.error("Error while do get request to fogbow service [" + service.LABEL + "]: " + e.getMessage());
+            }
         }
         return httpCodes;
     }
@@ -147,15 +122,16 @@ public class FogbowServiceReachabilityProbe extends Probe {
         return connection.getResponseCode();
     }
 
-    public Map<String, Boolean> checkHttpCodes(Map<String, Integer> httpCodes) {
+    private Map<String, Boolean> checkHttpCodes(Map<String, Integer> httpCodes) {
         Map<String, Boolean> result = new HashMap<>();
         for (Entry<String, Integer> code : httpCodes.entrySet()) {
-            Service service = services.get(code.getKey());
+            FogbowService service = services.get(code.getKey());
+            String date = AppUtil.timestampToDate(Instant.now().getEpochSecond());
             if (hasFailed(code.getValue())) {
-                String date = timestampToDate(Instant.now().getEpochSecond());
                 LOGGER.error("[" + date + "] : " + service.LABEL + " is down");
                 result.put(service.ID, false);
             } else {
+                LOGGER.error("[" + date + "] : " + service.LABEL + " is up");
                 result.put(service.ID, true);
             }
         }
@@ -166,20 +142,13 @@ public class FogbowServiceReachabilityProbe extends Probe {
         return responseCode > RESPONSE_CODE_UPPER_BOUND || responseCode < RESPONSE_CODE_LOWER_BOUND;
     }
 
-    private String timestampToDate(long timestamp) {
-        Date date = new java.util.Date(timestamp * 1000L);
-        SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        sdf.setTimeZone(java.util.TimeZone.getTimeZone("GMT-3"));
-        return sdf.format(date);
-    }
-
-    private class Service {
+    private class FogbowService {
 
         private final String ID;
         private final String LABEL;
         private final String ENDPOINT;
 
-        public Service(String ID, String LABEL, String ENDPOINT) {
+        public FogbowService(String ID, String LABEL, String ENDPOINT) {
             this.ID = ID;
             this.LABEL = LABEL;
             this.ENDPOINT = ENDPOINT;

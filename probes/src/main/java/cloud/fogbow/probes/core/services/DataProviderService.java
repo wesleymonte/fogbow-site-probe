@@ -4,15 +4,15 @@ import cloud.fogbow.probes.core.models.AuditableOrderStateChange;
 import cloud.fogbow.probes.core.models.OrderState;
 import cloud.fogbow.probes.core.models.ResourceType;
 import cloud.fogbow.probes.datastore.DatabaseManager;
-import javafx.util.Pair;
+import java.util.Objects;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,6 +20,8 @@ public class DataProviderService {
 
     @Autowired
     private DatabaseManager dbManager;
+
+    private static final Logger LOGGER = LogManager.getLogger(DataProviderService.class);
 
     public DataProviderService() {
 
@@ -93,17 +95,17 @@ public class DataProviderService {
         }
     }
 
-    public List<Pair<Number, Timestamp>>[] getLatencies(Timestamp timestamp, boolean firstTimeAwake) {
-        List<Pair<Number, Timestamp>> result[] = new List[3];
-
+    public Long[] getLatencies(Timestamp timestamp, boolean firstTimeAwake) {
         List<AuditableOrderStateChange> openEvents = getOpened(timestamp, firstTimeAwake);
         List<AuditableOrderStateChange> fulfilledEvents = getFulfilled(timestamp, firstTimeAwake);
 
-        result[0] = computeLatencies(getEventsOfType(openEvents, ResourceType.COMPUTE), getEventsOfType(fulfilledEvents, ResourceType.COMPUTE));
-        result[1] = computeLatencies(getEventsOfType(openEvents, ResourceType.VOLUME), getEventsOfType(fulfilledEvents, ResourceType.VOLUME));
-        result[2] = computeLatencies(getEventsOfType(openEvents, ResourceType.NETWORK), getEventsOfType(fulfilledEvents, ResourceType.NETWORK));
+        Long computeLatency = computeLatencies(getEventsOfType(openEvents, ResourceType.COMPUTE), getEventsOfType(fulfilledEvents, ResourceType.COMPUTE));
+        Long networkLatency = computeLatencies(getEventsOfType(openEvents, ResourceType.NETWORK), getEventsOfType(fulfilledEvents, ResourceType.NETWORK));
+        Long volumeLatency = computeLatencies(getEventsOfType(openEvents, ResourceType.VOLUME), getEventsOfType(fulfilledEvents, ResourceType.VOLUME));
 
-        return result;
+        Long[] latencies = {computeLatency, networkLatency, volumeLatency};
+
+        return latencies;
     }
 
     public Integer getAuditsFromResourceByState(OrderState orderState, ResourceType type,
@@ -125,39 +127,40 @@ public class DataProviderService {
             default:
                 throw new IllegalStateException("Unexpected value: " + orderState);
         }
+        LOGGER.info("Got audits of resource type [" + type.getValue() + "] from state [" + orderState.name() + "] with result value [" + value + "]");
         return value;
     }
 
-    private List<Pair<Number, Timestamp>> computeLatencies(List<AuditableOrderStateChange> openEvents, List<AuditableOrderStateChange> fulfilledEvents) {
-        Map<String, Pair<Timestamp, Timestamp>> ordersLatency = new HashMap<>();
-
-        for(AuditableOrderStateChange stateChange: openEvents) {
-            ordersLatency.put(stateChange.getOrder().getId(), new Pair(stateChange.getTimestamp(), null));
-        }
-
-        for(AuditableOrderStateChange stateChange: fulfilledEvents) {
-            if(ordersLatency.containsKey(stateChange.getOrder().getId())) {
-                Pair oldPair = ordersLatency.get(stateChange.getOrder().getId());
-                ordersLatency.replace(stateChange.getOrder().getId(), new Pair(oldPair.getKey(), stateChange.getTimestamp()));
-                continue;
-            }
-
-            AuditableOrderStateChange openEvent = dbManager.getEventByOrderAndState(stateChange.getOrder(), OrderState.OPEN);
-
-            ordersLatency.put(stateChange.getOrder().getId(), new Pair<>(openEvent.getTimestamp(), stateChange.getTimestamp()));
-        }
-
-        List<Pair<Number, Timestamp>> latencies = new ArrayList<>();
-
-        for(String key: ordersLatency.keySet()) {
-            Pair<Timestamp, Timestamp> current = ordersLatency.get(key);
-            if(current.getKey() != null && current.getValue() != null ) {
-                long latency = current.getValue().getTime() - current.getKey().getTime();
-                latencies.add(new Pair(latency, current.getValue()));
+    private Long computeLatencies(List<AuditableOrderStateChange> openEvents, List<AuditableOrderStateChange> fulfilledEvents){
+        List<Long> latencies = new ArrayList<>();
+        for(AuditableOrderStateChange aosc : fulfilledEvents){
+            AuditableOrderStateChange auditableOrderStateChange = getEventWithOrder(openEvents, aosc.getOrder().getId());
+            if(!Objects.isNull(auditableOrderStateChange)){
+                Long latency = aosc.getTimestamp().getTime() - auditableOrderStateChange.getTimestamp().getTime();
+                latencies.add(latency);
             }
         }
+        return average(latencies);
+    }
 
-        return latencies;
+    private AuditableOrderStateChange getEventWithOrder(List<AuditableOrderStateChange> events, String orderId){
+        AuditableOrderStateChange auditableOrderStateChange = null;
+        for(AuditableOrderStateChange aosc : events){
+            if(aosc.getOrder().getId().equals(orderId)){
+                auditableOrderStateChange = aosc;
+                break;
+            }
+        }
+        return auditableOrderStateChange;
+    }
+
+    private Long average(List<Long> list){
+        double sum = 0;
+        for(Long l : list){
+            sum += l;
+        }
+        double average = sum / list.size();
+        return (long) average;
     }
 
     private List<AuditableOrderStateChange> getEventsOfType(List<AuditableOrderStateChange> events, ResourceType type) {

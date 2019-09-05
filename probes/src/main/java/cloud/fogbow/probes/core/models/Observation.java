@@ -2,7 +2,7 @@ package cloud.fogbow.probes.core.models;
 
 import java.sql.Timestamp;
 import java.util.List;
-import javafx.util.Pair;
+import cloud.fogbow.probes.core.utils.Pair;
 
 public class Observation {
     private String label;

@@ -1,9 +1,10 @@
 package cloud.fogbow.probes.core.utils;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import javafx.util.Pair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -44,6 +45,21 @@ public class AppUtil {
     public static void makeBodyField(JSONObject json, String key, Timestamp timestamp) {
         if (timestamp != null) {
             json.put(key, timestamp);
+        }
+    }
+
+    public static String timestampToDate(long timestamp) {
+        Date date = new java.util.Date(timestamp * 1000L);
+        SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        sdf.setTimeZone(java.util.TimeZone.getTimeZone("GMT-3"));
+        return sdf.format(date);
+    }
+
+    public static void sleep(int sleepTime) {
+        try {
+            Thread.sleep(sleepTime);
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
         }
     }
 }

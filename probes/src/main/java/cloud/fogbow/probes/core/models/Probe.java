@@ -1,101 +1,51 @@
 package cloud.fogbow.probes.core.models;
 
+import cloud.fogbow.probes.core.Constants;
+import cloud.fogbow.probes.core.fta.FtaSender;
 import cloud.fogbow.probes.core.services.DataProviderService;
-import eu.atmosphere.tmaf.monitor.client.BackgroundClient;
-import eu.atmosphere.tmaf.monitor.message.Data;
-import eu.atmosphere.tmaf.monitor.message.Message;
-import eu.atmosphere.tmaf.monitor.message.Observation;
-import javafx.util.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
+import cloud.fogbow.probes.core.utils.AppUtil;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Properties;
+import javax.annotation.PostConstruct;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class Probe implements Runnable {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Probe.class);
-
-    protected BackgroundClient client;
-    protected Message message;
-
+    protected Integer PROBE_ID;
     @Autowired
     protected Properties properties;
-
-    protected Timestamp lastTimestampAwake;
-    protected Integer probeId;
-    protected boolean firstTimeAwake;
-    protected Integer descriptionId;
-
     @Autowired
     protected DataProviderService providerService;
+    protected Timestamp lastTimestampAwake;
+    protected boolean firstTimeAwake;
+    protected Integer SLEEP_TIME;
+    protected String FTA_ADDRESS;
+    private static final Logger LOGGER = LogManager.getLogger(Probe.class);
 
-    private static int messageId = 0;
-
-    protected void setup() {
-        this.client = new BackgroundClient();
-        client.authenticate(probeId, "pass".getBytes());
-        boolean startFlag = client.start();
-
-        if(!startFlag) {
-            System.out.println("failed on starting");
-        }
+    @PostConstruct
+    public void Probe(){
+        this.lastTimestampAwake = new Timestamp(System.currentTimeMillis());
+        this.SLEEP_TIME = Integer.valueOf(properties.getProperty(Constants.SLEEP_TIME));
+        this.FTA_ADDRESS = properties.getProperty(Constants.FMA_ADDRESS);
+        this.firstTimeAwake = true;
     }
 
-    protected void sendMessage(Integer resourceId, List<List<Pair<Number, Timestamp>>> dataValues) {
-        createMessage();
-
-        this.message.setResourceId(resourceId);
-        this.message.setMessageId(messageId++);
-
-        List<Observation> observations = new ArrayList<>();
-
-
-        for(List<Pair<Number, Timestamp>> obs: dataValues) {
-            for(Pair<Number, Timestamp> ob : obs) {
-                observations.add(new Observation(ob.getValue().getTime(), ob.getKey().doubleValue()));
-            }
-
-            this.message.addData(new Data(
-                    Data.Type.MEASUREMENT,
-                    probeId,
-                    observations
-                )
-            );
-
-            observations.clear();
-        }
-
-        client.send(message);
-    }
-
-    protected boolean hasData(List<List<Pair<Number, Timestamp>>> dataSet) {
-        boolean hasData = false;
-
-        for(int i = 0; i < 2; i++) {
-            List<Pair<Number, Timestamp>> current = dataSet.get(i);
-            for(Pair<Number, Timestamp> pair : current) {
-                if(pair.getKey().doubleValue() != 0) {
-                    hasData = true;
-                }
-            }
-        }
-
-        return hasData;
-    }
-
-    private void createMessage() {
-        this.message = this.client.createMessage();
-    }
-
-    protected void sleep(int sleepTime) {
+    public void run() {
+        Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
         try {
-            Thread.sleep(sleepTime);
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
+            Observation observation = makeObservation(currentTimestamp);
+            LOGGER.info(
+                "Probe[" + this.PROBE_ID + "] made a observation at [" + observation.getTimestamp()
+                    .toString() + "]");
+            FtaSender.sendObservation(FTA_ADDRESS, observation);
+        } catch (IllegalArgumentException e){
+            LOGGER.error("Error while probe[" + PROBE_ID + "] making a observation at [" + currentTimestamp + "]: " + e.getMessage());
         }
+        lastTimestampAwake = currentTimestamp;
+        AppUtil.sleep(SLEEP_TIME);
     }
+
+    protected abstract Observation makeObservation(Timestamp timestamp);
 }
