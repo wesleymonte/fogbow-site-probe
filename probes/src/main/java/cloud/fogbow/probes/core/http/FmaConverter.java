@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class FmaConverter {
 
-    public Observation createObservation(String label, List<Pair<String, Float>> values, Timestamp timestamp){
+    public static Observation createObservation(String label, List<Pair<String, Float>> values, Timestamp timestamp){
         if(Objects.isNull(label) || Objects.isNull(values) || Objects.isNull(timestamp)){
             throw new IllegalArgumentException("Any argument may be not null");
         }
