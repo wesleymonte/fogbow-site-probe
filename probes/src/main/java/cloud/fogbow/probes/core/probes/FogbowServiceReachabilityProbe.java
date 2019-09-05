@@ -5,6 +5,7 @@ import cloud.fogbow.probes.core.fta.FtaConverter;
 import cloud.fogbow.probes.core.models.Observation;
 import cloud.fogbow.probes.core.models.Probe;
 import cloud.fogbow.probes.core.utils.AppUtil;
+import cloud.fogbow.probes.core.utils.Pair;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -16,12 +17,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import cloud.fogbow.probes.core.utils.Pair;
 import javax.annotation.PostConstruct;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+/**
+ * FogbowServiceReachabilityProbe is responsible for monitoring the availability of Fogbow services.
+ * Availability is verified by performing http requests to services at specific verification
+ * addresses.
+ */
 @Component
 public class FogbowServiceReachabilityProbe extends Probe {
 
@@ -75,8 +80,11 @@ public class FogbowServiceReachabilityProbe extends Probe {
     protected Observation makeObservation(Timestamp currentTimestamp) {
         Map<String, Boolean> result = doGetRequest();
         List<Pair<String, Float>> values = toValues(result);
-        Observation observation = FtaConverter.createObservation(PROBE_LABEL, values, currentTimestamp);
-        LOGGER.info("Made a observation with label [" + observation.getLabel() + "] at [" + currentTimestamp.toString() + "]");
+        Observation observation = FtaConverter
+            .createObservation(PROBE_LABEL, values, currentTimestamp);
+        LOGGER.info(
+            "Made a observation with label [" + observation.getLabel() + "] at [" + currentTimestamp
+                .toString() + "]");
         return observation;
     }
 
@@ -90,8 +98,11 @@ public class FogbowServiceReachabilityProbe extends Probe {
     }
 
     private Float parseToFloat(boolean b) {
-        if (b) return (float) 1;
-        else return (float) 0;
+        if (b) {
+            return (float) 1;
+        } else {
+            return (float) 0;
+        }
     }
 
     private Map<String, Boolean> doGetRequest() {
@@ -107,8 +118,10 @@ public class FogbowServiceReachabilityProbe extends Probe {
                 Integer response = getResponseCode(service.ENDPOINT);
                 httpCodes.put(service.ID, response);
                 LOGGER.debug("Http code [" + response + "] of service [" + service.LABEL + "]");
-            } catch (IOException e){
-                LOGGER.error("Error while do get request to fogbow service [" + service.LABEL + "]: " + e.getMessage());
+            } catch (IOException e) {
+                LOGGER.error(
+                    "Error while do get request to fogbow service [" + service.LABEL + "]: " + e
+                        .getMessage());
             }
         }
         return httpCodes;

@@ -5,55 +5,68 @@ import cloud.fogbow.probes.core.models.Observation;
 import cloud.fogbow.probes.core.models.OrderState;
 import cloud.fogbow.probes.core.models.Probe;
 import cloud.fogbow.probes.core.models.ResourceType;
-import java.util.ArrayList;
 import cloud.fogbow.probes.core.utils.Pair;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import java.sql.Timestamp;
-import java.util.List;
-
+/**
+ * FogbowResourceAvailabilityProbe is responsible for measuring the availability level of Fogbow resources. Resource
+ * availability is given by the ratio between the number of orders in {@link OrderState#FULFILLED} and in
+ * {@link OrderState#FAILED_AFTER_SUCCESSFUL_REQUEST}. This metric measures the level of failure to request a
+ * resource after your {@link cloud.fogbow.probes.core.models.Order} is {@link OrderState#OPEN}.
+ */
 @Component
 public class FogbowResourceAvailabilityProbe extends Probe {
 
     private static final String PROBE_LABEL = "resource_availability_probe";
-    private static final Logger LOGGER = LogManager.getLogger(FogbowResourceAvailabilityProbe.class);
+    private static final Logger LOGGER = LogManager
+        .getLogger(FogbowResourceAvailabilityProbe.class);
 
     public void run() {
-        while(true) {
+        while (true) {
             LOGGER.info("----> Starting Fogbow Resource Availability Probe...");
             super.run();
         }
     }
 
-    protected Observation makeObservation(Timestamp currentTimestamp){
+    protected Observation makeObservation(Timestamp currentTimestamp) {
         List<Pair<String, Float>> resourcesAvailability = new ArrayList<>();
-        ResourceType resourceTypes[] = {ResourceType.COMPUTE, ResourceType.VOLUME, ResourceType.NETWORK};
-        for(ResourceType r : resourceTypes){
+        ResourceType resourceTypes[] = {ResourceType.COMPUTE, ResourceType.VOLUME,
+            ResourceType.NETWORK};
+        for (ResourceType r : resourceTypes) {
             resourcesAvailability.add(getResourceAvailabilityValue(r));
         }
         Observation observation = FtaConverter
             .createObservation(PROBE_LABEL, resourcesAvailability, currentTimestamp);
-        LOGGER.info("Made a observation with label [" + observation.getLabel() + "] at [" + currentTimestamp.toString() + "]");
+        LOGGER.info(
+            "Made a observation with label [" + observation.getLabel() + "] at [" + currentTimestamp
+                .toString() + "]");
         return observation;
     }
 
-    private Pair<String, Float> getResourceAvailabilityValue(ResourceType type){
+    private Pair<String, Float> getResourceAvailabilityValue(ResourceType type) {
         LOGGER.debug("Getting audits from resource of type [" + type.getValue() + "]");
-        Integer valueFailedAfterSuccessful = providerService.getAuditsFromResourceByState(OrderState.FAILED_AFTER_SUCCESSFUL_REQUEST, type,
-            lastTimestampAwake, firstTimeAwake);
-        Integer valueFulfilled = providerService.getAuditsFromResourceByState(OrderState.FULFILLED, type,
-            lastTimestampAwake, firstTimeAwake);
-        Float availabilityData = calculateAvailabilityData(valueFailedAfterSuccessful, valueFulfilled);
+        Integer valueFailedAfterSuccessful = providerService
+            .getAuditsFromResourceByState(OrderState.FAILED_AFTER_SUCCESSFUL_REQUEST, type,
+                lastTimestampAwake, firstTimeAwake);
+        Integer valueFulfilled = providerService
+            .getAuditsFromResourceByState(OrderState.FULFILLED, type, lastTimestampAwake,
+                firstTimeAwake);
+        Float availabilityData = calculateAvailabilityData(valueFailedAfterSuccessful,
+            valueFulfilled);
         LOGGER.debug("Value of availability data [" + availabilityData + "]");
         Pair<String, Float> pair = new Pair<>(type.getValue(), availabilityData);
         return pair;
     }
 
-    private Float calculateAvailabilityData(Integer valueFailedAfterSuccessful, Integer valueFulfilled){
+    private Float calculateAvailabilityData(Integer valueFailedAfterSuccessful,
+        Integer valueFulfilled) {
         float result = 100;
-        if(valueFulfilled != 0){
+        if (valueFulfilled != 0) {
             result = 100 * (1 - (float) valueFailedAfterSuccessful / (float) valueFulfilled);
         }
         return result;
