@@ -66,8 +66,10 @@ public class FogbowProbesApplication {
 
         try {
             cmd = parser.parse(options, args);
-            String inputFilePath = cmd.getOptionValue(longOpt);
-            System.setProperty(CONF_FILE_PROPERTY, inputFilePath);
+            if(cmd.hasOption(longOpt)){
+                String inputFilePath = cmd.getOptionValue(longOpt);
+                System.setProperty(CONF_FILE_PROPERTY, inputFilePath);
+            }
         } catch (ParseException e) {
             LOGGER.error("Error while loading command line arguments: " + e.getMessage(), e);
             System.exit(1);
