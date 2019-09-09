@@ -1,5 +1,6 @@
 package cloud.fogbow.probes.core.utils;
 
+import cloud.fogbow.probes.core.models.Value;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -16,30 +17,37 @@ public class AppUtil {
         }
     }
 
-    public static JSONObject toJsonObject(Pair<String, Float> pair) {
-        JSONObject json = new JSONObject();
-        if (pair != null && !pair.getKey().trim().isEmpty() && !Objects.isNull(pair.getValue())) {
-            json.put(pair.getKey(), pair.getValue());
-        }
-        return json;
-    }
-
-    public static void makeBodyField(JSONArray json, List<Pair<String, Float>> values) {
-        if (values != null && !values.isEmpty()) {
-            for (Pair<String, Float> p : values) {
-                JSONObject jsonPair = toJsonObject(p);
-                json.put(jsonPair);
-            }
+    public static void makeBodyField(JSONObject json, String key, Long value) {
+        if (value != null) {
+            json.put(key, value);
         }
     }
 
     public static void makeBodyField(JSONObject json, String key,
-        List<Pair<String, Float>> values) {
+        List<Value> values) {
         if (values != null && !values.isEmpty()) {
             JSONArray jsonArray = new JSONArray();
             makeBodyField(jsonArray, values);
             json.put(key, jsonArray);
         }
+    }
+
+    public static void makeBodyField(JSONArray json, List<Value> values) {
+        if (values != null && !values.isEmpty()) {
+            for (Value v : values) {
+                JSONObject jsonPair = toJsonObject(v);
+                json.put(jsonPair);
+            }
+        }
+    }
+
+    public static JSONObject toJsonObject(Value v) {
+        JSONObject json = new JSONObject();
+        if (v != null && !v.getDescription().trim().isEmpty() && !Objects.isNull(v.getMeasurement())) {
+            json.put("description", v.getDescription());
+            json.put("measurement", v.getMeasurement());
+        }
+        return json;
     }
 
     public static void makeBodyField(JSONObject json, String key, Timestamp timestamp) {

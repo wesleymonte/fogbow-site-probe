@@ -1,6 +1,5 @@
 package cloud.fogbow.probes.core.models;
 
-import cloud.fogbow.probes.core.utils.Pair;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -11,10 +10,10 @@ import java.util.List;
 public class Observation {
 
     private String label;
-    private List<Pair<String, Float>> values;
+    private List<Value> values;
     private Timestamp timestamp;
 
-    public Observation(String label, List<Pair<String, Float>> values, Timestamp timestamp) {
+    public Observation(String label, List<Value> values, Timestamp timestamp) {
         this.label = label;
         this.values = values;
         this.timestamp = timestamp;
@@ -24,7 +23,7 @@ public class Observation {
         return label;
     }
 
-    public List<Pair<String, Float>> getValues() {
+    public List<Value> getValues() {
         return values;
     }
 
