@@ -3,8 +3,8 @@
 readonly TAG=latest
 readonly IMAGE=wesleymonte/probes
 
-echo "Run this script outside the docker folder."
-echo "(e.g.) sudo bash ~/probes/docker/deploy.sh"
+echo "Run this script in the project folder."
+echo "(e.g.) sudo bash ./docker/deploy.sh"
 printf "For configuration, edit the files:\n\t./src/main/resources/private/probe-fogbow.conf\n\t./src/main/resources/application.properties\n"
 while true; do
     read -p "Is ok?" yn
