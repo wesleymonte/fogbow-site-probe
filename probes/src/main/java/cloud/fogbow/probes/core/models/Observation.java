@@ -1,7 +1,9 @@
 package cloud.fogbow.probes.core.models;
 
+import cloud.fogbow.probes.core.utils.AppUtil;
 import java.sql.Timestamp;
 import java.util.List;
+import org.json.JSONObject;
 
 /**
  * It is the data structure that represents an observation of some entity at a given {@link
@@ -9,6 +11,9 @@ import java.util.List;
  */
 public class Observation {
 
+    private static final String METRIC_LABEL_JSON_KEY = "label";
+    private static final String VALUES_JSON_KEY = "values";
+    private static final String TIMESTAMP_JSON_KEY = "timestamp";
     private String label;
     private List<Value> values;
     private Timestamp timestamp;
@@ -29,5 +34,13 @@ public class Observation {
 
     public Timestamp getTimestamp() {
         return timestamp;
+    }
+
+    public JSONObject toJson() {
+        JSONObject jsonObject = new JSONObject();
+        AppUtil.makeBodyField(jsonObject, METRIC_LABEL_JSON_KEY, this.getLabel());
+        AppUtil.makeBodyField(jsonObject, VALUES_JSON_KEY, this.getValues());
+        AppUtil.makeBodyField(jsonObject, TIMESTAMP_JSON_KEY, this.getTimestamp().getTime());
+        return jsonObject;
     }
 }
