@@ -32,7 +32,7 @@ public class FogbowServiceReachabilityProbe extends Probe {
 
     private static final Logger LOGGER = LogManager.getLogger(FogbowServiceReachabilityProbe.class);
     private static final String PROBE_NAME = "service_reachability_probe";
-    private static final String HELP = "Availability is verified by performing http requests to services at specific verification addresses.";
+    private static final String HELP = "Monitoring the availability of Fogbow services.";
     private final int RESPONSE_CODE_LOWER_BOUND = 199;
     private final int RESPONSE_CODE_UPPER_BOUND = 300;
     private String AS_ENDPOINT;
