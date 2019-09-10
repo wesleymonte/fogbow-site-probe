@@ -7,7 +7,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
@@ -23,14 +22,14 @@ public class FtaSender {
         try {
             LOGGER.info("Sending observation to [" + address + "]");
             StringEntity body = toJson(observation);
-            LOGGER.debug("Observation json body: " + EntityUtils.toString(body));
             HttpWrapper.doRequest(HttpPost.METHOD_NAME, address, new ArrayList<>(), body);
         } catch (Exception e) {
             LOGGER.error("Error while sending observation: " + e.getMessage());
         }
     }
 
-    private static StringEntity toJson(Observation observation) throws UnsupportedEncodingException {
+    private static StringEntity toJson(Observation observation)
+        throws UnsupportedEncodingException {
         JSONObject jsonObject = new JSONObject();
         AppUtil.makeBodyField(jsonObject, METRIC_LABEL_JSON_KEY, observation.getLabel());
         AppUtil.makeBodyField(jsonObject, VALUES_JSON_KEY, observation.getValues());
