@@ -1,6 +1,7 @@
 package cloud.fogbow.probes.core.probes;
 
 import cloud.fogbow.probes.core.Constants;
+import cloud.fogbow.probes.core.fta.FtaConverter;
 import cloud.fogbow.probes.core.models.Observation;
 import cloud.fogbow.probes.core.models.OrderState;
 import cloud.fogbow.probes.core.models.Probe;
@@ -47,7 +48,7 @@ public class FogbowServiceLatencyProbe extends Probe {
     protected Observation makeObservation(Timestamp currentTimestamp) {
         Long[] latencies = this.providerService.getLatencies(currentTimestamp, firstTimeAwake);
         List<Pair<String, Float>> values = toValue(latencies);
-        Observation observation = new Observation(PROBE_LABEL, values, currentTimestamp);
+        Observation observation = FtaConverter.createObservation(PROBE_LABEL, values, currentTimestamp);
         LOGGER.info(
             "Made a observation with label [" + observation.getLabel() + "] at [" + currentTimestamp
                 .toString() + "]");

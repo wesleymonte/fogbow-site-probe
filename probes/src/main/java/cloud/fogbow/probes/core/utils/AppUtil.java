@@ -1,10 +1,9 @@
 package cloud.fogbow.probes.core.utils;
 
-import java.sql.Timestamp;
+import cloud.fogbow.probes.core.models.Value;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -16,25 +15,13 @@ public class AppUtil {
         }
     }
 
-    public static JSONObject toJsonObject(Pair<String, Float> pair) {
-        JSONObject json = new JSONObject();
-        if (pair != null && !pair.getKey().trim().isEmpty() && !Objects.isNull(pair.getValue())) {
-            json.put(pair.getKey(), pair.getValue());
-        }
-        return json;
-    }
-
-    public static void makeBodyField(JSONArray json, List<Pair<String, Float>> values) {
-        if (values != null && !values.isEmpty()) {
-            for (Pair<String, Float> p : values) {
-                JSONObject jsonPair = toJsonObject(p);
-                json.put(jsonPair);
-            }
+    public static void makeBodyField(JSONObject json, String key, Long value) {
+        if (value != null) {
+            json.put(key, value);
         }
     }
 
-    public static void makeBodyField(JSONObject json, String key,
-        List<Pair<String, Float>> values) {
+    public static void makeBodyField(JSONObject json, String key, List<Value> values) {
         if (values != null && !values.isEmpty()) {
             JSONArray jsonArray = new JSONArray();
             makeBodyField(jsonArray, values);
@@ -42,9 +29,11 @@ public class AppUtil {
         }
     }
 
-    public static void makeBodyField(JSONObject json, String key, Timestamp timestamp) {
-        if (timestamp != null) {
-            json.put(key, timestamp);
+    public static void makeBodyField(JSONArray json, List<Value> values) {
+        if (values != null && !values.isEmpty()) {
+            for (Value v : values) {
+                json.put(v.toJson());
+            }
         }
     }
 
