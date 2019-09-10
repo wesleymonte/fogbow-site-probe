@@ -30,16 +30,14 @@ public class FogbowProbesApplication {
 
     @Bean
     public Properties properties() {
-        Properties properties = null;
+        Properties properties = new Properties();
         String confFilePath = System.getProperty(CONF_FILE_PROPERTY);
 
         try {
             if (Objects.isNull(confFilePath)) {
-                confFilePath =
-                    Thread.currentThread().getContextClassLoader().getResource("").getPath()
-                        + "private/";
+                confFilePath = "private/" + Constants.CONF_FILE;
+                properties.load(FogbowProbesApplication.class.getClassLoader().getResourceAsStream(confFilePath));
                 LOGGER.info("Configuration file found in default path " + confFilePath + ".");
-                properties = loadProperties(confFilePath + Constants.CONF_FILE);
             } else {
                 LOGGER.info("Configuration file found in path " + confFilePath + ".");
                 properties = loadProperties(confFilePath);
