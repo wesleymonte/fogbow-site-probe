@@ -50,12 +50,6 @@ public class AppUtil {
         return json;
     }
 
-    public static void makeBodyField(JSONObject json, String key, Timestamp timestamp) {
-        if (timestamp != null) {
-            json.put(key, timestamp);
-        }
-    }
-
     public static String timestampToDate(long timestamp) {
         Date date = new java.util.Date(timestamp * 1000L);
         SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
