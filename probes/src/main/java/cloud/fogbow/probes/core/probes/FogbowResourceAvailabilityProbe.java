@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class FogbowResourceAvailabilityProbe extends Probe {
 
-    private static final String PROBE_NAME = "resource_availability_probe";
+    private static final String PROBE_NAME = "resource_availability";
     private static final String HELP = "Metric measures the level of failure to request a resource after your Order is Open.";
     private static final Logger LOGGER = LogManager
         .getLogger(FogbowResourceAvailabilityProbe.class);

@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class FogbowServiceSuccessRateProbe extends Probe {
 
-    private static final String PROBE_NAME = "service_success_rate";
+    private static final String PROBE_NAME = "service_success";
     private static final Logger LOGGER = LogManager.getLogger(FogbowServiceSuccessRateProbe.class);
     private static final String HELP = "Measuring the success rate in requesting a resource.";
 

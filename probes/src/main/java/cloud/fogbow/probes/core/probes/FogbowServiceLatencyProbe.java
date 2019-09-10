@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class FogbowServiceLatencyProbe extends Probe {
 
-    private static final String PROBE_NAME = "service_latency_probe";
+    private static final String PROBE_NAME = "service_latency";
     private static final Logger LOGGER = LogManager.getLogger(FogbowServiceLatencyProbe.class);
     private static final String COMPUTE_JSON_KEY = "COMPUTE";
     private static final String NETWORK_JSON_KEY = "NETWORK";
