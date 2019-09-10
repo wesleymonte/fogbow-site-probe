@@ -1,7 +1,11 @@
 package cloud.fogbow.probes.core.models;
 
+import org.json.JSONObject;
+
 public class Value {
 
+    private static final String DESCRIPTION_JSON_KEY = "description";
+    private static final String MEASUREMENT_JSON_KEY = "measurement";
     private String description;
     private Float measurement;
 
@@ -16,5 +20,12 @@ public class Value {
 
     public Float getMeasurement() {
         return measurement;
+    }
+
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put(DESCRIPTION_JSON_KEY, this.getDescription());
+        json.put(MEASUREMENT_JSON_KEY, this.getMeasurement());
+        return json;
     }
 }
