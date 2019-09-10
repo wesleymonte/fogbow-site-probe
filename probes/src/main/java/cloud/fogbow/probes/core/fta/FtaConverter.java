@@ -10,12 +10,12 @@ import cloud.fogbow.probes.core.utils.Pair;
 
 public class FtaConverter {
 
-    public static Observation createObservation(String label, List<Pair<String, Float>> values, Timestamp timestamp, String help) throws IllegalArgumentException {
-        if(Objects.isNull(label) || Objects.isNull(values) || Objects.isNull(timestamp) || values.isEmpty()){
+    public static Observation createObservation(String name, List<Pair<String, Float>> values, Timestamp timestamp, String help) throws IllegalArgumentException {
+        if(Objects.isNull(name) || Objects.isNull(values) || Objects.isNull(timestamp) || values.isEmpty()){
             throw new IllegalArgumentException("Any argument to observation may be not null");
         }
         List<Value> valuesList = toValueList(values);
-        Observation observation = new Observation(label, valuesList, timestamp, help);
+        Observation observation = new Observation(name, valuesList, timestamp, help);
         return observation;
     }
 

@@ -88,7 +88,7 @@ public class FogbowServiceReachabilityProbe extends Probe {
         Observation observation = FtaConverter
             .createObservation(PROBE_LABEL, values, currentTimestamp, HELP);
         LOGGER.info(
-            "Made a observation with label [" + observation.getLabel() + "] at [" + currentTimestamp
+            "Made a observation with name [" + observation.getName() + "] at [" + currentTimestamp
                 .toString() + "]");
         return observation;
     }
