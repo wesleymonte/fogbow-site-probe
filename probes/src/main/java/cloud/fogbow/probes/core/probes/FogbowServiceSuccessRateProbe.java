@@ -16,19 +16,22 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 /**
- * FogbowServiceSuccessRateProbe is responsible for measuring the success rate in requesting a resource. The success rate is
- * measured by the relationship between the number of orders that failed after requests ({@link OrderState#FAILED_AFTER_SUCCESSFUL_REQUEST}) and the
- * number of orders opened ({@link OrderState#OPEN}).
+ * FogbowServiceSuccessRateProbe is responsible for measuring the success rate in requesting a
+ * resource. The success rate is measured by the relationship between the number of orders that
+ * failed after requests ({@link OrderState#FAILED_AFTER_SUCCESSFUL_REQUEST}) and the number of
+ * orders opened ({@link OrderState#OPEN}).
  */
 @Component
 public class FogbowServiceSuccessRateProbe extends Probe {
 
     private static final String PROBE_LABEL = "service_success_rate";
     private static final Logger LOGGER = LogManager.getLogger(FogbowServiceSuccessRateProbe.class);
+    private static final String HELP = "Measuring the success rate in requesting a resource.";
 
     @PostConstruct
-    public void FogbowServiceSuccessRateProbe(){
-        this.PROBE_ID = Integer.valueOf(properties.getProperty(Constants.SERVICE_SUCCESS_RATE_PROBE_ID));
+    public void FogbowServiceSuccessRateProbe() {
+        this.PROBE_ID = Integer
+            .valueOf(properties.getProperty(Constants.SERVICE_SUCCESS_RATE_PROBE_ID));
     }
 
 
@@ -47,7 +50,7 @@ public class FogbowServiceSuccessRateProbe extends Probe {
             resourcesAvailability.add(getResourceAvailabilityValue(r));
         }
         Observation observation = FtaConverter
-            .createObservation(PROBE_LABEL, resourcesAvailability, currentTimestamp);
+            .createObservation(PROBE_LABEL, resourcesAvailability, currentTimestamp, HELP);
         LOGGER.info(
             "Made a observation with label [" + observation.getLabel() + "] at [" + currentTimestamp
                 .toString() + "]");
@@ -70,6 +73,7 @@ public class FogbowServiceSuccessRateProbe extends Probe {
 
     /**
      * Calculates the percentage of Orders that did not fail on the request.
+     *
      * @param valueFailed Quantity of orders in {@link OrderState#FAILED_ON_REQUEST}
      * @param valueOpen Quantity of orders in {@link OrderState#OPEN}
      * @return float with the resulting percentage

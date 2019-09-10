@@ -14,14 +14,17 @@ public class Observation {
     private static final String METRIC_LABEL_JSON_KEY = "label";
     private static final String VALUES_JSON_KEY = "values";
     private static final String TIMESTAMP_JSON_KEY = "timestamp";
+    private static final String HELP_JSON_KEY = "timestamp";
     private String label;
     private List<Value> values;
     private Timestamp timestamp;
+    private String help;
 
-    public Observation(String label, List<Value> values, Timestamp timestamp) {
+    public Observation(String label, List<Value> values, Timestamp timestamp, String help) {
         this.label = label;
         this.values = values;
         this.timestamp = timestamp;
+        this.help = help;
     }
 
     public String getLabel() {
@@ -36,11 +39,16 @@ public class Observation {
         return timestamp;
     }
 
+    public String getHelp() {
+        return help;
+    }
+
     public JSONObject toJson() {
         JSONObject jsonObject = new JSONObject();
         AppUtil.makeBodyField(jsonObject, METRIC_LABEL_JSON_KEY, this.getLabel());
         AppUtil.makeBodyField(jsonObject, VALUES_JSON_KEY, this.getValues());
         AppUtil.makeBodyField(jsonObject, TIMESTAMP_JSON_KEY, this.getTimestamp().getTime());
+        AppUtil.makeBodyField(jsonObject, HELP_JSON_KEY, this.getHelp());
         return jsonObject;
     }
 }

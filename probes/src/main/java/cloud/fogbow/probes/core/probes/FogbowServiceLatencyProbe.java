@@ -6,14 +6,11 @@ import cloud.fogbow.probes.core.models.Observation;
 import cloud.fogbow.probes.core.models.OrderState;
 import cloud.fogbow.probes.core.models.Probe;
 import cloud.fogbow.probes.core.utils.Pair;
-import javax.annotation.PostConstruct;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.stereotype.Component;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.annotation.PostConstruct;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
@@ -32,9 +29,10 @@ public class FogbowServiceLatencyProbe extends Probe {
     private static final String COMPUTE_JSON_KEY = "COMPUTE";
     private static final String NETWORK_JSON_KEY = "NETWORK";
     private static final String VOLUME_JSON_KEY = "VOLUME";
+    private static final String HELP = "Measuring the latency of resource allocation.";
 
     @PostConstruct
-    public void FogbowServiceLatencyProbe(){
+    public void FogbowServiceLatencyProbe() {
         this.PROBE_ID = Integer.valueOf(properties.getProperty(Constants.SERVICE_LATENCY_PROBE_ID));
     }
 
@@ -48,7 +46,8 @@ public class FogbowServiceLatencyProbe extends Probe {
     protected Observation makeObservation(Timestamp currentTimestamp) {
         Long[] latencies = this.providerService.getLatencies(currentTimestamp, firstTimeAwake);
         List<Pair<String, Float>> values = toValue(latencies);
-        Observation observation = FtaConverter.createObservation(PROBE_LABEL, values, currentTimestamp);
+        Observation observation = FtaConverter
+            .createObservation(PROBE_LABEL, values, currentTimestamp, HELP);
         LOGGER.info(
             "Made a observation with label [" + observation.getLabel() + "] at [" + currentTimestamp
                 .toString() + "]");
