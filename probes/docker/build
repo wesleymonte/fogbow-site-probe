@@ -11,4 +11,5 @@ fi
 
 tag=$1
 
+mvn package
 sudo docker build --no-cache -t wesleymonte/probes:$tag -f docker/Dockerfile .
