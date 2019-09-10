@@ -2,6 +2,10 @@ package cloud.fogbow.probes.core.models;
 
 import org.json.JSONObject;
 
+/**
+ * The value entity is basically a structure for storing the result of a measurement. It always has
+ * a description for measurement and measurement.
+ */
 public class Value {
 
     private static final String DESCRIPTION_JSON_KEY = "description";
