@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class FogbowResourceAvailabilityProbe extends Probe {
 
-    private static final String PROBE_LABEL = "resource_availability_probe";
+    private static final String PROBE_NAME = "resource_availability_probe";
     private static final String HELP = "Measuring the availability level of Fogbow resources.";
     private static final Logger LOGGER = LogManager
         .getLogger(FogbowResourceAvailabilityProbe.class);
@@ -49,7 +49,7 @@ public class FogbowResourceAvailabilityProbe extends Probe {
             resourcesAvailability.add(getResourceAvailabilityValue(r));
         }
         Observation observation = FtaConverter
-            .createObservation(PROBE_LABEL, resourcesAvailability, currentTimestamp, HELP);
+            .createObservation(PROBE_NAME, resourcesAvailability, currentTimestamp, HELP);
         LOGGER.info(
             "Made a observation with name [" + observation.getName() + "] at [" + currentTimestamp
                 .toString() + "]");

@@ -31,7 +31,7 @@ import org.springframework.stereotype.Component;
 public class FogbowServiceReachabilityProbe extends Probe {
 
     private static final Logger LOGGER = LogManager.getLogger(FogbowServiceReachabilityProbe.class);
-    private static final String PROBE_LABEL = "service_reachability_probe";
+    private static final String PROBE_NAME = "service_reachability_probe";
     private static final String HELP = "Availability is verified by performing http requests to services at specific verification addresses.";
     private final int RESPONSE_CODE_LOWER_BOUND = 199;
     private final int RESPONSE_CODE_UPPER_BOUND = 300;
@@ -86,7 +86,7 @@ public class FogbowServiceReachabilityProbe extends Probe {
         Map<String, Boolean> result = doGetRequest();
         List<Pair<String, Float>> values = toValues(result);
         Observation observation = FtaConverter
-            .createObservation(PROBE_LABEL, values, currentTimestamp, HELP);
+            .createObservation(PROBE_NAME, values, currentTimestamp, HELP);
         LOGGER.info(
             "Made a observation with name [" + observation.getName() + "] at [" + currentTimestamp
                 .toString() + "]");

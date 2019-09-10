@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class FogbowServiceLatencyProbe extends Probe {
 
-    private static final String PROBE_LABEL = "service_latency_probe";
+    private static final String PROBE_NAME = "service_latency_probe";
     private static final Logger LOGGER = LogManager.getLogger(FogbowServiceLatencyProbe.class);
     private static final String COMPUTE_JSON_KEY = "COMPUTE";
     private static final String NETWORK_JSON_KEY = "NETWORK";
@@ -47,7 +47,7 @@ public class FogbowServiceLatencyProbe extends Probe {
         Long[] latencies = this.providerService.getLatencies(currentTimestamp, firstTimeAwake);
         List<Pair<String, Float>> values = toValue(latencies);
         Observation observation = FtaConverter
-            .createObservation(PROBE_LABEL, values, currentTimestamp, HELP);
+            .createObservation(PROBE_NAME, values, currentTimestamp, HELP);
         LOGGER.info(
             "Made a observation with name [" + observation.getName() + "] at [" + currentTimestamp
                 .toString() + "]");

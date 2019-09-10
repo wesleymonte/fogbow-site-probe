@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class FogbowServiceSuccessRateProbe extends Probe {
 
-    private static final String PROBE_LABEL = "service_success_rate";
+    private static final String PROBE_NAME = "service_success_rate";
     private static final Logger LOGGER = LogManager.getLogger(FogbowServiceSuccessRateProbe.class);
     private static final String HELP = "Measuring the success rate in requesting a resource.";
 
@@ -50,7 +50,7 @@ public class FogbowServiceSuccessRateProbe extends Probe {
             resourcesAvailability.add(getResourceAvailabilityValue(r));
         }
         Observation observation = FtaConverter
-            .createObservation(PROBE_LABEL, resourcesAvailability, currentTimestamp, HELP);
+            .createObservation(PROBE_NAME, resourcesAvailability, currentTimestamp, HELP);
         LOGGER.info(
             "Made a observation with name [" + observation.getName() + "] at [" + currentTimestamp
                 .toString() + "]");
