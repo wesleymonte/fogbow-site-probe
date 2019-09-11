@@ -14,7 +14,7 @@ public class Metric {
     private static final String NAME_JSON_KEY = "name";
     private static final String VALUES_JSON_KEY = "observations";
     private static final String TIMESTAMP_JSON_KEY = "timestamp";
-    private static final String HELP_JSON_KEY = "timestamp";
+    private static final String HELP_JSON_KEY = "help";
     private String name;
     private List<Observation> observations;
     private Timestamp timestamp;
