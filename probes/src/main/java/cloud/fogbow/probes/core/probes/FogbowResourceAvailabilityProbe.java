@@ -16,21 +16,24 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 /**
- * FogbowResourceAvailabilityProbe is responsible for measuring the availability level of Fogbow resources. Resource
- * availability is given by the ratio between the number of orders in {@link OrderState#FULFILLED} and in
- * {@link OrderState#FAILED_AFTER_SUCCESSFUL_REQUEST}. This metric measures the level of failure to request a
- * resource after your {@link cloud.fogbow.probes.core.models.Order} is {@link OrderState#OPEN}.
+ * FogbowResourceAvailabilityProbe is responsible for measuring the availability level of Fogbow
+ * resources. Resource availability is calculated by the ratio between the number of orders in
+ * {@link OrderState#FULFILLED} and in {@link OrderState#FAILED_AFTER_SUCCESSFUL_REQUEST}. This
+ * metric measures the level of failure to request a resource after your {@link
+ * cloud.fogbow.probes.core.models.Order} is {@link OrderState#OPEN}.
  */
 @Component
 public class FogbowResourceAvailabilityProbe extends Probe {
 
-    private static final String PROBE_LABEL = "resource_availability_probe";
+    private static final String PROBE_NAME = "resource_availability";
+    private static final String HELP = "Metric measures the level of failure to request a resource after your Order is Open.";
     private static final Logger LOGGER = LogManager
         .getLogger(FogbowResourceAvailabilityProbe.class);
 
     @PostConstruct
-    public void FogbowResourceAvailabilityProbe(){
-        this.PROBE_ID = Integer.valueOf(properties.getProperty(Constants.RESOURCE_AVAILABILITY_PROBE_ID));
+    public void FogbowResourceAvailabilityProbe() {
+        this.PROBE_ID = Integer
+            .valueOf(properties.getProperty(Constants.RESOURCE_AVAILABILITY_PROBE_ID));
     }
 
     public void run() {
@@ -48,9 +51,9 @@ public class FogbowResourceAvailabilityProbe extends Probe {
             resourcesAvailability.add(getResourceAvailabilityValue(r));
         }
         Observation observation = FtaConverter
-            .createObservation(PROBE_LABEL, resourcesAvailability, currentTimestamp);
+            .createObservation(PROBE_NAME, resourcesAvailability, currentTimestamp, HELP);
         LOGGER.info(
-            "Made a observation with label [" + observation.getLabel() + "] at [" + currentTimestamp
+            "Made a observation with name [" + observation.getName() + "] at [" + currentTimestamp
                 .toString() + "]");
         return observation;
     }
@@ -72,6 +75,7 @@ public class FogbowResourceAvailabilityProbe extends Probe {
 
     /**
      * Calculates the percentage of Orders that did not fail after the request.
+     *
      * @param valueFailedAfterSuccessful Quantity of orders in {@link OrderState#FAILED_AFTER_SUCCESSFUL_REQUEST}
      * @param valueFulfilled Quantity of orders in {@link OrderState#FULFILLED}
      * @return float with the resulting percentage

@@ -31,7 +31,8 @@ import org.springframework.stereotype.Component;
 public class FogbowServiceReachabilityProbe extends Probe {
 
     private static final Logger LOGGER = LogManager.getLogger(FogbowServiceReachabilityProbe.class);
-    private static final String PROBE_LABEL = "service_reachability_probe";
+    private static final String PROBE_NAME = "service_reachability";
+    private static final String HELP = "Monitoring the availability of Fogbow services.";
     private final int RESPONSE_CODE_LOWER_BOUND = 199;
     private final int RESPONSE_CODE_UPPER_BOUND = 300;
     private String AS_ENDPOINT;
@@ -42,7 +43,8 @@ public class FogbowServiceReachabilityProbe extends Probe {
 
     @PostConstruct
     public void FogbowServiceReachabilityProbe() {
-        this.PROBE_ID = Integer.valueOf(properties.getProperty(Constants.SERVICE_REACHABILITY_PROBE_ID));
+        this.PROBE_ID = Integer
+            .valueOf(properties.getProperty(Constants.SERVICE_REACHABILITY_PROBE_ID));
         this.AS_ENDPOINT = properties.getProperty(Constants.AS_ENDPOINT);
         this.RAS_ENDPOINT = properties.getProperty(Constants.RAS_ENDPOINT);
         this.FNS_ENDPOINT = properties.getProperty(Constants.FNS_ENDPOINT);
@@ -58,8 +60,10 @@ public class FogbowServiceReachabilityProbe extends Probe {
         final String MS_ID = "MS";
 
         FogbowService AS_SERVICE = new FogbowService(AS_ID, "Authentication Service", AS_ENDPOINT);
-        FogbowService RAS_SERVICE = new FogbowService(RAS_ID, "Resource Allocation Service", RAS_ENDPOINT);
-        FogbowService FNS_SERVICE = new FogbowService(FNS_ID, "Federated Network Service", FNS_ENDPOINT);
+        FogbowService RAS_SERVICE = new FogbowService(RAS_ID, "Resource Allocation Service",
+            RAS_ENDPOINT);
+        FogbowService FNS_SERVICE = new FogbowService(FNS_ID, "Federated Network Service",
+            FNS_ENDPOINT);
         FogbowService MS_SERVICE = new FogbowService(MS_ID, "Membership Service", MS_ENDPOINT);
 
         services.put(AS_ID, AS_SERVICE);
@@ -82,9 +86,9 @@ public class FogbowServiceReachabilityProbe extends Probe {
         Map<String, Boolean> result = doGetRequest();
         List<Pair<String, Float>> values = toValues(result);
         Observation observation = FtaConverter
-            .createObservation(PROBE_LABEL, values, currentTimestamp);
+            .createObservation(PROBE_NAME, values, currentTimestamp, HELP);
         LOGGER.info(
-            "Made a observation with label [" + observation.getLabel() + "] at [" + currentTimestamp
+            "Made a observation with name [" + observation.getName() + "] at [" + currentTimestamp
                 .toString() + "]");
         return observation;
     }
