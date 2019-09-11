@@ -43,7 +43,7 @@ public class FogbowServiceLatencyProbe extends Probe {
         }
     }
 
-    protected Metric makeObservation(Timestamp currentTimestamp) {
+    protected Metric getMetric(Timestamp currentTimestamp) {
         Long[] latencies = this.providerService.getLatencies(currentTimestamp, firstTimeAwake);
         List<Pair<String, Float>> values = toValue(latencies);
         Metric metric = FtaConverter

@@ -40,7 +40,7 @@ public abstract class Probe implements Runnable {
     public void run() {
         Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
         try {
-            Metric metric = makeObservation(currentTimestamp);
+            Metric metric = getMetric(currentTimestamp);
             LOGGER.info(
                 "Probe[" + this.PROBE_ID + "] made a metric at [" + metric.getTimestamp()
                     .toString() + "]");
@@ -54,5 +54,5 @@ public abstract class Probe implements Runnable {
         AppUtil.sleep(SLEEP_TIME);
     }
 
-    protected abstract Metric makeObservation(Timestamp timestamp);
+    protected abstract Metric getMetric(Timestamp timestamp);
 }

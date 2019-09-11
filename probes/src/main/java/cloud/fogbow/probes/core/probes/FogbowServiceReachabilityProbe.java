@@ -82,7 +82,7 @@ public class FogbowServiceReachabilityProbe extends Probe {
         }
     }
 
-    protected Metric makeObservation(Timestamp currentTimestamp) {
+    protected Metric getMetric(Timestamp currentTimestamp) {
         Map<String, Boolean> result = doGetRequest();
         List<Pair<String, Float>> values = toValues(result);
         Metric metric = FtaConverter

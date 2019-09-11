@@ -43,7 +43,7 @@ public class FogbowResourceAvailabilityProbe extends Probe {
         }
     }
 
-    protected Metric makeObservation(Timestamp currentTimestamp) {
+    protected Metric getMetric(Timestamp currentTimestamp) {
         List<Pair<String, Float>> resourcesAvailability = new ArrayList<>();
         ResourceType resourceTypes[] = {ResourceType.COMPUTE, ResourceType.VOLUME,
             ResourceType.NETWORK};
