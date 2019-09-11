@@ -86,7 +86,7 @@ public class FogbowServiceReachabilityProbe extends Probe {
         Map<String, Boolean> result = doGetRequest();
         List<Pair<String, Float>> values = toValues(result);
         Metric metric = FtaConverter
-            .createObservation(PROBE_NAME, values, currentTimestamp, HELP);
+            .createMetric(PROBE_NAME, values, currentTimestamp, HELP);
         LOGGER.info(
             "Made a metric with name [" + metric.getName() + "] at [" + currentTimestamp
                 .toString() + "]");

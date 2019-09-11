@@ -6,14 +6,14 @@ import org.json.JSONObject;
  * The value entity is basically a structure for storing the result of a measurement. It always has
  * a description for measurement and measurement.
  */
-public class Value {
+public class Observation {
 
     private static final String DESCRIPTION_JSON_KEY = "description";
     private static final String MEASUREMENT_JSON_KEY = "measurement";
     private String description;
     private Float measurement;
 
-    public Value(String description, Float measurement) {
+    public Observation(String description, Float measurement) {
         this.description = description;
         this.measurement = measurement;
     }

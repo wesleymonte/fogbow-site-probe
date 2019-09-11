@@ -51,7 +51,7 @@ public class FogbowResourceAvailabilityProbe extends Probe {
             resourcesAvailability.add(getResourceAvailabilityValue(r));
         }
         Metric metric = FtaConverter
-            .createObservation(PROBE_NAME, resourcesAvailability, currentTimestamp, HELP);
+            .createMetric(PROBE_NAME, resourcesAvailability, currentTimestamp, HELP);
         LOGGER.info(
             "Made a metric with name [" + metric.getName() + "] at [" + currentTimestamp
                 .toString() + "]");
@@ -68,7 +68,7 @@ public class FogbowResourceAvailabilityProbe extends Probe {
                 firstTimeAwake);
         Float availabilityData = calculateAvailabilityData(valueFailedAfterSuccessful,
             valueFulfilled);
-        LOGGER.debug("Value of availability data [" + availabilityData + "]");
+        LOGGER.debug("Observation of availability data [" + availabilityData + "]");
         Pair<String, Float> pair = new Pair<>(type.getValue(), availabilityData);
         return pair;
     }

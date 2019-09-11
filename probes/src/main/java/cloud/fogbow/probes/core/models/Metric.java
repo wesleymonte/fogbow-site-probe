@@ -7,22 +7,22 @@ import org.json.JSONObject;
 
 /**
  * It is the data structure that represents an observation of some entity at a given {@link
- * #timestamp}. Every observation has {@link #name} and a {@link #values} as a result.
+ * #timestamp}. Every observation has {@link #name} and a {@link #observations} as a result.
  */
 public class Metric {
 
     private static final String NAME_JSON_KEY = "name";
-    private static final String VALUES_JSON_KEY = "values";
+    private static final String VALUES_JSON_KEY = "observations";
     private static final String TIMESTAMP_JSON_KEY = "timestamp";
     private static final String HELP_JSON_KEY = "timestamp";
     private String name;
-    private List<Value> values;
+    private List<Observation> observations;
     private Timestamp timestamp;
     private String help;
 
-    public Metric(String name, List<Value> values, Timestamp timestamp, String help) {
+    public Metric(String name, List<Observation> observations, Timestamp timestamp, String help) {
         this.name = name;
-        this.values = values;
+        this.observations = observations;
         this.timestamp = timestamp;
         this.help = help;
     }
@@ -31,8 +31,8 @@ public class Metric {
         return name;
     }
 
-    public List<Value> getValues() {
-        return values;
+    public List<Observation> getObservations() {
+        return observations;
     }
 
     public Timestamp getTimestamp() {
@@ -46,7 +46,7 @@ public class Metric {
     public JSONObject toJson() {
         JSONObject jsonObject = new JSONObject();
         AppUtil.makeBodyField(jsonObject, NAME_JSON_KEY, this.getName());
-        AppUtil.makeBodyField(jsonObject, VALUES_JSON_KEY, this.getValues());
+        AppUtil.makeBodyField(jsonObject, VALUES_JSON_KEY, this.getObservations());
         AppUtil.makeBodyField(jsonObject, TIMESTAMP_JSON_KEY, this.getTimestamp().getTime());
         AppUtil.makeBodyField(jsonObject, HELP_JSON_KEY, this.getHelp());
         return jsonObject;
