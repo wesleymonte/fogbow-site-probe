@@ -2,7 +2,7 @@ package cloud.fogbow.probes.core.probes;
 
 import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.fta.FtaConverter;
-import cloud.fogbow.probes.core.models.Observation;
+import cloud.fogbow.probes.core.models.Metric;
 import cloud.fogbow.probes.core.models.OrderState;
 import cloud.fogbow.probes.core.models.Probe;
 import cloud.fogbow.probes.core.utils.Pair;
@@ -43,15 +43,15 @@ public class FogbowServiceLatencyProbe extends Probe {
         }
     }
 
-    protected Observation makeObservation(Timestamp currentTimestamp) {
+    protected Metric getMetric(Timestamp currentTimestamp) {
         Long[] latencies = this.providerService.getLatencies(currentTimestamp, firstTimeAwake);
         List<Pair<String, Float>> values = toValue(latencies);
-        Observation observation = FtaConverter
-            .createObservation(PROBE_NAME, values, currentTimestamp, HELP);
+        Metric metric = FtaConverter
+            .createMetric(PROBE_NAME, values, currentTimestamp, HELP);
         LOGGER.info(
-            "Made a observation with name [" + observation.getName() + "] at [" + currentTimestamp
+            "Made a metric with name [" + metric.getName() + "] at [" + currentTimestamp
                 .toString() + "]");
-        return observation;
+        return metric;
     }
 
     private List<Pair<String, Float>> toValue(Long[] latencies) {

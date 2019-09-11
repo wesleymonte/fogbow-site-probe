@@ -1,7 +1,7 @@
 package cloud.fogbow.probes.core.fta;
 
+import cloud.fogbow.probes.core.models.Metric;
 import cloud.fogbow.probes.core.models.Observation;
-import cloud.fogbow.probes.core.models.Value;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,19 +10,19 @@ import cloud.fogbow.probes.core.utils.Pair;
 
 public class FtaConverter {
 
-    public static Observation createObservation(String name, List<Pair<String, Float>> values, Timestamp timestamp, String help) throws IllegalArgumentException {
-        if(Objects.isNull(name) || Objects.isNull(values) || Objects.isNull(timestamp) || values.isEmpty()){
-            throw new IllegalArgumentException("Any argument to observation may be not null");
+    public static Metric createMetric(String name, List<Pair<String, Float>> observation, Timestamp timestamp, String help) throws IllegalArgumentException {
+        if(Objects.isNull(name) || Objects.isNull(observation) || Objects.isNull(timestamp) || observation.isEmpty()){
+            throw new IllegalArgumentException("Any argument to metric may be not null");
         }
-        List<Value> valuesList = toValueList(values);
-        Observation observation = new Observation(name, valuesList, timestamp, help);
-        return observation;
+        List<Observation> valuesList = toObservationList(observation);
+        Metric metric = new Metric(name, valuesList, timestamp, help);
+        return metric;
     }
 
-    private static List<Value> toValueList(List<Pair<String, Float>> values){
-        List<Value> out = new ArrayList<>();
+    private static List<Observation> toObservationList(List<Pair<String, Float>> values){
+        List<Observation> out = new ArrayList<>();
         for(Pair<String, Float> p : values){
-            Value v = new Value(p.getKey(), p.getValue());
+            Observation v = new Observation(p.getKey(), p.getValue());
             out.add(v);
         }
         return out;

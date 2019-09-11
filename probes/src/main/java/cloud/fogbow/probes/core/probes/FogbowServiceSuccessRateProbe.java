@@ -2,7 +2,7 @@ package cloud.fogbow.probes.core.probes;
 
 import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.fta.FtaConverter;
-import cloud.fogbow.probes.core.models.Observation;
+import cloud.fogbow.probes.core.models.Metric;
 import cloud.fogbow.probes.core.models.OrderState;
 import cloud.fogbow.probes.core.models.Probe;
 import cloud.fogbow.probes.core.models.ResourceType;
@@ -42,19 +42,19 @@ public class FogbowServiceSuccessRateProbe extends Probe {
         }
     }
 
-    protected Observation makeObservation(Timestamp currentTimestamp) {
+    protected Metric getMetric(Timestamp currentTimestamp) {
         List<Pair<String, Float>> resourcesAvailability = new ArrayList<>();
         ResourceType resourceTypes[] = {ResourceType.COMPUTE, ResourceType.VOLUME,
             ResourceType.NETWORK};
         for (ResourceType r : resourceTypes) {
             resourcesAvailability.add(getResourceAvailabilityValue(r));
         }
-        Observation observation = FtaConverter
-            .createObservation(PROBE_NAME, resourcesAvailability, currentTimestamp, HELP);
+        Metric metric = FtaConverter
+            .createMetric(PROBE_NAME, resourcesAvailability, currentTimestamp, HELP);
         LOGGER.info(
-            "Made a observation with name [" + observation.getName() + "] at [" + currentTimestamp
+            "Made a metric with name [" + metric.getName() + "] at [" + currentTimestamp
                 .toString() + "]");
-        return observation;
+        return metric;
     }
 
     private Pair<String, Float> getResourceAvailabilityValue(ResourceType type) {
@@ -66,7 +66,7 @@ public class FogbowServiceSuccessRateProbe extends Probe {
             .getAuditsFromResourceByState(OrderState.OPEN, type, lastTimestampAwake,
                 firstTimeAwake);
         Float availabilityData = calculateAvailabilityData(valueFailed, valueOpen);
-        LOGGER.debug("Value of availability data [" + availabilityData + "]");
+        LOGGER.debug("Metric of availability data [" + availabilityData + "]");
         Pair<String, Float> pair = new Pair<>(type.getValue(), availabilityData);
         return pair;
     }

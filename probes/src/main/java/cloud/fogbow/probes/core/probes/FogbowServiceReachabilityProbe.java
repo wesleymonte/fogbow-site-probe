@@ -2,7 +2,7 @@ package cloud.fogbow.probes.core.probes;
 
 import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.fta.FtaConverter;
-import cloud.fogbow.probes.core.models.Observation;
+import cloud.fogbow.probes.core.models.Metric;
 import cloud.fogbow.probes.core.models.Probe;
 import cloud.fogbow.probes.core.utils.AppUtil;
 import cloud.fogbow.probes.core.utils.Pair;
@@ -82,15 +82,15 @@ public class FogbowServiceReachabilityProbe extends Probe {
         }
     }
 
-    protected Observation makeObservation(Timestamp currentTimestamp) {
+    protected Metric getMetric(Timestamp currentTimestamp) {
         Map<String, Boolean> result = doGetRequest();
         List<Pair<String, Float>> values = toValues(result);
-        Observation observation = FtaConverter
-            .createObservation(PROBE_NAME, values, currentTimestamp, HELP);
+        Metric metric = FtaConverter
+            .createMetric(PROBE_NAME, values, currentTimestamp, HELP);
         LOGGER.info(
-            "Made a observation with name [" + observation.getName() + "] at [" + currentTimestamp
+            "Made a metric with name [" + metric.getName() + "] at [" + currentTimestamp
                 .toString() + "]");
-        return observation;
+        return metric;
     }
 
     private List<Pair<String, Float>> toValues(Map<String, Boolean> result) {

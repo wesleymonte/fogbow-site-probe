@@ -1,6 +1,6 @@
 package cloud.fogbow.probes.core.utils;
 
-import cloud.fogbow.probes.core.models.Value;
+import cloud.fogbow.probes.core.models.Observation;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -21,18 +21,18 @@ public class AppUtil {
         }
     }
 
-    public static void makeBodyField(JSONObject json, String key, List<Value> values) {
-        if (values != null && !values.isEmpty()) {
+    public static void makeBodyField(JSONObject json, String key, List<Observation> observations) {
+        if (observations != null && !observations.isEmpty()) {
             JSONArray jsonArray = new JSONArray();
-            makeBodyField(jsonArray, values);
+            makeBodyField(jsonArray, observations);
             json.put(key, jsonArray);
         }
     }
 
-    public static void makeBodyField(JSONArray json, List<Value> values) {
-        if (values != null && !values.isEmpty()) {
-            for (Value v : values) {
-                json.put(v.toJson());
+    public static void makeBodyField(JSONArray json, List<Observation> observations) {
+        if (observations != null && !observations.isEmpty()) {
+            for (Observation observation : observations) {
+                json.put(observation.toJson());
             }
         }
     }

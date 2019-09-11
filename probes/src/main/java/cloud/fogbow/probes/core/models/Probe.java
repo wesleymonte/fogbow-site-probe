@@ -40,11 +40,11 @@ public abstract class Probe implements Runnable {
     public void run() {
         Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
         try {
-            Observation observation = makeObservation(currentTimestamp);
+            Metric metric = getMetric(currentTimestamp);
             LOGGER.info(
-                "Probe[" + this.PROBE_ID + "] made a observation at [" + observation.getTimestamp()
+                "Probe[" + this.PROBE_ID + "] made a metric at [" + metric.getTimestamp()
                     .toString() + "]");
-            FtaSender.sendObservation(FTA_ADDRESS, observation);
+            FtaSender.sendObservation(FTA_ADDRESS, metric);
         } catch (IllegalArgumentException e) {
             LOGGER.error(
                 "Error while probe[" + PROBE_ID + "] making a observation at [" + currentTimestamp
@@ -54,5 +54,5 @@ public abstract class Probe implements Runnable {
         AppUtil.sleep(SLEEP_TIME);
     }
 
-    protected abstract Observation makeObservation(Timestamp timestamp);
+    protected abstract Metric getMetric(Timestamp timestamp);
 }
