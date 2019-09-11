@@ -9,7 +9,7 @@ import org.json.JSONObject;
  * It is the data structure that represents an observation of some entity at a given {@link
  * #timestamp}. Every observation has {@link #name} and a {@link #values} as a result.
  */
-public class Observation {
+public class Metric {
 
     private static final String NAME_JSON_KEY = "name";
     private static final String VALUES_JSON_KEY = "values";
@@ -20,7 +20,7 @@ public class Observation {
     private Timestamp timestamp;
     private String help;
 
-    public Observation(String name, List<Value> values, Timestamp timestamp, String help) {
+    public Metric(String name, List<Value> values, Timestamp timestamp, String help) {
         this.name = name;
         this.values = values;
         this.timestamp = timestamp;
