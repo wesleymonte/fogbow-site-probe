@@ -29,7 +29,7 @@ public class FogbowServiceLatencyProbe extends Probe {
     private static final String COMPUTE_JSON_KEY = "COMPUTE";
     private static final String NETWORK_JSON_KEY = "NETWORK";
     private static final String VOLUME_JSON_KEY = "VOLUME";
-    private static final String HELP = "Latency is measured by the time that elapses between the order being opened until it is available.";
+    private static final String HELP = "Latency is measured by the time that elapses between the order being opened until order are available.";
 
     @PostConstruct
     public void FogbowServiceLatencyProbe() {
