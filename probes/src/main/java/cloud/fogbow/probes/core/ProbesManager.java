@@ -1,4 +1,4 @@
-package cloud.fogbow.probes;
+package cloud.fogbow.probes.core;
 
 import cloud.fogbow.probes.core.controllers.FogbowProbesController;
 import cloud.fogbow.probes.core.services.DataProviderService;

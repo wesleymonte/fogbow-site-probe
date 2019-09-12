@@ -1,5 +1,6 @@
 package cloud.fogbow.probes;
 
+import cloud.fogbow.probes.core.ProbesManager;
 import cloud.fogbow.probes.core.services.DataProviderService;
 import java.util.Properties;
 import org.springframework.beans.factory.annotation.Autowired;
