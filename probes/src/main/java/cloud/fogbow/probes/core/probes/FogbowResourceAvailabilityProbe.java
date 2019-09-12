@@ -1,6 +1,7 @@
 package cloud.fogbow.probes.core.probes;
 
 import cloud.fogbow.probes.core.fta.FtaConverter;
+import cloud.fogbow.probes.core.fta.FtaSender;
 import cloud.fogbow.probes.core.models.Metric;
 import cloud.fogbow.probes.core.models.OrderState;
 import cloud.fogbow.probes.core.models.Probe;
@@ -8,7 +9,10 @@ import cloud.fogbow.probes.core.models.ResourceType;
 import cloud.fogbow.probes.core.utils.Pair;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,6 +28,7 @@ public class FogbowResourceAvailabilityProbe extends Probe {
 
     public static final String THREAD_NAME = "Thread-Resource-Availability-Probe";
     private static final String PROBE_NAME = "resource_availability";
+    private static final String PROBE_TYPE = "availability";
     private static final String HELP = "Metric measures the level of failure to request a resource after your Order is Open.";
     private static final Logger LOGGER = LogManager
         .getLogger(FogbowResourceAvailabilityProbe.class);
@@ -39,19 +44,28 @@ public class FogbowResourceAvailabilityProbe extends Probe {
         }
     }
 
-    protected Metric getMetric(Timestamp currentTimestamp) {
+    protected List<Metric> getMetrics(Timestamp currentTimestamp) {
         List<Pair<String, Float>> resourcesAvailability = new ArrayList<>();
         ResourceType resourceTypes[] = {ResourceType.COMPUTE, ResourceType.VOLUME,
             ResourceType.NETWORK};
         for (ResourceType r : resourceTypes) {
             resourcesAvailability.add(getResourceAvailabilityValue(r));
         }
-        Metric metric = FtaConverter
-            .createMetric(PROBE_NAME, resourcesAvailability, currentTimestamp, HELP);
+        List<Metric> metrics = new ArrayList<>();
+        parseValuesToMetrics(metrics, resourcesAvailability, currentTimestamp);
         LOGGER.info(
-            "Made a metric with name [" + metric.getName() + "] at [" + currentTimestamp.toString()
+            "Made as metric at [" + currentTimestamp.toString()
                 + "]");
-        return metric;
+        return metrics;
+    }
+
+    private void parseValuesToMetrics(List<Metric> metrics, List<Pair<String, Float>> values, Timestamp currentTimestamp){
+        for(Pair<String, Float> p : values){
+            Map<String, String> metadata = new HashMap<>();
+            metadata.put("resource", p.getKey());
+            Metric m = new Metric(PROBE_TYPE, p.getValue(), currentTimestamp, HELP, metadata);
+            metrics.add(m);
+        }
     }
 
     private Pair<String, Float> getResourceAvailabilityValue(ResourceType type) {
