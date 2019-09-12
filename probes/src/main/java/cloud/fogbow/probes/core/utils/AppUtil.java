@@ -4,6 +4,8 @@ import cloud.fogbow.probes.core.models.Observation;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -19,6 +21,26 @@ public class AppUtil {
         if (value != null) {
             json.put(key, value);
         }
+    }
+
+    public static void makeBodyField(JSONObject json, String key, Float value) {
+        if (value != null) {
+            json.put(key, value);
+        }
+    }
+
+    public static void makeBodyField(JSONObject json, String key, Map<String, String> map) {
+        if (map != null && !map.isEmpty()) {
+            json.put(key, toJson(map));
+        }
+    }
+
+    private static JSONObject toJson(Map<String, String> map){
+        JSONObject jsonObject = new JSONObject();
+        for(Entry<String, String> e : map.entrySet()){
+            jsonObject.put(e.getKey(), e.getValue());
+        }
+        return jsonObject;
     }
 
     public static void makeBodyField(JSONObject json, String key, List<Observation> observations) {
