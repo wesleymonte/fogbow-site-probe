@@ -21,7 +21,6 @@ public class FogbowServiceLatencyProbe extends Probe {
 
     public static final String THREAD_NAME = "Thread-Service-Latency-Probe";
     private static final String PROBE_NAME = "service_latency";
-    ;
     private static final Logger LOGGER = LogManager.getLogger(FogbowServiceLatencyProbe.class);
     private static final String COMPUTE_JSON_KEY = "COMPUTE";
     private static final String NETWORK_JSON_KEY = "NETWORK";
@@ -31,6 +30,7 @@ public class FogbowServiceLatencyProbe extends Probe {
         super(timeSleep, ftaAddress);
         this.HELP = "Latency is measured by the time that elapses between the order being opened until order are available.";
         this.PROBE_TYPE = "latency";
+        this.VALUE_TYPE_KEY = "resource";
     }
 
     public void run() {

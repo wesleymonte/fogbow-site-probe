@@ -27,6 +27,7 @@ public class FogbowServiceSuccessRateProbe extends Probe {
         super(timeSleep, ftaAddress);
         this.HELP = "Measuring the success rate in requesting a resource.";
         this.PROBE_TYPE = "success_rate";
+        this.VALUE_TYPE_KEY = "resource";
     }
 
     public void run() {

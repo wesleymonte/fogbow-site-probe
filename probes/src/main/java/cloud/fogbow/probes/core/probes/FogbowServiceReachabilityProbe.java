@@ -46,6 +46,7 @@ public class FogbowServiceReachabilityProbe extends Probe {
         this.services = Collections.unmodifiableMap(buildServices());
         this.HELP = "Monitoring the availability of Fogbow services.";
         this.PROBE_TYPE = "reachability";
+        this.VALUE_TYPE_KEY = "service";
     }
 
     private Map<String, FogbowService> buildServices() {
