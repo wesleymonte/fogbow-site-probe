@@ -19,9 +19,9 @@ import org.apache.logging.log4j.Logger;
  */
 public class FogbowServiceSuccessRateProbe extends Probe {
 
+    public static final String THREAD_NAME = "Thread-Service-Success-Rate-Probe";
     private static final String PROBE_NAME = "service_success_rate";
     private static final Logger LOGGER = LogManager.getLogger(FogbowServiceSuccessRateProbe.class);
-    public static final String THREAD_NAME = "Thread-Service-Success-Rate-Probe";
 
     public FogbowServiceSuccessRateProbe(Integer timeSleep, String ftaAddress) {
         super(timeSleep, ftaAddress);

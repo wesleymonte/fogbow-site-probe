@@ -13,8 +13,8 @@ import org.apache.logging.log4j.Logger;
 
 /**
  * It is an entity in charge of making observations at every moment of time ({@link #sleepTime}).
- * All observations are sent to the Fogbow Telemetry Aggregator by address {@link #ftaAddress}
- * using {@link FtaSender}.
+ * All observations are sent to the Fogbow Telemetry Aggregator by address {@link #ftaAddress} using
+ * {@link FtaSender}.
  */
 public abstract class Probe implements Runnable {
 
@@ -42,15 +42,15 @@ public abstract class Probe implements Runnable {
             FtaSender.sendMetrics(ftaAddress, metric);
         } catch (IllegalArgumentException e) {
             LOGGER.error(
-                "Error while probe running at [" + currentTimestamp
-                    + "]: " + e.getMessage());
+                "Error while probe running at [" + currentTimestamp + "]: " + e.getMessage());
         }
         lastTimestampAwake = currentTimestamp;
         AppUtil.sleep(sleepTime);
     }
 
-    protected void parseValuesToMetrics(List<Metric> metrics, List<Pair<String, Float>> values, Timestamp currentTimestamp){
-        for(Pair<String, Float> p : values){
+    protected void parseValuesToMetrics(List<Metric> metrics, List<Pair<String, Float>> values,
+        Timestamp currentTimestamp) {
+        for (Pair<String, Float> p : values) {
             Map<String, String> metadata = new HashMap<>();
             metadata.put(metricValueType, p.getKey());
             Metric m = new Metric(metricName, p.getValue(), currentTimestamp, help, metadata);
