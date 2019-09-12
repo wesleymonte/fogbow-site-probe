@@ -3,8 +3,11 @@ package cloud.fogbow.probes.core.models;
 import cloud.fogbow.probes.core.fta.FtaSender;
 import cloud.fogbow.probes.core.services.DataProviderService;
 import cloud.fogbow.probes.core.utils.AppUtil;
+import cloud.fogbow.probes.core.utils.Pair;
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,9 @@ public abstract class Probe implements Runnable {
     protected boolean firstTimeAwake;
     protected Integer SLEEP_TIME;
     protected String FTA_ADDRESS;
+    protected String VALUE_TYPE_KEY;
+    protected String PROBE_TYPE;
+    protected String HELP;
 
     public Probe(Integer sleepTime, String ftaAddress) {
         this.lastTimestampAwake = new Timestamp(System.currentTimeMillis());
@@ -34,9 +40,6 @@ public abstract class Probe implements Runnable {
         Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
         try {
             List<Metric> metric = getMetrics(currentTimestamp);
-//            LOGGER.info(
-//                "Probe got a metric at [" + metric.getTimestamp().toString()
-//                    + "]");
             FtaSender.sendMetrics(FTA_ADDRESS, metric);
         } catch (IllegalArgumentException e) {
             LOGGER.error(
@@ -45,6 +48,15 @@ public abstract class Probe implements Runnable {
         }
         lastTimestampAwake = currentTimestamp;
         AppUtil.sleep(SLEEP_TIME);
+    }
+
+    protected void parseValuesToMetrics(List<Metric> metrics, List<Pair<String, Float>> values, Timestamp currentTimestamp){
+        for(Pair<String, Float> p : values){
+            Map<String, String> metadata = new HashMap<>();
+            metadata.put(VALUE_TYPE_KEY, p.getKey());
+            Metric m = new Metric(PROBE_TYPE, p.getValue(), currentTimestamp, HELP, metadata);
+            metrics.add(m);
+        }
     }
 
     protected abstract List<Metric> getMetrics(Timestamp timestamp);
