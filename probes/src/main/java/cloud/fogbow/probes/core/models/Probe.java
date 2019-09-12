@@ -1,12 +1,9 @@
 package cloud.fogbow.probes.core.models;
 
-import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.fta.FtaSender;
 import cloud.fogbow.probes.core.services.DataProviderService;
 import cloud.fogbow.probes.core.utils.AppUtil;
 import java.sql.Timestamp;
-import java.util.Properties;
-import javax.annotation.PostConstruct;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,21 +16,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class Probe implements Runnable {
 
     private static final Logger LOGGER = LogManager.getLogger(Probe.class);
-    protected Integer PROBE_ID;
-    @Autowired
-    protected Properties properties;
-    @Autowired
     protected DataProviderService providerService;
     protected Timestamp lastTimestampAwake;
     protected boolean firstTimeAwake;
     protected Integer SLEEP_TIME;
     protected String FTA_ADDRESS;
 
-    @PostConstruct
-    public void Probe() {
+    public Probe(Integer sleepTime, String ftaAddress) {
         this.lastTimestampAwake = new Timestamp(System.currentTimeMillis());
-        this.SLEEP_TIME = Integer.valueOf(properties.getProperty(Constants.SLEEP_TIME));
-        this.FTA_ADDRESS = properties.getProperty(Constants.FMA_ADDRESS);
+        this.SLEEP_TIME = sleepTime;
+        this.FTA_ADDRESS = ftaAddress;
         this.firstTimeAwake = true;
     }
 
@@ -42,12 +34,12 @@ public abstract class Probe implements Runnable {
         try {
             Metric metric = getMetric(currentTimestamp);
             LOGGER.info(
-                "Probe[" + this.PROBE_ID + "] made a metric at [" + metric.getTimestamp()
-                    .toString() + "]");
+                "Probe got a metric at [" + metric.getTimestamp().toString()
+                    + "]");
             FtaSender.sendMetric(FTA_ADDRESS, metric);
         } catch (IllegalArgumentException e) {
             LOGGER.error(
-                "Error while probe[" + PROBE_ID + "] making a observation at [" + currentTimestamp
+                "Error while probe running at [" + currentTimestamp
                     + "]: " + e.getMessage());
         }
         lastTimestampAwake = currentTimestamp;
@@ -55,4 +47,8 @@ public abstract class Probe implements Runnable {
     }
 
     protected abstract Metric getMetric(Timestamp timestamp);
+
+    public void setProviderService(DataProviderService providerService) {
+        this.providerService = providerService;
+    }
 }
