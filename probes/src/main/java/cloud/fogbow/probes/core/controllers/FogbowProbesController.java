@@ -21,7 +21,7 @@ public class FogbowProbesController {
     private FogbowServiceSuccessRateProbe serviceSuccessRateProbe;
     private FogbowServiceReachabilityProbe serviceReachabilityProbe;
 
-    private List<Thread> pool = new LinkedList<>();
+    private List<Thread> pool;
     private boolean isStarted = false;
 
     private static final Logger LOGGER = LogManager.getLogger(FogbowProbesController.class);
