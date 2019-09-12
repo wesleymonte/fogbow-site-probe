@@ -29,6 +29,7 @@ public class FogbowServiceReachabilityProbe extends Probe {
     public static final String THREAD_NAME = "Thread-Service-Reachability-Probe";
     private static final Logger LOGGER = LogManager.getLogger(FogbowServiceReachabilityProbe.class);
     private static final String PROBE_NAME = "service_reachability";
+    private static final String PROBE_TYPE = "reachability";
     private static final String HELP = "Monitoring the availability of Fogbow services.";
     private final int RESPONSE_CODE_LOWER_BOUND = 199;
     private final int RESPONSE_CODE_UPPER_BOUND = 300;
@@ -78,14 +79,24 @@ public class FogbowServiceReachabilityProbe extends Probe {
         }
     }
 
-    protected Metric getMetric(Timestamp currentTimestamp) {
+    protected List<Metric> getMetrics(Timestamp currentTimestamp) {
         Map<String, Boolean> result = doGetRequest();
         List<Pair<String, Float>> values = toValues(result);
-        Metric metric = FtaConverter.createMetric(PROBE_NAME, values, currentTimestamp, HELP);
+        List<Metric> metrics = new ArrayList<>();
+        parseValuesToMetrics(metrics, values, currentTimestamp);
         LOGGER.info(
-            "Made a metric with name [" + metric.getName() + "] at [" + currentTimestamp.toString()
+            "Made a metric with name at [" + currentTimestamp.toString()
                 + "]");
-        return metric;
+        return metrics;
+    }
+
+    private void parseValuesToMetrics(List<Metric> metrics, List<Pair<String, Float>> values, Timestamp currentTimestamp){
+        for(Pair<String, Float> p : values){
+            Map<String, String> metadata = new HashMap<>();
+            metadata.put("service", p.getKey());
+            Metric m = new Metric(PROBE_TYPE, p.getValue(), currentTimestamp, HELP, metadata);
+            metrics.add(m);
+        }
     }
 
     private List<Pair<String, Float>> toValues(Map<String, Boolean> result) {
