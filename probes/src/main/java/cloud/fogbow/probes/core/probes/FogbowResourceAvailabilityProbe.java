@@ -28,9 +28,9 @@ public class FogbowResourceAvailabilityProbe extends Probe {
 
     public FogbowResourceAvailabilityProbe(Integer timeSleep, String ftaAddress) {
         super(timeSleep, ftaAddress);
-        this.HELP = "Metric measures the level of failure to request a resource after your Order is Open.";
-        this.PROBE_TYPE = "availability";
-        this.VALUE_TYPE_KEY = "resource";
+        this.help = "Metric measures the level of failure to request a resource after your Order is Open.";
+        this.metricName = "availability";
+        this.metricValueType = "resource";
     }
 
     public void run() {

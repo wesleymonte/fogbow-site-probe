@@ -28,9 +28,9 @@ public class FogbowServiceLatencyProbe extends Probe {
 
     public FogbowServiceLatencyProbe(Integer timeSleep, String ftaAddress) {
         super(timeSleep, ftaAddress);
-        this.HELP = "Latency is measured by the time that elapses between the order being opened until order are available.";
-        this.PROBE_TYPE = "latency";
-        this.VALUE_TYPE_KEY = "resource";
+        this.help = "Latency is measured by the time that elapses between the order being opened until order are available.";
+        this.metricName = "latency";
+        this.metricValueType = "resource";
     }
 
     public void run() {

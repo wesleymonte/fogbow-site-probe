@@ -44,9 +44,9 @@ public class FogbowServiceReachabilityProbe extends Probe {
         this.FNS_ENDPOINT = fnsEndpoint;
         this.MS_ENDPOINT = msEndpoint;
         this.services = Collections.unmodifiableMap(buildServices());
-        this.HELP = "Monitoring the availability of Fogbow services.";
-        this.PROBE_TYPE = "reachability";
-        this.VALUE_TYPE_KEY = "service";
+        this.help = "Monitoring the availability of Fogbow services.";
+        this.metricName = "reachability";
+        this.metricValueType = "service";
     }
 
     private Map<String, FogbowService> buildServices() {
