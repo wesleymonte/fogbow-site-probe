@@ -23,6 +23,7 @@ public class FogbowServiceSuccessRateProbe extends Probe {
     private static final String PROBE_NAME = "service_success_rate";
     private static final Logger LOGGER = LogManager.getLogger(FogbowServiceSuccessRateProbe.class);
     private static final String HELP = "Measuring the success rate in requesting a resource.";
+    public static final String THREAD_NAME = "Thread-Service-Success-Rate-Probe";
 
     public FogbowServiceSuccessRateProbe(Integer timeSleep, String ftaAddress) {
         super(timeSleep, ftaAddress);

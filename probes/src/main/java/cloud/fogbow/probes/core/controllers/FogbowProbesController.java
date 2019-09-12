@@ -45,10 +45,10 @@ public class FogbowProbesController {
     }
 
     private void createThreads(){
-        Thread firstProbe = new Thread(resourceAvailabilityProbe, "Thread-Resource-Availability-Probe");
-        Thread secondProbe = new Thread(serviceLatencyProbe, "Thread-Service-Latency-Probe");
-        Thread thirdProbe = new Thread(serviceSuccessRateProbe, "Thread-Service-Success-Rate-Probe");
-        Thread fourthProbe = new Thread(serviceReachabilityProbe, "Thread-Service-Reachability-Probe");
+        Thread firstProbe = new Thread(resourceAvailabilityProbe, FogbowResourceAvailabilityProbe.THREAD_NAME);
+        Thread secondProbe = new Thread(serviceLatencyProbe, FogbowServiceLatencyProbe.THREAD_NAME);
+        Thread thirdProbe = new Thread(serviceSuccessRateProbe, FogbowServiceSuccessRateProbe.THREAD_NAME);
+        Thread fourthProbe = new Thread(serviceReachabilityProbe, FogbowServiceReachabilityProbe.THREAD_NAME);
         pool = new ArrayList<>(
             Arrays.asList(firstProbe,
                 secondProbe,

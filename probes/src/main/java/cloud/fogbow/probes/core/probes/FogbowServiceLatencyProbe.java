@@ -20,6 +20,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class FogbowServiceLatencyProbe extends Probe {
 
+    public static final String THREAD_NAME = "Thread-Service-Latency-Probe";
     private static final String PROBE_NAME = "service_latency";
     private static final Logger LOGGER = LogManager.getLogger(FogbowServiceLatencyProbe.class);
     private static final String COMPUTE_JSON_KEY = "COMPUTE";

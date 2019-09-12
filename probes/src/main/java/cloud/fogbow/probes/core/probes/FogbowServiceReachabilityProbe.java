@@ -1,6 +1,5 @@
 package cloud.fogbow.probes.core.probes;
 
-import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.fta.FtaConverter;
 import cloud.fogbow.probes.core.models.Metric;
 import cloud.fogbow.probes.core.models.Probe;
@@ -27,6 +26,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class FogbowServiceReachabilityProbe extends Probe {
 
+    public static final String THREAD_NAME = "Thread-Service-Reachability-Probe";
     private static final Logger LOGGER = LogManager.getLogger(FogbowServiceReachabilityProbe.class);
     private static final String PROBE_NAME = "service_reachability";
     private static final String HELP = "Monitoring the availability of Fogbow services.";
@@ -38,8 +38,8 @@ public class FogbowServiceReachabilityProbe extends Probe {
     private String MS_ENDPOINT;
     private Map<String, FogbowService> services;
 
-    public FogbowServiceReachabilityProbe(Integer timeSleep, String ftaAddress,
-        String asEndpoint, String rasEndpoint, String fnsEndpoint, String msEndpoint) {
+    public FogbowServiceReachabilityProbe(Integer timeSleep, String ftaAddress, String asEndpoint,
+        String rasEndpoint, String fnsEndpoint, String msEndpoint) {
         super(timeSleep, ftaAddress);
         this.AS_ENDPOINT = asEndpoint;
         this.RAS_ENDPOINT = rasEndpoint;

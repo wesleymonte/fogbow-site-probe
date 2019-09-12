@@ -22,6 +22,7 @@ import org.apache.logging.log4j.Logger;
 
 public class FogbowResourceAvailabilityProbe extends Probe {
 
+    public static final String THREAD_NAME = "Thread-Resource-Availability-Probe";
     private static final String PROBE_NAME = "resource_availability";
     private static final String HELP = "Metric measures the level of failure to request a resource after your Order is Open.";
     private static final Logger LOGGER = LogManager
