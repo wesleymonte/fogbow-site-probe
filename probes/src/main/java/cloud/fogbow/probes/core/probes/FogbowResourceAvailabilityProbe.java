@@ -1,6 +1,5 @@
 package cloud.fogbow.probes.core.probes;
 
-import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.fta.FtaConverter;
 import cloud.fogbow.probes.core.models.Metric;
 import cloud.fogbow.probes.core.models.OrderState;
@@ -10,10 +9,8 @@ import cloud.fogbow.probes.core.utils.Pair;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.PostConstruct;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.stereotype.Component;
 
 /**
  * FogbowResourceAvailabilityProbe is responsible for measuring the availability level of Fogbow
@@ -22,7 +19,7 @@ import org.springframework.stereotype.Component;
  * metric measures the level of failure to request a resource after your {@link
  * cloud.fogbow.probes.core.models.Order} is {@link OrderState#OPEN}.
  */
-@Component
+
 public class FogbowResourceAvailabilityProbe extends Probe {
 
     private static final String PROBE_NAME = "resource_availability";
@@ -30,10 +27,8 @@ public class FogbowResourceAvailabilityProbe extends Probe {
     private static final Logger LOGGER = LogManager
         .getLogger(FogbowResourceAvailabilityProbe.class);
 
-    @PostConstruct
-    public void FogbowResourceAvailabilityProbe() {
-        this.PROBE_ID = Integer
-            .valueOf(properties.getProperty(Constants.RESOURCE_AVAILABILITY_PROBE_ID));
+    public FogbowResourceAvailabilityProbe(Integer timeSleep, String ftaAddress) {
+        super(timeSleep, ftaAddress);
     }
 
     public void run() {
@@ -53,8 +48,8 @@ public class FogbowResourceAvailabilityProbe extends Probe {
         Metric metric = FtaConverter
             .createMetric(PROBE_NAME, resourcesAvailability, currentTimestamp, HELP);
         LOGGER.info(
-            "Made a metric with name [" + metric.getName() + "] at [" + currentTimestamp
-                .toString() + "]");
+            "Made a metric with name [" + metric.getName() + "] at [" + currentTimestamp.toString()
+                + "]");
         return metric;
     }
 

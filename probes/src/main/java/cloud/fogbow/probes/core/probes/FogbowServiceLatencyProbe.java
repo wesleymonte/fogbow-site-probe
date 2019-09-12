@@ -1,6 +1,5 @@
 package cloud.fogbow.probes.core.probes;
 
-import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.fta.FtaConverter;
 import cloud.fogbow.probes.core.models.Metric;
 import cloud.fogbow.probes.core.models.OrderState;
@@ -10,10 +9,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import javax.annotation.PostConstruct;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.stereotype.Component;
 
 /**
  * FogbowServiceLatencyProbe is responsible for measuring the latency of resource allocation.
@@ -21,7 +18,6 @@ import org.springframework.stereotype.Component;
  * OrderState#OPEN}) until it is available ({@link OrderState#FULFILLED}). This metric measures how
  * long it takes for a resource to be ready.
  */
-@Component
 public class FogbowServiceLatencyProbe extends Probe {
 
     private static final String PROBE_NAME = "service_latency";
@@ -31,9 +27,8 @@ public class FogbowServiceLatencyProbe extends Probe {
     private static final String VOLUME_JSON_KEY = "VOLUME";
     private static final String HELP = "Latency is measured by the time that elapses between the order being opened until order are available.";
 
-    @PostConstruct
-    public void FogbowServiceLatencyProbe() {
-        this.PROBE_ID = Integer.valueOf(properties.getProperty(Constants.SERVICE_LATENCY_PROBE_ID));
+    public FogbowServiceLatencyProbe(Integer timeSleep, String ftaAddress) {
+        super(timeSleep, ftaAddress);
     }
 
     public void run() {
@@ -46,11 +41,10 @@ public class FogbowServiceLatencyProbe extends Probe {
     protected Metric getMetric(Timestamp currentTimestamp) {
         Long[] latencies = this.providerService.getLatencies(currentTimestamp, firstTimeAwake);
         List<Pair<String, Float>> values = toValue(latencies);
-        Metric metric = FtaConverter
-            .createMetric(PROBE_NAME, values, currentTimestamp, HELP);
+        Metric metric = FtaConverter.createMetric(PROBE_NAME, values, currentTimestamp, HELP);
         LOGGER.info(
-            "Made a metric with name [" + metric.getName() + "] at [" + currentTimestamp
-                .toString() + "]");
+            "Made a metric with name [" + metric.getName() + "] at [" + currentTimestamp.toString()
+                + "]");
         return metric;
     }
 

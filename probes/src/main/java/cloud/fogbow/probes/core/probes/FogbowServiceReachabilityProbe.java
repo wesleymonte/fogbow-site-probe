@@ -17,17 +17,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import javax.annotation.PostConstruct;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.stereotype.Component;
 
 /**
  * FogbowServiceReachabilityProbe is responsible for monitoring the availability of Fogbow services.
  * Availability is verified by performing http requests to services at specific verification
  * addresses.
  */
-@Component
 public class FogbowServiceReachabilityProbe extends Probe {
 
     private static final Logger LOGGER = LogManager.getLogger(FogbowServiceReachabilityProbe.class);
@@ -41,14 +38,13 @@ public class FogbowServiceReachabilityProbe extends Probe {
     private String MS_ENDPOINT;
     private Map<String, FogbowService> services;
 
-    @PostConstruct
-    public void FogbowServiceReachabilityProbe() {
-        this.PROBE_ID = Integer
-            .valueOf(properties.getProperty(Constants.SERVICE_REACHABILITY_PROBE_ID));
-        this.AS_ENDPOINT = properties.getProperty(Constants.AS_ENDPOINT);
-        this.RAS_ENDPOINT = properties.getProperty(Constants.RAS_ENDPOINT);
-        this.FNS_ENDPOINT = properties.getProperty(Constants.FNS_ENDPOINT);
-        this.MS_ENDPOINT = properties.getProperty(Constants.MS_ENDPOINT);
+    public FogbowServiceReachabilityProbe(Integer timeSleep, String ftaAddress,
+        String asEndpoint, String rasEndpoint, String fnsEndpoint, String msEndpoint) {
+        super(timeSleep, ftaAddress);
+        this.AS_ENDPOINT = asEndpoint;
+        this.RAS_ENDPOINT = rasEndpoint;
+        this.FNS_ENDPOINT = fnsEndpoint;
+        this.MS_ENDPOINT = msEndpoint;
         this.services = Collections.unmodifiableMap(buildServices());
     }
 
@@ -85,11 +81,10 @@ public class FogbowServiceReachabilityProbe extends Probe {
     protected Metric getMetric(Timestamp currentTimestamp) {
         Map<String, Boolean> result = doGetRequest();
         List<Pair<String, Float>> values = toValues(result);
-        Metric metric = FtaConverter
-            .createMetric(PROBE_NAME, values, currentTimestamp, HELP);
+        Metric metric = FtaConverter.createMetric(PROBE_NAME, values, currentTimestamp, HELP);
         LOGGER.info(
-            "Made a metric with name [" + metric.getName() + "] at [" + currentTimestamp
-                .toString() + "]");
+            "Made a metric with name [" + metric.getName() + "] at [" + currentTimestamp.toString()
+                + "]");
         return metric;
     }
 

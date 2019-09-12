@@ -1,6 +1,5 @@
 package cloud.fogbow.probes.core.probes;
 
-import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.fta.FtaConverter;
 import cloud.fogbow.probes.core.models.Metric;
 import cloud.fogbow.probes.core.models.OrderState;
@@ -10,10 +9,8 @@ import cloud.fogbow.probes.core.utils.Pair;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.PostConstruct;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.stereotype.Component;
 
 /**
  * FogbowServiceSuccessRateProbe is responsible for measuring the success rate in requesting a
@@ -21,19 +18,15 @@ import org.springframework.stereotype.Component;
  * failed after requests ({@link OrderState#FAILED_AFTER_SUCCESSFUL_REQUEST}) and the number of
  * orders opened ({@link OrderState#OPEN}).
  */
-@Component
 public class FogbowServiceSuccessRateProbe extends Probe {
 
     private static final String PROBE_NAME = "service_success_rate";
     private static final Logger LOGGER = LogManager.getLogger(FogbowServiceSuccessRateProbe.class);
     private static final String HELP = "Measuring the success rate in requesting a resource.";
 
-    @PostConstruct
-    public void FogbowServiceSuccessRateProbe() {
-        this.PROBE_ID = Integer
-            .valueOf(properties.getProperty(Constants.SERVICE_SUCCESS_RATE_PROBE_ID));
+    public FogbowServiceSuccessRateProbe(Integer timeSleep, String ftaAddress) {
+        super(timeSleep, ftaAddress);
     }
-
 
     public void run() {
         while (true) {
@@ -52,8 +45,8 @@ public class FogbowServiceSuccessRateProbe extends Probe {
         Metric metric = FtaConverter
             .createMetric(PROBE_NAME, resourcesAvailability, currentTimestamp, HELP);
         LOGGER.info(
-            "Made a metric with name [" + metric.getName() + "] at [" + currentTimestamp
-                .toString() + "]");
+            "Made a metric with name [" + metric.getName() + "] at [" + currentTimestamp.toString()
+                + "]");
         return metric;
     }
 
