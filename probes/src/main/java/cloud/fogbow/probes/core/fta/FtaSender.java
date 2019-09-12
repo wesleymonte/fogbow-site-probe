@@ -12,7 +12,7 @@ public class FtaSender {
 
     private static final Logger LOGGER = LogManager.getLogger(FtaSender.class);
 
-    public static void sendObservation(String address, Metric metric) {
+    public static void sendMetric(String address, Metric metric) {
         try {
             LOGGER.info("Sending metric to [" + address + "]");
             StringEntity body = new StringEntity(metric.toJson().toString());

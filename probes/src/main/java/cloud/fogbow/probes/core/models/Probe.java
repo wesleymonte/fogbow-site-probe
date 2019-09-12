@@ -44,7 +44,7 @@ public abstract class Probe implements Runnable {
             LOGGER.info(
                 "Probe[" + this.PROBE_ID + "] made a metric at [" + metric.getTimestamp()
                     .toString() + "]");
-            FtaSender.sendObservation(FTA_ADDRESS, metric);
+            FtaSender.sendMetric(FTA_ADDRESS, metric);
         } catch (IllegalArgumentException e) {
             LOGGER.error(
                 "Error while probe[" + PROBE_ID + "] making a observation at [" + currentTimestamp
