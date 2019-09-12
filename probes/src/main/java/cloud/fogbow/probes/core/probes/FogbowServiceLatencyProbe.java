@@ -8,7 +8,9 @@ import cloud.fogbow.probes.core.utils.Pair;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,6 +24,7 @@ public class FogbowServiceLatencyProbe extends Probe {
 
     public static final String THREAD_NAME = "Thread-Service-Latency-Probe";
     private static final String PROBE_NAME = "service_latency";
+    private static final String PROBE_TYPE = "latency";
     private static final Logger LOGGER = LogManager.getLogger(FogbowServiceLatencyProbe.class);
     private static final String COMPUTE_JSON_KEY = "COMPUTE";
     private static final String NETWORK_JSON_KEY = "NETWORK";
@@ -39,14 +42,24 @@ public class FogbowServiceLatencyProbe extends Probe {
         }
     }
 
-    protected Metric getMetric(Timestamp currentTimestamp) {
+    protected List<Metric> getMetrics(Timestamp currentTimestamp) {
         Long[] latencies = this.providerService.getLatencies(currentTimestamp, firstTimeAwake);
         List<Pair<String, Float>> values = toValue(latencies);
-        Metric metric = FtaConverter.createMetric(PROBE_NAME, values, currentTimestamp, HELP);
+        List<Metric> metrics = new ArrayList<>();
+        parseValuesToMetrics(metrics, values, currentTimestamp);
         LOGGER.info(
-            "Made a metric with name [" + metric.getName() + "] at [" + currentTimestamp.toString()
+            "Made a metric with name at [" + currentTimestamp.toString()
                 + "]");
-        return metric;
+        return metrics;
+    }
+
+    private void parseValuesToMetrics(List<Metric> metrics, List<Pair<String, Float>> values, Timestamp currentTimestamp){
+        for(Pair<String, Float> p : values){
+            Map<String, String> metadata = new HashMap<>();
+            metadata.put("service", p.getKey());
+            Metric m = new Metric(PROBE_TYPE, p.getValue(), currentTimestamp, HELP, metadata);
+            metrics.add(m);
+        }
     }
 
     private List<Pair<String, Float>> toValue(Long[] latencies) {
