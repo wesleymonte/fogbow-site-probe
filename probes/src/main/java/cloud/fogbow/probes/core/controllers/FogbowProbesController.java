@@ -35,6 +35,7 @@ public class FogbowProbesController {
     public void init(DataProviderService dataProviderService){
         Integer sleepTime = Integer.valueOf(properties.getProperty(Constants.SLEEP_TIME));
         String ftaAddress = properties.getProperty(Constants.FTA_ADDRESS);
+        LOGGER.info("Defining Fogbow Probes:\n\tSleep time [" + sleepTime + "]\n\tFogbow Telemetry Aggregator Address [" + ftaAddress + "]");
         this.resourceAvailabilityProbe = new FogbowResourceAvailabilityProbe(sleepTime, ftaAddress);
         this.serviceLatencyProbe = new FogbowServiceLatencyProbe(sleepTime, ftaAddress);
         this.serviceSuccessRateProbe = new FogbowServiceSuccessRateProbe(sleepTime, ftaAddress);
@@ -57,6 +58,7 @@ public class FogbowProbesController {
     }
 
     public void startAll(){
+        LOGGER.info("Starting Fogbow Probes Threads...");
         if(!isStarted) {
             createThreads();
             for (Thread t : pool) {

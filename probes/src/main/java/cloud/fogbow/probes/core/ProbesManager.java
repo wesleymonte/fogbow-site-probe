@@ -23,7 +23,7 @@ public class ProbesManager {
     }
 
     public void start() {
-        LOGGER.info("Starting Fogbow Probes");
+        LOGGER.info("Starting Probes...");
         fogbowProbesController.startAll();
     }
 
