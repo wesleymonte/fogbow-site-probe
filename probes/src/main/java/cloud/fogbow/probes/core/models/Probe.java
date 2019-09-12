@@ -4,6 +4,7 @@ import cloud.fogbow.probes.core.fta.FtaSender;
 import cloud.fogbow.probes.core.services.DataProviderService;
 import cloud.fogbow.probes.core.utils.AppUtil;
 import java.sql.Timestamp;
+import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,11 +33,11 @@ public abstract class Probe implements Runnable {
     public void run() {
         Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
         try {
-            Metric metric = getMetric(currentTimestamp);
-            LOGGER.info(
-                "Probe got a metric at [" + metric.getTimestamp().toString()
-                    + "]");
-            FtaSender.sendMetric(FTA_ADDRESS, metric);
+            List<Metric> metric = getMetrics(currentTimestamp);
+//            LOGGER.info(
+//                "Probe got a metric at [" + metric.getTimestamp().toString()
+//                    + "]");
+            FtaSender.sendMetrics(FTA_ADDRESS, metric);
         } catch (IllegalArgumentException e) {
             LOGGER.error(
                 "Error while probe running at [" + currentTimestamp
@@ -46,7 +47,7 @@ public abstract class Probe implements Runnable {
         AppUtil.sleep(SLEEP_TIME);
     }
 
-    protected abstract Metric getMetric(Timestamp timestamp);
+    protected abstract List<Metric> getMetrics(Timestamp timestamp);
 
     public void setProviderService(DataProviderService providerService) {
         this.providerService = providerService;

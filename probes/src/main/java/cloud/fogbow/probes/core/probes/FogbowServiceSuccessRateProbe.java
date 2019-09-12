@@ -1,6 +1,7 @@
 package cloud.fogbow.probes.core.probes;
 
 import cloud.fogbow.probes.core.fta.FtaConverter;
+import cloud.fogbow.probes.core.fta.FtaSender;
 import cloud.fogbow.probes.core.models.Metric;
 import cloud.fogbow.probes.core.models.OrderState;
 import cloud.fogbow.probes.core.models.Probe;
