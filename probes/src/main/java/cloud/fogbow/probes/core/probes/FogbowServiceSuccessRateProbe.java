@@ -8,7 +8,9 @@ import cloud.fogbow.probes.core.models.ResourceType;
 import cloud.fogbow.probes.core.utils.Pair;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,6 +26,7 @@ public class FogbowServiceSuccessRateProbe extends Probe {
     private static final Logger LOGGER = LogManager.getLogger(FogbowServiceSuccessRateProbe.class);
     private static final String HELP = "Measuring the success rate in requesting a resource.";
     public static final String THREAD_NAME = "Thread-Service-Success-Rate-Probe";
+    private static final String PROBE_TYPE = "success_rate";
 
     public FogbowServiceSuccessRateProbe(Integer timeSleep, String ftaAddress) {
         super(timeSleep, ftaAddress);
@@ -36,19 +39,28 @@ public class FogbowServiceSuccessRateProbe extends Probe {
         }
     }
 
-    protected Metric getMetric(Timestamp currentTimestamp) {
+    protected List<Metric> getMetrics(Timestamp currentTimestamp) {
         List<Pair<String, Float>> resourcesAvailability = new ArrayList<>();
         ResourceType resourceTypes[] = {ResourceType.COMPUTE, ResourceType.VOLUME,
             ResourceType.NETWORK};
         for (ResourceType r : resourceTypes) {
             resourcesAvailability.add(getResourceAvailabilityValue(r));
         }
-        Metric metric = FtaConverter
-            .createMetric(PROBE_NAME, resourcesAvailability, currentTimestamp, HELP);
+        List<Metric> metrics = new ArrayList<>();
+        parseValuesToMetrics(metrics, resourcesAvailability, currentTimestamp);
         LOGGER.info(
-            "Made a metric with name [" + metric.getName() + "] at [" + currentTimestamp.toString()
+            "Made a metric with name at [" + currentTimestamp.toString()
                 + "]");
-        return metric;
+        return metrics;
+    }
+
+    private void parseValuesToMetrics(List<Metric> metrics, List<Pair<String, Float>> values, Timestamp currentTimestamp){
+        for(Pair<String, Float> p : values){
+            Map<String, String> metadata = new HashMap<>();
+            metadata.put("resource", p.getKey());
+            Metric m = new Metric(PROBE_TYPE, p.getValue(), currentTimestamp, HELP, metadata);
+            metrics.add(m);
+        }
     }
 
     private Pair<String, Float> getResourceAvailabilityValue(ResourceType type) {
