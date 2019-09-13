@@ -46,6 +46,7 @@ public abstract class Probe implements Runnable {
         }
         lastTimestampAwake = currentTimestamp;
         AppUtil.sleep(sleepTime);
+        firstTimeAwake = false;
     }
 
     protected void parseValuesToMetrics(List<Metric> metrics, List<Pair<String, Float>> values,
