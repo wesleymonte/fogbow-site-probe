@@ -1,6 +1,5 @@
 package cloud.fogbow.probes.core.probes;
 
-import cloud.fogbow.probes.core.fta.FtaConverter;
 import cloud.fogbow.probes.core.models.Metric;
 import cloud.fogbow.probes.core.models.OrderState;
 import cloud.fogbow.probes.core.models.Probe;
@@ -26,10 +25,12 @@ public class FogbowServiceLatencyProbe extends Probe {
     private static final String COMPUTE_JSON_KEY = "COMPUTE";
     private static final String NETWORK_JSON_KEY = "NETWORK";
     private static final String VOLUME_JSON_KEY = "VOLUME";
-    private static final String HELP = "Latency is measured by the time that elapses between the order being opened until order are available.";
 
     public FogbowServiceLatencyProbe(Integer timeSleep, String ftaAddress) {
         super(timeSleep, ftaAddress);
+        this.help = "The time that elapses between the order being opened until the order is available.";
+        this.metricName = "latency";
+        this.metricValueType = "resource";
     }
 
     public void run() {
@@ -39,14 +40,13 @@ public class FogbowServiceLatencyProbe extends Probe {
         }
     }
 
-    protected Metric getMetric(Timestamp currentTimestamp) {
+    protected List<Metric> getMetrics(Timestamp currentTimestamp) {
         Long[] latencies = this.providerService.getLatencies(currentTimestamp, firstTimeAwake);
         List<Pair<String, Float>> values = toValue(latencies);
-        Metric metric = FtaConverter.createMetric(PROBE_NAME, values, currentTimestamp, HELP);
-        LOGGER.info(
-            "Made a metric with name [" + metric.getName() + "] at [" + currentTimestamp.toString()
-                + "]");
-        return metric;
+        List<Metric> metrics = new ArrayList<>();
+        parseValuesToMetrics(metrics, values, currentTimestamp);
+        LOGGER.info("Made a metric with name at [" + currentTimestamp.toString() + "]");
+        return metrics;
     }
 
     private List<Pair<String, Float>> toValue(Long[] latencies) {

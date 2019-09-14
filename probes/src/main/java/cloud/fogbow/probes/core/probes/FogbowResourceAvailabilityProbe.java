@@ -1,6 +1,5 @@
 package cloud.fogbow.probes.core.probes;
 
-import cloud.fogbow.probes.core.fta.FtaConverter;
 import cloud.fogbow.probes.core.models.Metric;
 import cloud.fogbow.probes.core.models.OrderState;
 import cloud.fogbow.probes.core.models.Probe;
@@ -24,12 +23,14 @@ public class FogbowResourceAvailabilityProbe extends Probe {
 
     public static final String THREAD_NAME = "Thread-Resource-Availability-Probe";
     private static final String PROBE_NAME = "resource_availability";
-    private static final String HELP = "Metric measures the level of failure to request a resource after your Order is Open.";
     private static final Logger LOGGER = LogManager
         .getLogger(FogbowResourceAvailabilityProbe.class);
 
     public FogbowResourceAvailabilityProbe(Integer timeSleep, String ftaAddress) {
         super(timeSleep, ftaAddress);
+        this.help = "Measures the level of failure to request a resource after the Order is open.";
+        this.metricName = "availability";
+        this.metricValueType = "resource";
     }
 
     public void run() {
@@ -39,19 +40,17 @@ public class FogbowResourceAvailabilityProbe extends Probe {
         }
     }
 
-    protected Metric getMetric(Timestamp currentTimestamp) {
+    protected List<Metric> getMetrics(Timestamp currentTimestamp) {
         List<Pair<String, Float>> resourcesAvailability = new ArrayList<>();
         ResourceType resourceTypes[] = {ResourceType.COMPUTE, ResourceType.VOLUME,
             ResourceType.NETWORK};
         for (ResourceType r : resourceTypes) {
             resourcesAvailability.add(getResourceAvailabilityValue(r));
         }
-        Metric metric = FtaConverter
-            .createMetric(PROBE_NAME, resourcesAvailability, currentTimestamp, HELP);
-        LOGGER.info(
-            "Made a metric with name [" + metric.getName() + "] at [" + currentTimestamp.toString()
-                + "]");
-        return metric;
+        List<Metric> metrics = new ArrayList<>();
+        parseValuesToMetrics(metrics, resourcesAvailability, currentTimestamp);
+        LOGGER.info("Made as metric at [" + currentTimestamp.toString() + "]");
+        return metrics;
     }
 
     private Pair<String, Float> getResourceAvailabilityValue(ResourceType type) {

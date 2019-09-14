@@ -1,6 +1,5 @@
 package cloud.fogbow.probes.core.probes;
 
-import cloud.fogbow.probes.core.fta.FtaConverter;
 import cloud.fogbow.probes.core.models.Metric;
 import cloud.fogbow.probes.core.models.Probe;
 import cloud.fogbow.probes.core.utils.AppUtil;
@@ -29,7 +28,6 @@ public class FogbowServiceReachabilityProbe extends Probe {
     public static final String THREAD_NAME = "Thread-Service-Reachability-Probe";
     private static final Logger LOGGER = LogManager.getLogger(FogbowServiceReachabilityProbe.class);
     private static final String PROBE_NAME = "service_reachability";
-    private static final String HELP = "Monitoring the availability of Fogbow services.";
     private final int RESPONSE_CODE_LOWER_BOUND = 199;
     private final int RESPONSE_CODE_UPPER_BOUND = 300;
     private String AS_ENDPOINT;
@@ -46,6 +44,9 @@ public class FogbowServiceReachabilityProbe extends Probe {
         this.FNS_ENDPOINT = fnsEndpoint;
         this.MS_ENDPOINT = msEndpoint;
         this.services = Collections.unmodifiableMap(buildServices());
+        this.help = "Returns 0 if the target service is not available or 1 if is.";
+        this.metricName = "reachability";
+        this.metricValueType = "service";
     }
 
     private Map<String, FogbowService> buildServices() {
@@ -78,14 +79,13 @@ public class FogbowServiceReachabilityProbe extends Probe {
         }
     }
 
-    protected Metric getMetric(Timestamp currentTimestamp) {
+    protected List<Metric> getMetrics(Timestamp currentTimestamp) {
         Map<String, Boolean> result = doGetRequest();
         List<Pair<String, Float>> values = toValues(result);
-        Metric metric = FtaConverter.createMetric(PROBE_NAME, values, currentTimestamp, HELP);
-        LOGGER.info(
-            "Made a metric with name [" + metric.getName() + "] at [" + currentTimestamp.toString()
-                + "]");
-        return metric;
+        List<Metric> metrics = new ArrayList<>();
+        parseValuesToMetrics(metrics, values, currentTimestamp);
+        LOGGER.info("Made a metric with name at [" + currentTimestamp.toString() + "]");
+        return metrics;
     }
 
     private List<Pair<String, Float>> toValues(Map<String, Boolean> result) {
