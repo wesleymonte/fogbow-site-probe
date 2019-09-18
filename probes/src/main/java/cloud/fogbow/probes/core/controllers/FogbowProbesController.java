@@ -1,14 +1,13 @@
 package cloud.fogbow.probes.core.controllers;
 
 import cloud.fogbow.probes.core.Constants;
-import cloud.fogbow.probes.core.probes.FogbowResourceAvailabilityProbe;
-import cloud.fogbow.probes.core.probes.FogbowServiceLatencyProbe;
-import cloud.fogbow.probes.core.probes.FogbowServiceReachabilityProbe;
-import cloud.fogbow.probes.core.probes.FogbowServiceSuccessRateProbe;
+import cloud.fogbow.probes.core.probes.fogbow.FogbowResourceAvailabilityProbe;
+import cloud.fogbow.probes.core.probes.fogbow.FogbowServiceLatencyProbe;
+import cloud.fogbow.probes.core.probes.fogbow.FogbowServiceReachabilityProbe;
+import cloud.fogbow.probes.core.probes.fogbow.FogbowServiceSuccessRateProbe;
 import cloud.fogbow.probes.core.services.DataProviderService;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
 import org.apache.logging.log4j.LogManager;
