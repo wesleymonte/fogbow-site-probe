@@ -2,7 +2,6 @@ package cloud.fogbow.probes.core.probes.fogbow;
 
 import cloud.fogbow.probes.core.models.Metric;
 import cloud.fogbow.probes.core.models.OrderState;
-import cloud.fogbow.probes.core.models.Probe;
 import cloud.fogbow.probes.core.models.ResourceType;
 import cloud.fogbow.probes.core.utils.Pair;
 import java.sql.Timestamp;
@@ -19,7 +18,7 @@ import org.apache.logging.log4j.Logger;
  * cloud.fogbow.probes.core.models.Order} is {@link OrderState#OPEN}.
  */
 
-public class FogbowResourceAvailabilityProbe extends Probe {
+public class FogbowResourceAvailabilityProbe extends FogbowProbe {
 
     public static final String THREAD_NAME = "Thread-Resource-Availability-Probe";
     private static final String PROBE_NAME = "resource_availability";

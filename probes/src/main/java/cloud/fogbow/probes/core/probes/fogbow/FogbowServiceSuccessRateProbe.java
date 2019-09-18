@@ -2,7 +2,6 @@ package cloud.fogbow.probes.core.probes.fogbow;
 
 import cloud.fogbow.probes.core.models.Metric;
 import cloud.fogbow.probes.core.models.OrderState;
-import cloud.fogbow.probes.core.models.Probe;
 import cloud.fogbow.probes.core.models.ResourceType;
 import cloud.fogbow.probes.core.utils.Pair;
 import java.sql.Timestamp;
@@ -17,7 +16,7 @@ import org.apache.logging.log4j.Logger;
  * failed after requests ({@link OrderState#FAILED_AFTER_SUCCESSFUL_REQUEST}) and the number of
  * orders opened ({@link OrderState#OPEN}).
  */
-public class FogbowServiceSuccessRateProbe extends Probe {
+public class FogbowServiceSuccessRateProbe extends FogbowProbe {
 
     public static final String THREAD_NAME = "Thread-Service-Success-Rate-Probe";
     private static final String PROBE_NAME = "service_success_rate";

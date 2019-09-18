@@ -1,7 +1,6 @@
 package cloud.fogbow.probes.core.probes.fogbow;
 
 import cloud.fogbow.probes.core.models.Metric;
-import cloud.fogbow.probes.core.models.Probe;
 import cloud.fogbow.probes.core.utils.AppUtil;
 import cloud.fogbow.probes.core.utils.Pair;
 import java.io.IOException;
@@ -23,7 +22,7 @@ import org.apache.logging.log4j.Logger;
  * Availability is verified by performing http requests to services at specific verification
  * addresses.
  */
-public class FogbowServiceReachabilityProbe extends Probe {
+public class FogbowServiceReachabilityProbe extends FogbowProbe {
 
     public static final String THREAD_NAME = "Thread-Service-Reachability-Probe";
     private static final Logger LOGGER = LogManager.getLogger(FogbowServiceReachabilityProbe.class);

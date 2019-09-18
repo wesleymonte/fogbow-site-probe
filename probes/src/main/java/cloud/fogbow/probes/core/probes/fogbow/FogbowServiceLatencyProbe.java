@@ -2,7 +2,6 @@ package cloud.fogbow.probes.core.probes.fogbow;
 
 import cloud.fogbow.probes.core.models.Metric;
 import cloud.fogbow.probes.core.models.OrderState;
-import cloud.fogbow.probes.core.models.Probe;
 import cloud.fogbow.probes.core.utils.Pair;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -17,7 +16,7 @@ import org.apache.logging.log4j.Logger;
  * OrderState#OPEN}) until it is available ({@link OrderState#FULFILLED}). This metric measures how
  * long it takes for a resource to be ready.
  */
-public class FogbowServiceLatencyProbe extends Probe {
+public class FogbowServiceLatencyProbe extends FogbowProbe {
 
     public static final String THREAD_NAME = "Thread-Service-Latency-Probe";
     private static final String PROBE_NAME = "service_latency";

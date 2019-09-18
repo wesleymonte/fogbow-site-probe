@@ -3,11 +3,8 @@ package cloud.fogbow.probes.core.models;
 import cloud.fogbow.probes.core.fta.FtaSender;
 import cloud.fogbow.probes.core.services.DataProviderService;
 import cloud.fogbow.probes.core.utils.AppUtil;
-import cloud.fogbow.probes.core.utils.Pair;
 import java.sql.Timestamp;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,8 +21,6 @@ public abstract class Probe implements Runnable {
     protected boolean firstTimeAwake;
     protected Integer sleepTime;
     protected String ftaAddress;
-    protected String metricValueType;
-    protected String metricName;
     protected String help;
 
     public Probe(Integer sleepTime, String ftaAddress) {
@@ -47,16 +42,6 @@ public abstract class Probe implements Runnable {
         lastTimestampAwake = currentTimestamp;
         AppUtil.sleep(sleepTime);
         firstTimeAwake = false;
-    }
-
-    protected void parseValuesToMetrics(List<Metric> metrics, List<Pair<String, Float>> values,
-        Timestamp currentTimestamp) {
-        for (Pair<String, Float> p : values) {
-            Map<String, String> metadata = new HashMap<>();
-            metadata.put(metricValueType, p.getKey());
-            Metric m = new Metric(metricName, p.getValue(), currentTimestamp, help, metadata);
-            metrics.add(m);
-        }
     }
 
     protected abstract List<Metric> getMetrics(Timestamp timestamp);
