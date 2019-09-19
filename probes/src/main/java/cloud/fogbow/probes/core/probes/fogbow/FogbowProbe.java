@@ -8,15 +8,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-abstract class FogbowProbe extends Probe {
+public abstract class FogbowProbe extends Probe {
 
     private String help;
     private String metricName;
     private String metricValueType;
 
-    FogbowProbe(Integer sleepTime, String ftaAddress, String help, String metricName,
-        String metricValueType) {
-        super(sleepTime, ftaAddress);
+    FogbowProbe(String ftaAddress, String help, String metricName,
+        String metricValueType, String threadName) {
+        super(ftaAddress, threadName);
         this.help = help;
         this.metricName = metricName;
         this.metricValueType = metricValueType;

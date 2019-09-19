@@ -38,9 +38,9 @@ public class FogbowServiceReachabilityProbe extends FogbowProbe {
     private String MS_ENDPOINT;
     private Map<String, FogbowService> services;
 
-    public FogbowServiceReachabilityProbe(Integer timeSleep, String ftaAddress, String asEndpoint,
+    public FogbowServiceReachabilityProbe(String ftaAddress, String asEndpoint,
         String rasEndpoint, String fnsEndpoint, String msEndpoint) {
-        super(timeSleep, ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE);
+        super(ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE, THREAD_NAME);
         this.AS_ENDPOINT = asEndpoint;
         this.RAS_ENDPOINT = rasEndpoint;
         this.FNS_ENDPOINT = fnsEndpoint;
@@ -70,13 +70,13 @@ public class FogbowServiceReachabilityProbe extends FogbowProbe {
         return services;
     }
 
-    @Override
-    public void run() {
-        while (true) {
-            LOGGER.info("----> Starting Fogbow Service Reachability Probe...");
-            super.run();
-        }
-    }
+//    @Override
+//    public void run() {
+//        while (true) {
+//            LOGGER.info("----> Starting Fogbow Service Reachability Probe...");
+//            super.run();
+//        }
+//    }
 
     protected List<Metric> getMetrics(Timestamp currentTimestamp) {
         Map<String, Boolean> result = doGetRequest();

@@ -19,16 +19,17 @@ public abstract class Probe implements Runnable {
     protected DataProviderService providerService;
     protected Timestamp lastTimestampAwake;
     protected boolean firstTimeAwake;
-    private Integer sleepTime;
     private String ftaAddress;
+    private String threadName;
 
-    public Probe(Integer sleepTime, String ftaAddress) {
+    public Probe(String ftaAddress, String threadName) {
         this.lastTimestampAwake = new Timestamp(System.currentTimeMillis());
-        this.sleepTime = sleepTime;
         this.ftaAddress = ftaAddress;
+        this.threadName = threadName;
         this.firstTimeAwake = true;
     }
 
+    @Override
     public void run() {
         Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
         try {
@@ -39,7 +40,6 @@ public abstract class Probe implements Runnable {
                 "Error while probe running at [" + currentTimestamp + "]: " + e.getMessage());
         }
         lastTimestampAwake = currentTimestamp;
-        AppUtil.sleep(sleepTime);
         firstTimeAwake = false;
     }
 
@@ -47,5 +47,9 @@ public abstract class Probe implements Runnable {
 
     public void setProviderService(DataProviderService providerService) {
         this.providerService = providerService;
+    }
+
+    public String getThreadName() {
+        return threadName;
     }
 }

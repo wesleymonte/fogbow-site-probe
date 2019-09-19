@@ -20,8 +20,8 @@ public class DockerContainerProbe extends Probe {
         .getLogger(DockerContainerProbe.class);
     private DockerRequestHelper dockerRequestHelper = new DockerRequestHelper();
 
-    public DockerContainerProbe(Integer sleepTime, String ftaAddress) {
-        super(sleepTime, ftaAddress);
+    public DockerContainerProbe(String ftaAddress) {
+        super(ftaAddress, THREAD_NAME);
     }
 
     @Override

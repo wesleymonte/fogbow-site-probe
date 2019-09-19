@@ -28,16 +28,16 @@ public class FogbowServiceLatencyProbe extends FogbowProbe {
     private static final String NETWORK_JSON_KEY = "NETWORK";
     private static final String VOLUME_JSON_KEY = "VOLUME";
 
-    public FogbowServiceLatencyProbe(Integer timeSleep, String ftaAddress) {
-        super(timeSleep, ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE);
+    public FogbowServiceLatencyProbe(String ftaAddress) {
+        super(ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE, THREAD_NAME);
     }
 
-    public void run() {
-        while (true) {
-            LOGGER.info("----> Starting Fogbow Service Latency Probe...");
-            super.run();
-        }
-    }
+//    public void run() {
+//        while (true) {
+//            LOGGER.info("----> Starting Fogbow Service Latency Probe...");
+//            super.run();
+//        }
+//    }
 
     protected List<Metric> getMetrics(Timestamp currentTimestamp) {
         Long[] latencies = this.providerService.getLatencies(currentTimestamp, firstTimeAwake);

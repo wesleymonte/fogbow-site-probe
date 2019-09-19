@@ -25,16 +25,16 @@ public class FogbowServiceSuccessRateProbe extends FogbowProbe {
     private static final String METRIC_VALUE_TYPE = "resource";
     private static final Logger LOGGER = LogManager.getLogger(FogbowServiceSuccessRateProbe.class);
 
-    public FogbowServiceSuccessRateProbe(Integer timeSleep, String ftaAddress) {
-        super(timeSleep, ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE);
+    public FogbowServiceSuccessRateProbe(String ftaAddress) {
+        super(ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE, THREAD_NAME);
     }
 
-    public void run() {
-        while (true) {
-            LOGGER.info("----> Starting Fogbow Service Success Rate Probe");
-            super.run();
-        }
-    }
+//    public void run() {
+//        while (true) {
+//            LOGGER.info("----> Starting Fogbow Service Success Rate Probe");
+//            super.run();
+//        }
+//    }
 
     protected List<Metric> getMetrics(Timestamp currentTimestamp) {
         List<Pair<String, Float>> resourcesAvailability = new ArrayList<>();

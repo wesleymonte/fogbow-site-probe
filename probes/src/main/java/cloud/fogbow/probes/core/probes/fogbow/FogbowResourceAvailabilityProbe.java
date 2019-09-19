@@ -25,21 +25,21 @@ public class FogbowResourceAvailabilityProbe extends FogbowProbe {
     private static final String HELP = "Measures the level of failure to request a resource after the Order is open.";
     private static final String METRIC_NAME = "availability";
     private static final String METRIC_VALUE_TYPE = "resource";
-    private static final ResourceType resourceTypes[] = {ResourceType.COMPUTE, ResourceType.VOLUME,
+    private static final ResourceType[] resourceTypes = {ResourceType.COMPUTE, ResourceType.VOLUME,
         ResourceType.NETWORK};
     private static final Logger LOGGER = LogManager
         .getLogger(FogbowResourceAvailabilityProbe.class);
 
-    public FogbowResourceAvailabilityProbe(Integer timeSleep, String ftaAddress) {
-        super(timeSleep, ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE);
+    public FogbowResourceAvailabilityProbe(String ftaAddress) {
+        super(ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE, THREAD_NAME);
     }
 
-    public void run() {
-        while (true) {
-            LOGGER.info("----> Starting Fogbow Resource Availability Probe...");
-            super.run();
-        }
-    }
+//    public void run() {
+//        while (true) {
+//            LOGGER.info("----> Starting Fogbow Resource Availability Probe...");
+//            super.run();
+//        }
+//    }
 
     protected List<Metric> getMetrics(Timestamp currentTimestamp) {
         List<Pair<String, Float>> resourcesAvailability = new ArrayList<>();
