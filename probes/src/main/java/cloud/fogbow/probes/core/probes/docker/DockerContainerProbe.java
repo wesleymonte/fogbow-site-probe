@@ -46,15 +46,47 @@ public class DockerContainerProbe extends Probe {
     }
 
     private Metric getCPUMetric(String containerName, JSONObject stats, Timestamp timestamp){
+        Float cpuPercent = calculateCPUPercentUnix(0, 0, stats);
+        Map<String, String> metadata = getDefaultMetadata(containerName);
+        Metric metric = new Metric("cpu", cpuPercent, timestamp, HELP, metadata);
+        return metric;
+    }
+
+    private Float calculateCPUPercentUnix(long previousCPU, long previousSystem, JSONObject stats){
+        float cpuPercent = 0;
+        long cpuDelta = getCPUTotalUsage(stats) - previousCPU;
+        long systemDelta = getSystemCPUUsage(stats) - previousSystem;
+        int onlineCpus = getOnlineCPUs(stats);
+        if(systemDelta > 0 && cpuDelta > 0){
+            cpuPercent = ((float)cpuDelta / (float)systemDelta) * onlineCpus * 100;
+        }
+        return cpuPercent;
+    }
+
+    private Long getCPUTotalUsage(JSONObject stats){
         String cpuStatsKey = "cpu_stats";
         String cpuUsageKey = "cpu_usage";
         String cpuTotalUsageKey = "total_usage";
         JSONObject cpuStats = stats.getJSONObject(cpuStatsKey);
         JSONObject cpuUsage = cpuStats.getJSONObject(cpuUsageKey);
         Long cpuTotalUsage = cpuUsage.getLong(cpuTotalUsageKey);
-        Map<String, String> metadata = getDefaultMetadata(containerName);
-        Metric metric = new Metric("cpu", (float) cpuTotalUsage, timestamp, HELP, metadata);
-        return metric;
+        return cpuTotalUsage;
+    }
+
+    private Long getSystemCPUUsage(JSONObject stats){
+        String cpuStatsKey = "cpu_stats";
+        String systemCpuUsageKey = "system_cpu_usage";
+        JSONObject cpuStats = stats.getJSONObject(cpuStatsKey);
+        Long systemCpuUsage = cpuStats.getLong(systemCpuUsageKey);
+        return systemCpuUsage;
+    }
+
+    private int getOnlineCPUs(JSONObject stats){
+        String cpuStatsKey = "cpu_stats";
+        String onlineCpusKey = "online_cpus";
+        JSONObject cpuStats = stats.getJSONObject(cpuStatsKey);
+        int onlineCpus = cpuStats.getInt(onlineCpusKey);
+        return onlineCpus;
     }
 
     private Metric getMemoryMetric(String containerName, JSONObject stats, Timestamp timestamp){
@@ -73,4 +105,6 @@ public class DockerContainerProbe extends Probe {
         metadata.put("name", containerName);
         return metadata;
     }
+
+
 }
