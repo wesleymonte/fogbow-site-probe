@@ -42,7 +42,8 @@ public class DockerProbesController {
 
     private void createThreads() {
         Thread firstProbe = new Thread(dockerContainerProbe, DockerContainerProbe.THREAD_NAME);
-        pool = new ArrayList<>(Arrays.asList(firstProbe, firstProbe));
+        pool = new ArrayList<>();
+        pool.add(firstProbe);
     }
 
 }
