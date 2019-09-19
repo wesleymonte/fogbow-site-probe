@@ -23,6 +23,7 @@ public class ProbesManager {
         this.fogbowProbesController = new FogbowProbesController(properties);
         this.fogbowProbesController.init(dataProviderService);
         this.dockerProbesController = new DockerProbesController(properties);
+        this.dockerProbesController.init();
     }
 
     public void start() {
