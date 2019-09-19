@@ -20,16 +20,16 @@ public class FogbowServiceLatencyProbe extends FogbowProbe {
 
     public static final String THREAD_NAME = "Thread-Service-Latency-Probe";
     private static final String PROBE_NAME = "service_latency";
+    private static final String HELP = "The time that elapses between the order being opened until the order is available.";
+    private static final String METRIC_NAME = "latency";
+    private static final String METRIC_VALUE_TYPE = "resource";
     private static final Logger LOGGER = LogManager.getLogger(FogbowServiceLatencyProbe.class);
     private static final String COMPUTE_JSON_KEY = "COMPUTE";
     private static final String NETWORK_JSON_KEY = "NETWORK";
     private static final String VOLUME_JSON_KEY = "VOLUME";
 
     public FogbowServiceLatencyProbe(Integer timeSleep, String ftaAddress) {
-        super(timeSleep, ftaAddress);
-        this.help = "The time that elapses between the order being opened until the order is available.";
-        this.metricName = "latency";
-        this.metricValueType = "resource";
+        super(timeSleep, ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE);
     }
 
     public void run() {

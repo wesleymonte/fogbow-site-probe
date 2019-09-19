@@ -27,6 +27,9 @@ public class FogbowServiceReachabilityProbe extends FogbowProbe {
     public static final String THREAD_NAME = "Thread-Service-Reachability-Probe";
     private static final Logger LOGGER = LogManager.getLogger(FogbowServiceReachabilityProbe.class);
     private static final String PROBE_NAME = "service_reachability";
+    private static final String HELP = "Returns 0 if the target service is not available or 1 if is.";
+    private static final String METRIC_NAME = "reachability";
+    private static final String METRIC_VALUE_TYPE = "service";
     private final int RESPONSE_CODE_LOWER_BOUND = 199;
     private final int RESPONSE_CODE_UPPER_BOUND = 300;
     private String AS_ENDPOINT;
@@ -37,15 +40,12 @@ public class FogbowServiceReachabilityProbe extends FogbowProbe {
 
     public FogbowServiceReachabilityProbe(Integer timeSleep, String ftaAddress, String asEndpoint,
         String rasEndpoint, String fnsEndpoint, String msEndpoint) {
-        super(timeSleep, ftaAddress);
+        super(timeSleep, ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE);
         this.AS_ENDPOINT = asEndpoint;
         this.RAS_ENDPOINT = rasEndpoint;
         this.FNS_ENDPOINT = fnsEndpoint;
         this.MS_ENDPOINT = msEndpoint;
         this.services = Collections.unmodifiableMap(buildServices());
-        this.help = "Returns 0 if the target service is not available or 1 if is.";
-        this.metricName = "reachability";
-        this.metricValueType = "service";
     }
 
     private Map<String, FogbowService> buildServices() {

@@ -20,13 +20,13 @@ public class FogbowServiceSuccessRateProbe extends FogbowProbe {
 
     public static final String THREAD_NAME = "Thread-Service-Success-Rate-Probe";
     private static final String PROBE_NAME = "service_success_rate";
+    private static final String HELP = "The success rate in requesting a resource.";
+    private static final String METRIC_NAME = "success_rate";
+    private static final String METRIC_VALUE_TYPE = "resource";
     private static final Logger LOGGER = LogManager.getLogger(FogbowServiceSuccessRateProbe.class);
 
     public FogbowServiceSuccessRateProbe(Integer timeSleep, String ftaAddress) {
-        super(timeSleep, ftaAddress);
-        this.help = "The success rate in requesting a resource.";
-        this.metricName = "success_rate";
-        this.metricValueType = "resource";
+        super(timeSleep, ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE);
     }
 
     public void run() {

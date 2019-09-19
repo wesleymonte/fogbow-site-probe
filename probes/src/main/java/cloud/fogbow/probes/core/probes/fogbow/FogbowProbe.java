@@ -8,13 +8,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public abstract class FogbowProbe extends Probe {
+abstract class FogbowProbe extends Probe {
 
-    protected String metricValueType;
-    protected String metricName;
+    private String help;
+    private String metricName;
+    private String metricValueType;
 
-    public FogbowProbe(Integer sleepTime, String ftaAddress) {
+    public FogbowProbe(Integer sleepTime, String ftaAddress, String help, String metricName,
+        String metricValueType) {
         super(sleepTime, ftaAddress);
+        this.help = help;
+        this.metricName = metricName;
+        this.metricValueType = metricValueType;
     }
 
     protected void parseValuesToMetrics(List<Metric> metrics, List<Pair<String, Float>> values,

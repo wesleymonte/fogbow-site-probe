@@ -19,9 +19,8 @@ public abstract class Probe implements Runnable {
     protected DataProviderService providerService;
     protected Timestamp lastTimestampAwake;
     protected boolean firstTimeAwake;
-    protected Integer sleepTime;
-    protected String ftaAddress;
-    protected String help;
+    private Integer sleepTime;
+    private String ftaAddress;
 
     public Probe(Integer sleepTime, String ftaAddress) {
         this.lastTimestampAwake = new Timestamp(System.currentTimeMillis());

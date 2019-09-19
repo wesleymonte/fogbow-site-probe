@@ -15,6 +15,7 @@ public class DockerContainerProbe extends Probe {
 
     public static final String THREAD_NAME = "Thread-Docker-Container-Probe";
     private static final String PROBE_NAME = "docker_container_information";
+    private static final String HELP = "Help";
     private static final Logger LOGGER = LogManager
         .getLogger(DockerContainerProbe.class);
     private DockerRequestHelper dockerRequestHelper = new DockerRequestHelper();
@@ -52,7 +53,7 @@ public class DockerContainerProbe extends Probe {
         JSONObject cpuUsage = cpuStats.getJSONObject(cpuUsageKey);
         Long cpuTotalUsage = cpuUsage.getLong(cpuTotalUsageKey);
         Map<String, String> metadata = getDefaultMetadata(containerName);
-        Metric metric = new Metric("cpu", (float) cpuTotalUsage, timestamp, "", metadata);
+        Metric metric = new Metric("cpu", (float) cpuTotalUsage, timestamp, HELP, metadata);
         return metric;
     }
 
@@ -62,7 +63,7 @@ public class DockerContainerProbe extends Probe {
         JSONObject memoryStats = stats.getJSONObject(memoryStatsKey);
         Long memoryUsage = memoryStats.getLong(memoryUsageKey);
         Map<String, String> metadata = getDefaultMetadata(containerName);
-        Metric metric = new Metric("memory", (float) memoryUsage, timestamp, "", metadata);
+        Metric metric = new Metric("memory", (float) memoryUsage, timestamp, HELP, metadata);
         return metric;
     }
 

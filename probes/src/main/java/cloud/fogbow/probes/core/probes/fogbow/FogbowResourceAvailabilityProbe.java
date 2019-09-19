@@ -22,14 +22,14 @@ public class FogbowResourceAvailabilityProbe extends FogbowProbe {
 
     public static final String THREAD_NAME = "Thread-Resource-Availability-Probe";
     private static final String PROBE_NAME = "resource_availability";
+    private static final String HELP = "Measures the level of failure to request a resource after the Order is open.";
+    private static final String METRIC_NAME = "availability";
+    private static final String METRIC_VALUE_TYPE = "resource";
     private static final Logger LOGGER = LogManager
         .getLogger(FogbowResourceAvailabilityProbe.class);
 
     public FogbowResourceAvailabilityProbe(Integer timeSleep, String ftaAddress) {
-        super(timeSleep, ftaAddress);
-        this.help = "Measures the level of failure to request a resource after the Order is open.";
-        this.metricName = "availability";
-        this.metricValueType = "resource";
+        super(timeSleep, ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE);
     }
 
     public void run() {
