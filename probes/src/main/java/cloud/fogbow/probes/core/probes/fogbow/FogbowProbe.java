@@ -14,7 +14,7 @@ abstract class FogbowProbe extends Probe {
     private String metricName;
     private String metricValueType;
 
-    public FogbowProbe(Integer sleepTime, String ftaAddress, String help, String metricName,
+    FogbowProbe(Integer sleepTime, String ftaAddress, String help, String metricName,
         String metricValueType) {
         super(sleepTime, ftaAddress);
         this.help = help;
@@ -22,8 +22,8 @@ abstract class FogbowProbe extends Probe {
         this.metricValueType = metricValueType;
     }
 
-    protected void parseValuesToMetrics(List<Metric> metrics, List<Pair<String, Float>> values,
-        Timestamp currentTimestamp) {
+    void parseValuesToMetrics(List<Pair<String, Float>> values, Timestamp currentTimestamp,
+        List<Metric> metrics) {
         for (Pair<String, Float> p : values) {
             Map<String, String> metadata = new HashMap<>();
             metadata.put(metricValueType, p.getKey());

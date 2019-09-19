@@ -43,7 +43,7 @@ public class FogbowServiceLatencyProbe extends FogbowProbe {
         Long[] latencies = this.providerService.getLatencies(currentTimestamp, firstTimeAwake);
         List<Pair<String, Float>> values = toValue(latencies);
         List<Metric> metrics = new ArrayList<>();
-        parseValuesToMetrics(metrics, values, currentTimestamp);
+        parseValuesToMetrics(values, currentTimestamp, metrics);
         LOGGER.info("Made a metric with name at [" + currentTimestamp.toString() + "]");
         return metrics;
     }

@@ -25,6 +25,8 @@ public class FogbowResourceAvailabilityProbe extends FogbowProbe {
     private static final String HELP = "Measures the level of failure to request a resource after the Order is open.";
     private static final String METRIC_NAME = "availability";
     private static final String METRIC_VALUE_TYPE = "resource";
+    private static final ResourceType resourceTypes[] = {ResourceType.COMPUTE, ResourceType.VOLUME,
+        ResourceType.NETWORK};
     private static final Logger LOGGER = LogManager
         .getLogger(FogbowResourceAvailabilityProbe.class);
 
@@ -41,13 +43,11 @@ public class FogbowResourceAvailabilityProbe extends FogbowProbe {
 
     protected List<Metric> getMetrics(Timestamp currentTimestamp) {
         List<Pair<String, Float>> resourcesAvailability = new ArrayList<>();
-        ResourceType resourceTypes[] = {ResourceType.COMPUTE, ResourceType.VOLUME,
-            ResourceType.NETWORK};
         for (ResourceType r : resourceTypes) {
             resourcesAvailability.add(getResourceAvailabilityValue(r));
         }
         List<Metric> metrics = new ArrayList<>();
-        parseValuesToMetrics(metrics, resourcesAvailability, currentTimestamp);
+        parseValuesToMetrics(resourcesAvailability, currentTimestamp, metrics);
         LOGGER.info("Made as metric at [" + currentTimestamp.toString() + "]");
         return metrics;
     }
