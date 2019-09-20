@@ -21,12 +21,13 @@ public class DockerContainerProbe extends Probe {
     private static final String PROBE_NAME = "docker_container_information";
     private static final String HELP = "Help";
     private static final Logger LOGGER = LogManager.getLogger(DockerContainerProbe.class);
-    private DockerRequestHelper dockerRequestHelper = new DockerRequestHelper();
     private Map<String, ContainerStats> previousContainersStats;
+    private DockerRequestHelper dockerRequestHelper;
 
-    public DockerContainerProbe(Integer sleepTime, String ftaAddress) {
+    public DockerContainerProbe(Integer sleepTime, String ftaAddress, String dockerHostAddress) {
         super(sleepTime, ftaAddress);
         this.previousContainersStats = new HashMap<>();
+        this.dockerRequestHelper = new DockerRequestHelper(dockerHostAddress);
     }
 
     public void run() {

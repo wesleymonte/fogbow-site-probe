@@ -9,11 +9,15 @@ import org.json.JSONObject;
 
 public class DockerRequestHelper {
 
-    private static String address = "http://localhost:5555";
     private static final String CONTAINER_STATS_ENDPOINT = "%s/containers/%s/stats?stream=false";
     private static final String LIST_CONTAINERS_ENDPOINT = "%s/containers/json";
+    private String address;
 
-    public JSONObject getContainerStats(String containerId){
+    public DockerRequestHelper(String address) {
+        this.address = address;
+    }
+
+    public JSONObject getContainerStats(String containerId) {
         final String url = String.format(CONTAINER_STATS_ENDPOINT, address, containerId);
         JSONObject json = new JSONObject();
         try {
@@ -25,17 +29,17 @@ public class DockerRequestHelper {
         return json;
     }
 
-    public List<String> listContainersName(){
+    public List<String> listContainersName() {
         List<String> list = new ArrayList<>();
         JSONArray json = listContainers();
-        for(int i = 0; i < json.length(); i++){
+        for (int i = 0; i < json.length(); i++) {
             String name = getContainerName(json.getJSONObject(i));
             list.add(name);
         }
         return list;
     }
 
-    private JSONArray listContainers(){
+    private JSONArray listContainers() {
         final String url = String.format(LIST_CONTAINERS_ENDPOINT, address);
         String jsonStr = null;
         try {
@@ -47,7 +51,7 @@ public class DockerRequestHelper {
         return json;
     }
 
-    private String getContainerName(JSONObject jsonObject){
+    private String getContainerName(JSONObject jsonObject) {
         JSONArray names = jsonObject.getJSONArray("Names");
         String name = names.getString(0).substring(1);
         return name;

@@ -24,9 +24,10 @@ public class DockerProbesController {
     public void init() {
         Integer sleepTime = Integer.valueOf(properties.getProperty(Constants.SLEEP_TIME));
         String ftaAddress = properties.getProperty(Constants.FTA_ADDRESS);
+        String dockerHostAddress = properties.getProperty(Constants.DOCKER_HOST_ADDRESS);
         LOGGER.info("Defining Docker Probes:\n\tSleep time [" + sleepTime
             + "]\n\tFogbow Telemetry Aggregator Address [" + ftaAddress + "]");
-        dockerContainerProbe = new DockerContainerProbe(sleepTime, ftaAddress);
+        dockerContainerProbe = new DockerContainerProbe(sleepTime, ftaAddress, dockerHostAddress);
     }
 
     public void startAll() {
