@@ -16,12 +16,13 @@ import org.apache.logging.log4j.Logger;
 public class FogbowProbesController {
 
     private static final Logger LOGGER = LogManager.getLogger(FogbowProbesController.class);
+    private static final String THREAD_NAME_PREFIX = "Fogbow-Probe-";
     private FogbowResourceAvailabilityProbe resourceAvailabilityProbe;
     private FogbowServiceLatencyProbe serviceLatencyProbe;
     private FogbowServiceSuccessRateProbe serviceSuccessRateProbe;
     private FogbowServiceReachabilityProbe serviceReachabilityProbe;
     private ScheduledExecutorService scheduled = new ScheduledThreadPoolExecutor(4,
-        new DefaultThreadFactory("Fogbow-Probe-"));
+        new DefaultThreadFactory(THREAD_NAME_PREFIX ));
     private boolean isStarted = false;
     private Properties properties;
 

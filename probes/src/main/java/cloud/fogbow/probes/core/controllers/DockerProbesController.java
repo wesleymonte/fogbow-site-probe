@@ -14,12 +14,13 @@ public class DockerProbesController {
 
 
     private static final Logger LOGGER = LogManager.getLogger(FogbowProbesController.class);
+    private static final String THREAD_NAME_PREFIX = "Docker-Probe-";
     private DockerContainerProbe dockerContainerProbe;
     private List<Thread> pool;
     private boolean isStarted = false;
     private Properties properties;
     private ScheduledExecutorService scheduled = new ScheduledThreadPoolExecutor(1,
-        new DefaultThreadFactory("Docker-Probe-"));
+        new DefaultThreadFactory(THREAD_NAME_PREFIX));
 
     public DockerProbesController(Properties properties) {
         this.properties = properties;
