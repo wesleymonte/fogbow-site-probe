@@ -15,14 +15,15 @@ public class DockerProbesController {
     private static final String THREAD_NAME_PREFIX = "Docker-Probe-";
     private static final int POOL_SIZE = 1;
 
-    private boolean isStarted = false;
+    private boolean isStarted;
     private Properties properties;
     private DockerContainerProbe dockerContainerProbe;
-    private ScheduledExecutorService scheduled = new ScheduledThreadPoolExecutor(POOL_SIZE,
-        new DefaultThreadFactory(THREAD_NAME_PREFIX));
+    private ScheduledExecutorService scheduled;
 
     public DockerProbesController(Properties properties) {
         this.properties = properties;
+        this.scheduled = new ScheduledThreadPoolExecutor(POOL_SIZE,
+            new DefaultThreadFactory(THREAD_NAME_PREFIX));
     }
 
     public void init() {
