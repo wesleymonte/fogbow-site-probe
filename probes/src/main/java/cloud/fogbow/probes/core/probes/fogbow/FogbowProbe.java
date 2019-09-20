@@ -11,12 +11,15 @@ import java.util.Map;
 
 public abstract class FogbowProbe extends Probe {
 
+    private static final String targetHostKey = "target_host";
+    private String targetHostAddress;
     private String help;
     private String metricName;
     private String metricValueType;
 
-    FogbowProbe(String ftaAddress, String help, String metricName, String metricValueType) {
+    FogbowProbe(String ftaAddress, String targetHostAddress, String help, String metricName, String metricValueType) {
         super(ftaAddress);
+        this.targetHostAddress = targetHostAddress;
         this.help = help;
         this.metricName = metricName;
         this.metricValueType = metricValueType;
@@ -35,6 +38,7 @@ public abstract class FogbowProbe extends Probe {
     private Metric parsePairToMetric(Pair<String, Float> p, Timestamp currentTimestamp) {
         Map<String, String> metadata = new HashMap<>();
         metadata.put(metricValueType, p.getKey());
+        metadata.put(targetHostKey, targetHostAddress);
         Metric m = new Metric(p.getKey() + "_" + metricName, p.getValue(), currentTimestamp, help,
             metadata);
         return m;

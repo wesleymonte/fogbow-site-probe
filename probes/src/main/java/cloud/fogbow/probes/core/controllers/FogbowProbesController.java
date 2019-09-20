@@ -35,12 +35,13 @@ public class FogbowProbesController {
     }
 
     public void init(DataProviderService dataProviderService) {
+        String targetHostAddress = properties.getProperty(Constants.TARGET_HOST_ADDRESS);
         String ftaAddress = properties.getProperty(Constants.FTA_ADDRESS);
         LOGGER.debug("Init the Fogbow Probes Controller: FTA ADDRESS [" + ftaAddress + "]");
-        this.resourceAvailabilityProbe = new FogbowResourceAvailabilityProbe(ftaAddress);
-        this.serviceLatencyProbe = new FogbowServiceLatencyProbe(ftaAddress);
-        this.serviceSuccessRateProbe = new FogbowServiceSuccessRateProbe(ftaAddress);
-        this.serviceReachabilityProbe = new FogbowServiceReachabilityProbe(ftaAddress,
+        this.resourceAvailabilityProbe = new FogbowResourceAvailabilityProbe(ftaAddress, targetHostAddress);
+        this.serviceLatencyProbe = new FogbowServiceLatencyProbe(ftaAddress, targetHostAddress);
+        this.serviceSuccessRateProbe = new FogbowServiceSuccessRateProbe(ftaAddress, targetHostAddress);
+        this.serviceReachabilityProbe = new FogbowServiceReachabilityProbe(ftaAddress, targetHostAddress,
             properties.getProperty(Constants.AS_ENDPOINT),
             properties.getProperty(Constants.RAS_ENDPOINT),
             properties.getProperty(Constants.FNS_ENDPOINT),
@@ -62,14 +63,14 @@ public class FogbowProbesController {
         LOGGER.debug(
             "Scheduling Fogbow Container Probes: INITIAL_DELAY [" + initialDelay + "]; DELAY ["
                 + delay + "]");
-        scheduled.scheduleWithFixedDelay(resourceAvailabilityProbe, initialDelay, delay,
-            TimeUnit.MILLISECONDS);
-        scheduled.scheduleWithFixedDelay(serviceLatencyProbe, initialDelay, delay,
-            TimeUnit.MILLISECONDS);
+//        scheduled.scheduleWithFixedDelay(resourceAvailabilityProbe, initialDelay, delay,
+//            TimeUnit.MILLISECONDS);
+//        scheduled.scheduleWithFixedDelay(serviceLatencyProbe, initialDelay, delay,
+//            TimeUnit.MILLISECONDS);
         scheduled.scheduleWithFixedDelay(serviceSuccessRateProbe, initialDelay, delay,
             TimeUnit.MILLISECONDS);
-        scheduled.scheduleWithFixedDelay(serviceReachabilityProbe, initialDelay, delay,
-            TimeUnit.MILLISECONDS);
+//        scheduled.scheduleWithFixedDelay(serviceReachabilityProbe, initialDelay, delay,
+//            TimeUnit.MILLISECONDS);
     }
 
     private void setProviderService(DataProviderService dataProviderService) {
