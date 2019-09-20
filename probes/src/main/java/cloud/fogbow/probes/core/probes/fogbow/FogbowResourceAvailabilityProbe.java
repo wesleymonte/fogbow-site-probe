@@ -20,7 +20,6 @@ import org.apache.logging.log4j.Logger;
 
 public class FogbowResourceAvailabilityProbe extends FogbowProbe {
 
-    public static final String THREAD_NAME = "Thread-Resource-Availability-Probe";
     private static final String PROBE_NAME = "resource_availability";
     private static final String HELP = "Measures the level of failure to request a resource after the Order is open.";
     private static final String METRIC_NAME = "availability";
@@ -31,15 +30,8 @@ public class FogbowResourceAvailabilityProbe extends FogbowProbe {
         .getLogger(FogbowResourceAvailabilityProbe.class);
 
     public FogbowResourceAvailabilityProbe(String ftaAddress) {
-        super(ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE, THREAD_NAME);
+        super(ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE);
     }
-
-//    public void run() {
-//        while (true) {
-//            LOGGER.info("----> Starting Fogbow Resource Availability Probe...");
-//            super.run();
-//        }
-//    }
 
     protected List<Metric> getMetrics(Timestamp currentTimestamp) {
         List<Pair<String, Float>> resourcesAvailability = new ArrayList<>();

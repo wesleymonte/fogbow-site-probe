@@ -18,7 +18,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class FogbowServiceLatencyProbe extends FogbowProbe {
 
-    public static final String THREAD_NAME = "Thread-Service-Latency-Probe";
     private static final String PROBE_NAME = "service_latency";
     private static final String HELP = "The time that elapses between the order being opened until the order is available.";
     private static final String METRIC_NAME = "latency";
@@ -29,15 +28,8 @@ public class FogbowServiceLatencyProbe extends FogbowProbe {
     private static final String VOLUME_JSON_KEY = "VOLUME";
 
     public FogbowServiceLatencyProbe(String ftaAddress) {
-        super(ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE, THREAD_NAME);
+        super(ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE);
     }
-
-//    public void run() {
-//        while (true) {
-//            LOGGER.info("----> Starting Fogbow Service Latency Probe...");
-//            super.run();
-//        }
-//    }
 
     protected List<Metric> getMetrics(Timestamp currentTimestamp) {
         Long[] latencies = this.providerService.getLatencies(currentTimestamp, firstTimeAwake);

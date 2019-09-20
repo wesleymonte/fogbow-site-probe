@@ -18,7 +18,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class FogbowServiceSuccessRateProbe extends FogbowProbe {
 
-    public static final String THREAD_NAME = "Thread-Service-Success-Rate-Probe";
     private static final String PROBE_NAME = "service_success_rate";
     private static final String HELP = "The success rate in requesting a resource.";
     private static final String METRIC_NAME = "success_rate";
@@ -26,15 +25,8 @@ public class FogbowServiceSuccessRateProbe extends FogbowProbe {
     private static final Logger LOGGER = LogManager.getLogger(FogbowServiceSuccessRateProbe.class);
 
     public FogbowServiceSuccessRateProbe(String ftaAddress) {
-        super(ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE, THREAD_NAME);
+        super(ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE);
     }
-
-//    public void run() {
-//        while (true) {
-//            LOGGER.info("----> Starting Fogbow Service Success Rate Probe");
-//            super.run();
-//        }
-//    }
 
     protected List<Metric> getMetrics(Timestamp currentTimestamp) {
         List<Pair<String, Float>> resourcesAvailability = new ArrayList<>();

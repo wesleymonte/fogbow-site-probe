@@ -2,16 +2,14 @@ package cloud.fogbow.probes.core.models;
 
 import cloud.fogbow.probes.core.fta.FtaSender;
 import cloud.fogbow.probes.core.services.DataProviderService;
-import cloud.fogbow.probes.core.utils.AppUtil;
 import java.sql.Timestamp;
 import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
- * It is an entity in charge of making observations at every moment of time ({@link #sleepTime}).
- * All observations are sent to the Fogbow Telemetry Aggregator by address {@link #ftaAddress} using
- * {@link FtaSender}.
+ * It is an entity in charge of making observations at every moment of time ). All observations are
+ * sent to the Fogbow Telemetry Aggregator by address {@link #ftaAddress} using {@link FtaSender}.
  */
 public abstract class Probe implements Runnable {
 
@@ -20,12 +18,10 @@ public abstract class Probe implements Runnable {
     protected Timestamp lastTimestampAwake;
     protected boolean firstTimeAwake;
     private String ftaAddress;
-    private String threadName;
 
-    public Probe(String ftaAddress, String threadName) {
+    public Probe(String ftaAddress) {
         this.lastTimestampAwake = new Timestamp(System.currentTimeMillis());
         this.ftaAddress = ftaAddress;
-        this.threadName = threadName;
         this.firstTimeAwake = true;
     }
 
@@ -49,7 +45,4 @@ public abstract class Probe implements Runnable {
         this.providerService = providerService;
     }
 
-    public String getThreadName() {
-        return threadName;
-    }
 }

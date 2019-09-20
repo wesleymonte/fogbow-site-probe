@@ -15,8 +15,8 @@ public abstract class FogbowProbe extends Probe {
     private String metricValueType;
 
     FogbowProbe(String ftaAddress, String help, String metricName,
-        String metricValueType, String threadName) {
-        super(ftaAddress, threadName);
+        String metricValueType) {
+        super(ftaAddress);
         this.help = help;
         this.metricName = metricName;
         this.metricValueType = metricValueType;
