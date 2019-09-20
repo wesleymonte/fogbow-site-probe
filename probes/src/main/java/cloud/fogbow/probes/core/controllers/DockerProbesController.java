@@ -1,6 +1,7 @@
 package cloud.fogbow.probes.core.controllers;
 
 import cloud.fogbow.probes.core.Constants;
+import cloud.fogbow.probes.core.controllers.threadfactory.DefaultThreadFactory;
 import cloud.fogbow.probes.core.probes.docker.DockerContainerProbe;
 import java.util.Properties;
 import java.util.concurrent.ScheduledExecutorService;
@@ -43,9 +44,11 @@ public class DockerProbesController {
     private void submitTasks() {
         long delay = Long.parseLong(properties.getProperty(Constants.DELAY));
         long initialDelay = 5000;
-        LOGGER.debug("Scheduling Docker Container Probes: INITIAL_DELAY [" + initialDelay + "]; DELAY [" + delay + "]");
-        scheduled
-            .scheduleWithFixedDelay(dockerContainerProbe, initialDelay, delay, TimeUnit.MILLISECONDS);
+        LOGGER.debug(
+            "Scheduling Docker Container Probes: INITIAL_DELAY [" + initialDelay + "]; DELAY ["
+                + delay + "]");
+        scheduled.scheduleWithFixedDelay(dockerContainerProbe, initialDelay, delay,
+            TimeUnit.MILLISECONDS);
     }
 
 }

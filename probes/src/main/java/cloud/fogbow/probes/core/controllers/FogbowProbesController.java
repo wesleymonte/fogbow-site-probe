@@ -1,6 +1,7 @@
 package cloud.fogbow.probes.core.controllers;
 
 import cloud.fogbow.probes.core.Constants;
+import cloud.fogbow.probes.core.controllers.threadfactory.DefaultThreadFactory;
 import cloud.fogbow.probes.core.probes.fogbow.FogbowResourceAvailabilityProbe;
 import cloud.fogbow.probes.core.probes.fogbow.FogbowServiceLatencyProbe;
 import cloud.fogbow.probes.core.probes.fogbow.FogbowServiceReachabilityProbe;
@@ -58,13 +59,15 @@ public class FogbowProbesController {
     private void submitTasks() {
         long delay = Long.parseLong(properties.getProperty(Constants.DELAY));
         long initialDelay = 5000;
-        LOGGER.debug("Scheduling Fogbow Container Probes: INITIAL_DELAY [" + initialDelay + "]; DELAY [" + delay + "]");
+        LOGGER.debug(
+            "Scheduling Fogbow Container Probes: INITIAL_DELAY [" + initialDelay + "]; DELAY ["
+                + delay + "]");
         scheduled.scheduleWithFixedDelay(resourceAvailabilityProbe, initialDelay, delay,
             TimeUnit.MILLISECONDS);
-        scheduled
-            .scheduleWithFixedDelay(serviceLatencyProbe, initialDelay, delay, TimeUnit.MILLISECONDS);
-        scheduled
-            .scheduleWithFixedDelay(serviceSuccessRateProbe, initialDelay, delay, TimeUnit.MILLISECONDS);
+        scheduled.scheduleWithFixedDelay(serviceLatencyProbe, initialDelay, delay,
+            TimeUnit.MILLISECONDS);
+        scheduled.scheduleWithFixedDelay(serviceSuccessRateProbe, initialDelay, delay,
+            TimeUnit.MILLISECONDS);
         scheduled.scheduleWithFixedDelay(serviceReachabilityProbe, initialDelay, delay,
             TimeUnit.MILLISECONDS);
     }

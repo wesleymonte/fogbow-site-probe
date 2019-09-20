@@ -1,9 +1,10 @@
-package cloud.fogbow.probes.core.controllers;
+package cloud.fogbow.probes.core.controllers.threadfactory;
 
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class DefaultThreadFactory implements ThreadFactory {
+
     private final AtomicInteger threadNumber = new AtomicInteger(1);
     private final String namePrefix;
 
