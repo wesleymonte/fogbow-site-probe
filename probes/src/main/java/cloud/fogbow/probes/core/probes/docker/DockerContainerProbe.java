@@ -17,8 +17,6 @@ import org.json.JSONObject;
 
 public class DockerContainerProbe extends Probe {
 
-    public static final String THREAD_NAME = "Thread-Docker-Container-Probe";
-    private static final String PROBE_NAME = "docker_container_information";
     private static final String HELP = "Help";
     private static final Logger LOGGER = LogManager.getLogger(DockerContainerProbe.class);
     private Map<String, ContainerStats> previousContainersStats;

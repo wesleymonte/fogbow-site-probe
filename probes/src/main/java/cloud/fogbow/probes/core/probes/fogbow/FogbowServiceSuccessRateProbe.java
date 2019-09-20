@@ -18,11 +18,10 @@ import org.apache.logging.log4j.Logger;
  */
 public class FogbowServiceSuccessRateProbe extends FogbowProbe {
 
-    private static final String PROBE_NAME = "service_success_rate";
+    private static final Logger LOGGER = LogManager.getLogger(FogbowServiceSuccessRateProbe.class);
     private static final String HELP = "The success rate in requesting a resource.";
     private static final String METRIC_NAME = "success_rate";
     private static final String METRIC_VALUE_TYPE = "resource";
-    private static final Logger LOGGER = LogManager.getLogger(FogbowServiceSuccessRateProbe.class);
 
     public FogbowServiceSuccessRateProbe(String ftaAddress) {
         super(ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE);

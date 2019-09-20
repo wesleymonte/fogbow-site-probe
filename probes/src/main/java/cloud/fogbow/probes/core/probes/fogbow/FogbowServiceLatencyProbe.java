@@ -18,11 +18,10 @@ import org.apache.logging.log4j.Logger;
  */
 public class FogbowServiceLatencyProbe extends FogbowProbe {
 
-    private static final String PROBE_NAME = "service_latency";
+    private static final Logger LOGGER = LogManager.getLogger(FogbowServiceLatencyProbe.class);
     private static final String HELP = "The time that elapses between the order being opened until the order is available.";
     private static final String METRIC_NAME = "latency";
     private static final String METRIC_VALUE_TYPE = "resource";
-    private static final Logger LOGGER = LogManager.getLogger(FogbowServiceLatencyProbe.class);
     private static final String COMPUTE_JSON_KEY = "COMPUTE";
     private static final String NETWORK_JSON_KEY = "NETWORK";
     private static final String VOLUME_JSON_KEY = "VOLUME";

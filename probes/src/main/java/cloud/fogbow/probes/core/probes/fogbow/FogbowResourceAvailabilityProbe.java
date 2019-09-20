@@ -20,14 +20,12 @@ import org.apache.logging.log4j.Logger;
 
 public class FogbowResourceAvailabilityProbe extends FogbowProbe {
 
-    private static final String PROBE_NAME = "resource_availability";
+    private static final Logger LOGGER = LogManager.getLogger(FogbowResourceAvailabilityProbe.class);
     private static final String HELP = "Measures the level of failure to request a resource after the Order is open.";
     private static final String METRIC_NAME = "availability";
     private static final String METRIC_VALUE_TYPE = "resource";
     private static final ResourceType[] resourceTypes = {ResourceType.COMPUTE, ResourceType.VOLUME,
         ResourceType.NETWORK};
-    private static final Logger LOGGER = LogManager
-        .getLogger(FogbowResourceAvailabilityProbe.class);
 
     public FogbowResourceAvailabilityProbe(String ftaAddress) {
         super(ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE);

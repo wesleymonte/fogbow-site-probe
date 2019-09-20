@@ -25,7 +25,6 @@ import org.apache.logging.log4j.Logger;
 public class FogbowServiceReachabilityProbe extends FogbowProbe {
 
     private static final Logger LOGGER = LogManager.getLogger(FogbowServiceReachabilityProbe.class);
-    private static final String PROBE_NAME = "service_reachability";
     private static final String HELP = "Returns 0 if the target service is not available or 1 if is.";
     private static final String METRIC_NAME = "reachability";
     private static final String METRIC_VALUE_TYPE = "service";
