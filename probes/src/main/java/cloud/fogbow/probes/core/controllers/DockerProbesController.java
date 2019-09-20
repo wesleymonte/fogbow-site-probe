@@ -32,19 +32,20 @@ public class DockerProbesController {
         this.dockerContainerProbe = new DockerContainerProbe(ftaAddress);
     }
 
-    private void submitTasks() {
-        long delay = Long.parseLong(properties.getProperty(Constants.DELAY));
-        long initialDelay = 5;
-        scheduled
-            .scheduleWithFixedDelay(dockerContainerProbe, initialDelay, delay, TimeUnit.SECONDS);
-    }
-
     public void startAll() {
         LOGGER.info("Starting Docker Probes Threads...");
         if (!isStarted) {
             submitTasks();
             isStarted = true;
         }
+    }
+
+    private void submitTasks() {
+        long delay = Long.parseLong(properties.getProperty(Constants.DELAY));
+        long initialDelay = 5;
+        LOGGER.debug("Scheduling Docker Container Probes: INITIAL_DELAY [" + initialDelay + "]; DELAY [" + delay + "]");
+        scheduled
+            .scheduleWithFixedDelay(dockerContainerProbe, initialDelay, delay, TimeUnit.SECONDS);
     }
 
 }

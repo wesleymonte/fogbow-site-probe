@@ -47,9 +47,18 @@ public class FogbowProbesController {
         this.setProviderService(dataProviderService);
     }
 
+    public void startAll() {
+        LOGGER.info("Starting Fogbow Probes Threads...");
+        if (!isStarted) {
+            submitTasks();
+            isStarted = true;
+        }
+    }
+
     private void submitTasks() {
         long delay = Long.parseLong(properties.getProperty(Constants.DELAY));
         long initialDelay = 5;
+        LOGGER.debug("Scheduling Fogbow Container Probes: INITIAL_DELAY [" + initialDelay + "]; DELAY [" + delay + "]");
         scheduled.scheduleWithFixedDelay(resourceAvailabilityProbe, initialDelay, delay,
             TimeUnit.SECONDS);
         scheduled
@@ -58,14 +67,6 @@ public class FogbowProbesController {
             .scheduleWithFixedDelay(serviceSuccessRateProbe, initialDelay, delay, TimeUnit.SECONDS);
         scheduled.scheduleWithFixedDelay(serviceReachabilityProbe, initialDelay, delay,
             TimeUnit.SECONDS);
-    }
-
-    public void startAll() {
-        LOGGER.info("Starting Fogbow Probes Threads...");
-        if (!isStarted) {
-            submitTasks();
-            isStarted = true;
-        }
     }
 
     private void setProviderService(DataProviderService dataProviderService) {
