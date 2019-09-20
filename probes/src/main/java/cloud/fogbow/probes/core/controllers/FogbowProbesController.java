@@ -57,16 +57,16 @@ public class FogbowProbesController {
 
     private void submitTasks() {
         long delay = Long.parseLong(properties.getProperty(Constants.DELAY));
-        long initialDelay = 5;
+        long initialDelay = 5000;
         LOGGER.debug("Scheduling Fogbow Container Probes: INITIAL_DELAY [" + initialDelay + "]; DELAY [" + delay + "]");
         scheduled.scheduleWithFixedDelay(resourceAvailabilityProbe, initialDelay, delay,
-            TimeUnit.SECONDS);
+            TimeUnit.MILLISECONDS);
         scheduled
-            .scheduleWithFixedDelay(serviceLatencyProbe, initialDelay, delay, TimeUnit.SECONDS);
+            .scheduleWithFixedDelay(serviceLatencyProbe, initialDelay, delay, TimeUnit.MILLISECONDS);
         scheduled
-            .scheduleWithFixedDelay(serviceSuccessRateProbe, initialDelay, delay, TimeUnit.SECONDS);
+            .scheduleWithFixedDelay(serviceSuccessRateProbe, initialDelay, delay, TimeUnit.MILLISECONDS);
         scheduled.scheduleWithFixedDelay(serviceReachabilityProbe, initialDelay, delay,
-            TimeUnit.SECONDS);
+            TimeUnit.MILLISECONDS);
     }
 
     private void setProviderService(DataProviderService dataProviderService) {

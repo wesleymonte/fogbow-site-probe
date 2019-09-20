@@ -42,10 +42,10 @@ public class DockerProbesController {
 
     private void submitTasks() {
         long delay = Long.parseLong(properties.getProperty(Constants.DELAY));
-        long initialDelay = 5;
+        long initialDelay = 5000;
         LOGGER.debug("Scheduling Docker Container Probes: INITIAL_DELAY [" + initialDelay + "]; DELAY [" + delay + "]");
         scheduled
-            .scheduleWithFixedDelay(dockerContainerProbe, initialDelay, delay, TimeUnit.SECONDS);
+            .scheduleWithFixedDelay(dockerContainerProbe, initialDelay, delay, TimeUnit.MILLISECONDS);
     }
 
 }
