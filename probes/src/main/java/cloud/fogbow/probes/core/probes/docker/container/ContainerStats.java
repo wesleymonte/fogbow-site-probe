@@ -1,4 +1,4 @@
-package cloud.fogbow.probes.core.probes.docker;
+package cloud.fogbow.probes.core.probes.docker.container;
 
 import org.json.JSONObject;
 

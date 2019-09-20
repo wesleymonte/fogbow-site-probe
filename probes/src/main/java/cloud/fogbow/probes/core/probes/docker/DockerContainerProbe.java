@@ -2,6 +2,8 @@ package cloud.fogbow.probes.core.probes.docker;
 
 import cloud.fogbow.probes.core.models.Metric;
 import cloud.fogbow.probes.core.models.Probe;
+import cloud.fogbow.probes.core.probes.docker.container.ContainerStats;
+import cloud.fogbow.probes.core.probes.docker.container.DockerRequestHelper;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
