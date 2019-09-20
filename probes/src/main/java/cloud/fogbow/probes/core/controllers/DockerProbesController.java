@@ -11,13 +11,14 @@ import org.apache.logging.log4j.Logger;
 
 public class DockerProbesController {
 
-
     private static final Logger LOGGER = LogManager.getLogger(FogbowProbesController.class);
     private static final String THREAD_NAME_PREFIX = "Docker-Probe-";
-    private DockerContainerProbe dockerContainerProbe;
+    private static final int POOL_SIZE = 1;
+
     private boolean isStarted = false;
     private Properties properties;
-    private ScheduledExecutorService scheduled = new ScheduledThreadPoolExecutor(1,
+    private DockerContainerProbe dockerContainerProbe;
+    private ScheduledExecutorService scheduled = new ScheduledThreadPoolExecutor(POOL_SIZE,
         new DefaultThreadFactory(THREAD_NAME_PREFIX));
 
     public DockerProbesController(Properties properties) {
