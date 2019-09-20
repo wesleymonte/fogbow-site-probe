@@ -29,8 +29,9 @@ public class DockerProbesController {
 
     public void init() {
         String ftaAddress = properties.getProperty(Constants.FTA_ADDRESS);
+        String dockerHostAddress = properties.getProperty(Constants.DOCKER_HOST_ADDRESS);
         LOGGER.debug("Init the Docker Probes Controller: FTA ADDRESS [" + ftaAddress + "]");
-        this.dockerContainerProbe = new DockerContainerProbe(ftaAddress);
+        this.dockerContainerProbe = new DockerContainerProbe(ftaAddress, dockerHostAddress);
     }
 
     public void startAll() {
