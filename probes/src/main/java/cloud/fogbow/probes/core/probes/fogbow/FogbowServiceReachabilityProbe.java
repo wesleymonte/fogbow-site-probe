@@ -24,9 +24,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class FogbowServiceReachabilityProbe extends FogbowProbe {
 
-    public static final String THREAD_NAME = "Thread-Service-Reachability-Probe";
     private static final Logger LOGGER = LogManager.getLogger(FogbowServiceReachabilityProbe.class);
-    private static final String PROBE_NAME = "service_reachability";
     private static final String HELP = "Returns 0 if the target service is not available or 1 if is.";
     private static final String METRIC_NAME = "reachability";
     private static final String METRIC_VALUE_TYPE = "service";
@@ -38,9 +36,9 @@ public class FogbowServiceReachabilityProbe extends FogbowProbe {
     private String MS_ENDPOINT;
     private Map<String, FogbowService> services;
 
-    public FogbowServiceReachabilityProbe(Integer timeSleep, String ftaAddress, String asEndpoint,
-        String rasEndpoint, String fnsEndpoint, String msEndpoint) {
-        super(timeSleep, ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE);
+    public FogbowServiceReachabilityProbe(String ftaAddress, String asEndpoint, String rasEndpoint,
+        String fnsEndpoint, String msEndpoint) {
+        super(ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE);
         this.AS_ENDPOINT = asEndpoint;
         this.RAS_ENDPOINT = rasEndpoint;
         this.FNS_ENDPOINT = fnsEndpoint;
@@ -68,14 +66,6 @@ public class FogbowServiceReachabilityProbe extends FogbowProbe {
         services.put(MS_ID, MS_SERVICE);
 
         return services;
-    }
-
-    @Override
-    public void run() {
-        while (true) {
-            LOGGER.info("----> Starting Fogbow Service Reachability Probe...");
-            super.run();
-        }
     }
 
     protected List<Metric> getMetrics(Timestamp currentTimestamp) {

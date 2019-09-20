@@ -1,50 +1,55 @@
 package cloud.fogbow.probes.core.controllers;
 
 import cloud.fogbow.probes.core.Constants;
+import cloud.fogbow.probes.core.controllers.threadfactory.DefaultThreadFactory;
 import cloud.fogbow.probes.core.probes.docker.DockerContainerProbe;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class DockerProbesController {
 
     private static final Logger LOGGER = LogManager.getLogger(FogbowProbesController.class);
-    private DockerContainerProbe dockerContainerProbe;
-    private List<Thread> pool;
-    private boolean isStarted = false;
+    private static final String THREAD_NAME_PREFIX = "Docker-Probe-";
+    private static final int POOL_SIZE = 1;
+
+    private boolean isStarted;
     private Properties properties;
+    private DockerContainerProbe dockerContainerProbe;
+    private ScheduledExecutorService scheduled;
 
     public DockerProbesController(Properties properties) {
         this.properties = properties;
+        this.scheduled = new ScheduledThreadPoolExecutor(POOL_SIZE,
+            new DefaultThreadFactory(THREAD_NAME_PREFIX));
     }
 
     public void init() {
-        Integer sleepTime = Integer.valueOf(properties.getProperty(Constants.SLEEP_TIME));
         String ftaAddress = properties.getProperty(Constants.FTA_ADDRESS);
         String dockerHostAddress = properties.getProperty(Constants.DOCKER_HOST_ADDRESS);
-        LOGGER.info("Defining Docker Probes:\n\tSleep time [" + sleepTime
-            + "]\n\tFogbow Telemetry Aggregator Address [" + ftaAddress + "]");
-        dockerContainerProbe = new DockerContainerProbe(sleepTime, ftaAddress, dockerHostAddress);
+        LOGGER.debug("Init the Docker Probes Controller: FTA ADDRESS [" + ftaAddress + "]");
+        this.dockerContainerProbe = new DockerContainerProbe(ftaAddress, dockerHostAddress);
     }
 
     public void startAll() {
         LOGGER.info("Starting Docker Probes Threads...");
         if (!isStarted) {
-            createThreads();
-            for (Thread t : pool) {
-                t.start();
-            }
+            submitTasks();
             isStarted = true;
         }
     }
 
-    private void createThreads() {
-        Thread firstProbe = new Thread(dockerContainerProbe, DockerContainerProbe.THREAD_NAME);
-        pool = new ArrayList<>();
-        pool.add(firstProbe);
+    private void submitTasks() {
+        long delay = Long.parseLong(properties.getProperty(Constants.DELAY));
+        long initialDelay = 5000;
+        LOGGER.debug(
+            "Scheduling Docker Container Probes: INITIAL_DELAY [" + initialDelay + "]; DELAY ["
+                + delay + "]");
+        scheduled.scheduleWithFixedDelay(dockerContainerProbe, initialDelay, delay,
+            TimeUnit.MILLISECONDS);
     }
 
 }

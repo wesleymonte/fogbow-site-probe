@@ -12,6 +12,6 @@ public class Constants {
     public static final String MS_ENDPOINT = "ms_endpoint";
     public static final String FNS_ENDPOINT = "fns_endpoint";
 
-    public static final String SLEEP_TIME = "sleep_time";
+    public static final String DELAY = "delay";
 
 }
