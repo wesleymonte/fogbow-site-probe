@@ -20,7 +20,8 @@ import org.apache.logging.log4j.Logger;
 
 public class FogbowResourceAvailabilityProbe extends FogbowProbe {
 
-    private static final Logger LOGGER = LogManager.getLogger(FogbowResourceAvailabilityProbe.class);
+    private static final Logger LOGGER = LogManager
+        .getLogger(FogbowResourceAvailabilityProbe.class);
     private static final String HELP = "Measures the level of failure to request a resource after the Order is open.";
     private static final String METRIC_NAME = "availability";
     private static final String METRIC_VALUE_TYPE = "resource";
@@ -36,8 +37,7 @@ public class FogbowResourceAvailabilityProbe extends FogbowProbe {
         for (ResourceType r : resourceTypes) {
             resourcesAvailability.add(getResourceAvailabilityValue(r));
         }
-        List<Metric> metrics = new ArrayList<>();
-        parseValuesToMetrics(resourcesAvailability, currentTimestamp, metrics);
+        List<Metric> metrics = parseValuesToMetrics(resourcesAvailability, currentTimestamp);
         LOGGER.info("Made as metric at [" + currentTimestamp.toString() + "]");
         return metrics;
     }

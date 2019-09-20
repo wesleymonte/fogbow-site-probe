@@ -28,6 +28,7 @@ public class FogbowServiceReachabilityProbe extends FogbowProbe {
     private static final String HELP = "Returns 0 if the target service is not available or 1 if is.";
     private static final String METRIC_NAME = "reachability";
     private static final String METRIC_VALUE_TYPE = "service";
+    private static final int ERROR_CODE = 777;
     private final int RESPONSE_CODE_LOWER_BOUND = 199;
     private final int RESPONSE_CODE_UPPER_BOUND = 300;
     private String AS_ENDPOINT;
@@ -71,8 +72,7 @@ public class FogbowServiceReachabilityProbe extends FogbowProbe {
     protected List<Metric> getMetrics(Timestamp currentTimestamp) {
         Map<String, Boolean> result = doGetRequest();
         List<Pair<String, Float>> values = toValues(result);
-        List<Metric> metrics = new ArrayList<>();
-        parseValuesToMetrics(values, currentTimestamp, metrics);
+        List<Metric> metrics = parseValuesToMetrics(values, currentTimestamp);
         LOGGER.info("Made a metric with name at [" + currentTimestamp.toString() + "]");
         return metrics;
     }
@@ -108,6 +108,7 @@ public class FogbowServiceReachabilityProbe extends FogbowProbe {
                 httpCodes.put(service.ID, response);
                 LOGGER.debug("Http code [" + response + "] of service [" + service.LABEL + "]");
             } catch (IOException e) {
+                httpCodes.put(service.ID, ERROR_CODE);
                 LOGGER.error(
                     "Error while do get request to fogbow service [" + service.LABEL + "]: " + e
                         .getMessage());
