@@ -27,15 +27,13 @@ public class DockerProbesController {
     }
 
     public void init() {
-        Integer sleepTime = Integer.valueOf(properties.getProperty(Constants.SLEEP_TIME));
         String ftaAddress = properties.getProperty(Constants.FTA_ADDRESS);
-        LOGGER.info("Defining Docker Probes:\n\tSleep time [" + sleepTime
-            + "]\n\tFogbow Telemetry Aggregator Address [" + ftaAddress + "]");
-        dockerContainerProbe = new DockerContainerProbe(ftaAddress);
+        LOGGER.debug("Init the Docker Probes Controller: FTA ADDRESS [" + ftaAddress + "]");
+        this.dockerContainerProbe = new DockerContainerProbe(ftaAddress);
     }
 
     private void submitTasks() {
-        long delay = Long.parseLong(properties.getProperty(Constants.SLEEP_TIME));
+        long delay = Long.parseLong(properties.getProperty(Constants.DELAY));
         long initialDelay = 5;
         scheduled
             .scheduleWithFixedDelay(dockerContainerProbe, initialDelay, delay, TimeUnit.SECONDS);

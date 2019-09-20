@@ -35,8 +35,7 @@ public class FogbowProbesController {
 
     public void init(DataProviderService dataProviderService) {
         String ftaAddress = properties.getProperty(Constants.FTA_ADDRESS);
-        LOGGER.info(
-            "Defining Fogbow Probes:\n\tFogbow Telemetry Aggregator Address [" + ftaAddress + "]");
+        LOGGER.debug("Init the Fogbow Probes Controller: FTA ADDRESS [" + ftaAddress + "]");
         this.resourceAvailabilityProbe = new FogbowResourceAvailabilityProbe(ftaAddress);
         this.serviceLatencyProbe = new FogbowServiceLatencyProbe(ftaAddress);
         this.serviceSuccessRateProbe = new FogbowServiceSuccessRateProbe(ftaAddress);
@@ -49,7 +48,7 @@ public class FogbowProbesController {
     }
 
     private void submitTasks() {
-        long delay = Long.parseLong(properties.getProperty(Constants.SLEEP_TIME));
+        long delay = Long.parseLong(properties.getProperty(Constants.DELAY));
         long initialDelay = 5;
         scheduled.scheduleWithFixedDelay(resourceAvailabilityProbe, initialDelay, delay,
             TimeUnit.SECONDS);
