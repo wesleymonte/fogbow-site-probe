@@ -1,8 +1,7 @@
-package cloud.fogbow.probes.core.probes;
+package cloud.fogbow.probes.core.probes.fogbow;
 
 import cloud.fogbow.probes.core.models.Metric;
 import cloud.fogbow.probes.core.models.OrderState;
-import cloud.fogbow.probes.core.models.Probe;
 import cloud.fogbow.probes.core.models.ResourceType;
 import cloud.fogbow.probes.core.utils.Pair;
 import java.sql.Timestamp;
@@ -19,18 +18,20 @@ import org.apache.logging.log4j.Logger;
  * cloud.fogbow.probes.core.models.Order} is {@link OrderState#OPEN}.
  */
 
-public class FogbowResourceAvailabilityProbe extends Probe {
+public class FogbowResourceAvailabilityProbe extends FogbowProbe {
 
     public static final String THREAD_NAME = "Thread-Resource-Availability-Probe";
     private static final String PROBE_NAME = "resource_availability";
+    private static final String HELP = "Measures the level of failure to request a resource after the Order is open.";
+    private static final String METRIC_NAME = "availability";
+    private static final String METRIC_VALUE_TYPE = "resource";
+    private static final ResourceType resourceTypes[] = {ResourceType.COMPUTE, ResourceType.VOLUME,
+        ResourceType.NETWORK};
     private static final Logger LOGGER = LogManager
         .getLogger(FogbowResourceAvailabilityProbe.class);
 
     public FogbowResourceAvailabilityProbe(Integer timeSleep, String ftaAddress) {
-        super(timeSleep, ftaAddress);
-        this.help = "Measures the level of failure to request a resource after the Order is open.";
-        this.metricName = "availability";
-        this.metricValueType = "resource";
+        super(timeSleep, ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE);
     }
 
     public void run() {
@@ -42,13 +43,11 @@ public class FogbowResourceAvailabilityProbe extends Probe {
 
     protected List<Metric> getMetrics(Timestamp currentTimestamp) {
         List<Pair<String, Float>> resourcesAvailability = new ArrayList<>();
-        ResourceType resourceTypes[] = {ResourceType.COMPUTE, ResourceType.VOLUME,
-            ResourceType.NETWORK};
         for (ResourceType r : resourceTypes) {
             resourcesAvailability.add(getResourceAvailabilityValue(r));
         }
         List<Metric> metrics = new ArrayList<>();
-        parseValuesToMetrics(metrics, resourcesAvailability, currentTimestamp);
+        parseValuesToMetrics(resourcesAvailability, currentTimestamp, metrics);
         LOGGER.info("Made as metric at [" + currentTimestamp.toString() + "]");
         return metrics;
     }

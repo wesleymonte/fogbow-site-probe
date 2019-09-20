@@ -1,6 +1,6 @@
 package cloud.fogbow.probes.core.fta;
 
-import cloud.fogbow.probes.core.fta.http.HttpWrapper;
+import cloud.fogbow.probes.core.utils.http.HttpWrapper;
 import cloud.fogbow.probes.core.models.Metric;
 import java.util.ArrayList;
 import java.util.List;

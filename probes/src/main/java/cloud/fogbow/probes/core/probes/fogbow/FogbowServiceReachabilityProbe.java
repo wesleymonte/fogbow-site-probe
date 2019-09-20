@@ -1,7 +1,6 @@
-package cloud.fogbow.probes.core.probes;
+package cloud.fogbow.probes.core.probes.fogbow;
 
 import cloud.fogbow.probes.core.models.Metric;
-import cloud.fogbow.probes.core.models.Probe;
 import cloud.fogbow.probes.core.utils.AppUtil;
 import cloud.fogbow.probes.core.utils.Pair;
 import java.io.IOException;
@@ -23,11 +22,14 @@ import org.apache.logging.log4j.Logger;
  * Availability is verified by performing http requests to services at specific verification
  * addresses.
  */
-public class FogbowServiceReachabilityProbe extends Probe {
+public class FogbowServiceReachabilityProbe extends FogbowProbe {
 
     public static final String THREAD_NAME = "Thread-Service-Reachability-Probe";
     private static final Logger LOGGER = LogManager.getLogger(FogbowServiceReachabilityProbe.class);
     private static final String PROBE_NAME = "service_reachability";
+    private static final String HELP = "Returns 0 if the target service is not available or 1 if is.";
+    private static final String METRIC_NAME = "reachability";
+    private static final String METRIC_VALUE_TYPE = "service";
     private final int RESPONSE_CODE_LOWER_BOUND = 199;
     private final int RESPONSE_CODE_UPPER_BOUND = 300;
     private String AS_ENDPOINT;
@@ -38,15 +40,12 @@ public class FogbowServiceReachabilityProbe extends Probe {
 
     public FogbowServiceReachabilityProbe(Integer timeSleep, String ftaAddress, String asEndpoint,
         String rasEndpoint, String fnsEndpoint, String msEndpoint) {
-        super(timeSleep, ftaAddress);
+        super(timeSleep, ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE);
         this.AS_ENDPOINT = asEndpoint;
         this.RAS_ENDPOINT = rasEndpoint;
         this.FNS_ENDPOINT = fnsEndpoint;
         this.MS_ENDPOINT = msEndpoint;
         this.services = Collections.unmodifiableMap(buildServices());
-        this.help = "Returns 0 if the target service is not available or 1 if is.";
-        this.metricName = "reachability";
-        this.metricValueType = "service";
     }
 
     private Map<String, FogbowService> buildServices() {
@@ -83,7 +82,7 @@ public class FogbowServiceReachabilityProbe extends Probe {
         Map<String, Boolean> result = doGetRequest();
         List<Pair<String, Float>> values = toValues(result);
         List<Metric> metrics = new ArrayList<>();
-        parseValuesToMetrics(metrics, values, currentTimestamp);
+        parseValuesToMetrics(values, currentTimestamp, metrics);
         LOGGER.info("Made a metric with name at [" + currentTimestamp.toString() + "]");
         return metrics;
     }

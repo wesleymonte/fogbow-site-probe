@@ -1,4 +1,4 @@
-package cloud.fogbow.probes.core.fta.http;
+package cloud.fogbow.probes.core.utils.http;
 
 import java.util.List;
 import org.apache.http.Header;
