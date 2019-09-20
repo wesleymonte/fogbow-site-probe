@@ -2,7 +2,6 @@ package cloud.fogbow.probes.core.controllers;
 
 import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.probes.docker.DockerContainerProbe;
-import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -16,7 +15,6 @@ public class DockerProbesController {
     private static final Logger LOGGER = LogManager.getLogger(FogbowProbesController.class);
     private static final String THREAD_NAME_PREFIX = "Docker-Probe-";
     private DockerContainerProbe dockerContainerProbe;
-    private List<Thread> pool;
     private boolean isStarted = false;
     private Properties properties;
     private ScheduledExecutorService scheduled = new ScheduledThreadPoolExecutor(1,
