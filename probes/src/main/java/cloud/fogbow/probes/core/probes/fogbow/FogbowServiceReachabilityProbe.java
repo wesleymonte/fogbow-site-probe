@@ -133,7 +133,7 @@ public class FogbowServiceReachabilityProbe extends FogbowProbe {
                 LOGGER.error("[" + date + "] : " + service.LABEL + " is down");
                 result.put(service.ID, false);
             } else {
-                LOGGER.error("[" + date + "] : " + service.LABEL + " is up");
+                LOGGER.info("[" + date + "] : " + service.LABEL + " is up");
                 result.put(service.ID, true);
             }
         }

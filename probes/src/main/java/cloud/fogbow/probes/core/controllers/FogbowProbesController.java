@@ -63,14 +63,14 @@ public class FogbowProbesController {
         LOGGER.debug(
             "Scheduling Fogbow Container Probes: INITIAL_DELAY [" + initialDelay + "]; DELAY ["
                 + delay + "]");
-//        scheduled.scheduleWithFixedDelay(resourceAvailabilityProbe, initialDelay, delay,
-//            TimeUnit.MILLISECONDS);
-//        scheduled.scheduleWithFixedDelay(serviceLatencyProbe, initialDelay, delay,
-//            TimeUnit.MILLISECONDS);
+        scheduled.scheduleWithFixedDelay(resourceAvailabilityProbe, initialDelay, delay,
+            TimeUnit.MILLISECONDS);
+        scheduled.scheduleWithFixedDelay(serviceLatencyProbe, initialDelay, delay,
+            TimeUnit.MILLISECONDS);
         scheduled.scheduleWithFixedDelay(serviceSuccessRateProbe, initialDelay, delay,
             TimeUnit.MILLISECONDS);
-//        scheduled.scheduleWithFixedDelay(serviceReachabilityProbe, initialDelay, delay,
-//            TimeUnit.MILLISECONDS);
+        scheduled.scheduleWithFixedDelay(serviceReachabilityProbe, initialDelay, delay,
+            TimeUnit.MILLISECONDS);
     }
 
     private void setProviderService(DataProviderService dataProviderService) {
