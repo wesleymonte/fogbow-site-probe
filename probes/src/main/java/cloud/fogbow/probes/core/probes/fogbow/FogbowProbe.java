@@ -12,14 +12,12 @@ import java.util.Map;
 public abstract class FogbowProbe extends Probe {
 
     private static final String targetHostKey = "target_host";
-    private String targetHostAddress;
     private String help;
     private String metricName;
     private String metricValueType;
 
-    FogbowProbe(String ftaAddress, String targetHostAddress, String help, String metricName, String metricValueType) {
-        super(ftaAddress);
-        this.targetHostAddress = targetHostAddress;
+    FogbowProbe(String targetHostAddress, String ftaAddress, String help, String metricName, String metricValueType) {
+        super(targetHostAddress, ftaAddress);
         this.help = help;
         this.metricName = metricName;
         this.metricValueType = metricValueType;

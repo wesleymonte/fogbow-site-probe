@@ -29,7 +29,7 @@ public class FogbowResourceAvailabilityProbe extends FogbowProbe {
         ResourceType.NETWORK};
 
     public FogbowResourceAvailabilityProbe(String ftaAddress, String targetHostAddress) {
-        super(ftaAddress, targetHostAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE);
+        super(targetHostAddress, ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE);
     }
 
     protected List<Metric> getMetrics(Timestamp currentTimestamp) {

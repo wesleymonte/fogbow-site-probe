@@ -25,7 +25,7 @@ public class FogbowServiceLatencyProbe extends FogbowProbe {
     private static final String METRIC_VALUE_TYPE = "resource";
 
     public FogbowServiceLatencyProbe(String ftaAddress, String targetHostAddress) {
-        super(ftaAddress, targetHostAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE);
+        super(targetHostAddress, ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE);
     }
 
     protected List<Metric> getMetrics(Timestamp currentTimestamp) {

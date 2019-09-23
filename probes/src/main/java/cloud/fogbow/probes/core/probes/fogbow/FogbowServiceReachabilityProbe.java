@@ -39,7 +39,7 @@ public class FogbowServiceReachabilityProbe extends FogbowProbe {
 
     public FogbowServiceReachabilityProbe(String ftaAddress, String targetHostAddress, String asEndpoint, String rasEndpoint,
         String fnsEndpoint, String msEndpoint) {
-        super(ftaAddress, targetHostAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE);
+        super(targetHostAddress, ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE);
         this.AS_ENDPOINT = targetHostAddress + asEndpoint;
         this.RAS_ENDPOINT = targetHostAddress + rasEndpoint;
         this.FNS_ENDPOINT = targetHostAddress + fnsEndpoint;
