@@ -35,7 +35,7 @@ public class FogbowProbesController {
     }
 
     public void init(DataProviderService dataProviderService) {
-        String targetHostAddress = properties.getProperty(Constants.TARGET_HOST_ADDRESS);
+        String targetHostAddress = properties.getProperty(Constants.PROBE_TARGET);
         String ftaAddress = properties.getProperty(Constants.FTA_ADDRESS);
         LOGGER.debug("Init the Fogbow Probes Controller: FTA ADDRESS [" + ftaAddress + "]");
         this.resourceAvailabilityProbe = new FogbowResourceAvailabilityProbe(ftaAddress, targetHostAddress);
