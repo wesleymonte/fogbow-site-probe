@@ -28,8 +28,8 @@ public class FogbowResourceAvailabilityProbe extends FogbowProbe {
     private static final ResourceType[] resourceTypes = {ResourceType.COMPUTE, ResourceType.VOLUME,
         ResourceType.NETWORK};
 
-    public FogbowResourceAvailabilityProbe(String ftaAddress, String targetHostAddress) {
-        super(targetHostAddress, ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE);
+    public FogbowResourceAvailabilityProbe(String targetLabel, String ftaAddress, String targetHostAddress) {
+        super(targetLabel, targetHostAddress, ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE);
     }
 
     protected List<Metric> getMetrics(Timestamp currentTimestamp) {

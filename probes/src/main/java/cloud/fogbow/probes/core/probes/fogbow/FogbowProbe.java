@@ -16,8 +16,8 @@ public abstract class FogbowProbe extends Probe {
     private String metricName;
     private String metricValueType;
 
-    FogbowProbe(String targetHostAddress, String ftaAddress, String help, String metricName, String metricValueType) {
-        super(targetHostAddress, ftaAddress);
+    FogbowProbe(String targetLabel, String targetHostAddress, String ftaAddress, String help, String metricName, String metricValueType) {
+        super(targetLabel, targetHostAddress, ftaAddress);
         this.help = help;
         this.metricName = metricName;
         this.metricValueType = metricValueType;
@@ -36,6 +36,7 @@ public abstract class FogbowProbe extends Probe {
     private Metric parsePairToMetric(Pair<String, Float> p, Timestamp currentTimestamp) {
         Map<String, String> metadata = new HashMap<>();
         metadata.put(metricValueType, p.getKey());
+        metadata.put(targetLabelKey, targetLabel);
         metadata.put(targetHostKey, targetHostAddress);
         Metric m = new Metric(p.getKey() + "_" + metricName, p.getValue(), currentTimestamp, help,
             metadata);
