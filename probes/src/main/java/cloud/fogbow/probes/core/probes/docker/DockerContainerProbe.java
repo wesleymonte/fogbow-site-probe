@@ -22,8 +22,8 @@ public class DockerContainerProbe extends Probe {
     private Map<String, ContainerStats> previousContainersStats;
     private DockerRequestHelper dockerRequestHelper;
 
-    public DockerContainerProbe(String ftaAddress, String dockerHostAddress) {
-        super(ftaAddress);
+    public DockerContainerProbe(String dockerHostAddress, String ftaAddress) {
+        super(dockerHostAddress, ftaAddress);
         this.previousContainersStats = new HashMap<>();
         this.dockerRequestHelper = new DockerRequestHelper(dockerHostAddress);
     }

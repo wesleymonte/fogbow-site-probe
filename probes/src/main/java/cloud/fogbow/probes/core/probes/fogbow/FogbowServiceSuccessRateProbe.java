@@ -23,8 +23,8 @@ public class FogbowServiceSuccessRateProbe extends FogbowProbe {
     private static final String METRIC_NAME = "success_rate";
     private static final String METRIC_VALUE_TYPE = "resource";
 
-    public FogbowServiceSuccessRateProbe(String ftaAddress) {
-        super(ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE);
+    public FogbowServiceSuccessRateProbe(String ftaAddress, String targetHostAddress) {
+        super(targetHostAddress, ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE);
     }
 
     protected List<Metric> getMetrics(Timestamp currentTimestamp) {

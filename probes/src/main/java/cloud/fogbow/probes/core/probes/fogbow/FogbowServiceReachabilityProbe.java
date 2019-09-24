@@ -37,13 +37,13 @@ public class FogbowServiceReachabilityProbe extends FogbowProbe {
     private String MS_ENDPOINT;
     private Map<String, FogbowService> services;
 
-    public FogbowServiceReachabilityProbe(String ftaAddress, String asEndpoint, String rasEndpoint,
+    public FogbowServiceReachabilityProbe(String ftaAddress, String targetHostAddress, String asEndpoint, String rasEndpoint,
         String fnsEndpoint, String msEndpoint) {
-        super(ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE);
-        this.AS_ENDPOINT = asEndpoint;
-        this.RAS_ENDPOINT = rasEndpoint;
-        this.FNS_ENDPOINT = fnsEndpoint;
-        this.MS_ENDPOINT = msEndpoint;
+        super(targetHostAddress, ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE);
+        this.AS_ENDPOINT = targetHostAddress + asEndpoint;
+        this.RAS_ENDPOINT = targetHostAddress + rasEndpoint;
+        this.FNS_ENDPOINT = targetHostAddress + fnsEndpoint;
+        this.MS_ENDPOINT = targetHostAddress + msEndpoint;
         this.services = Collections.unmodifiableMap(buildServices());
     }
 
@@ -133,7 +133,7 @@ public class FogbowServiceReachabilityProbe extends FogbowProbe {
                 LOGGER.error("[" + date + "] : " + service.LABEL + " is down");
                 result.put(service.ID, false);
             } else {
-                LOGGER.error("[" + date + "] : " + service.LABEL + " is up");
+                LOGGER.info("[" + date + "] : " + service.LABEL + " is up");
                 result.put(service.ID, true);
             }
         }
