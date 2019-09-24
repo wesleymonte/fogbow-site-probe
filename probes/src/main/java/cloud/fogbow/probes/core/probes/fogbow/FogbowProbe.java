@@ -37,7 +37,7 @@ public abstract class FogbowProbe extends Probe {
         metadata.put(metricValueType, p.getKey());
         metadata.put(targetLabelKey, targetLabel);
         metadata.put(probeTargetKey, probeTarget);
-        Metric m = new Metric(p.getKey() + "_" + metricName, p.getValue(), currentTimestamp, help,
+        Metric m = new Metric(p.getKey().toLowerCase() + "_" + metricName, p.getValue(), currentTimestamp, help,
             metadata);
         return m;
     }
