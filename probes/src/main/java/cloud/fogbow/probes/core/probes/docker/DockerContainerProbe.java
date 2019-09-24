@@ -22,10 +22,11 @@ public class DockerContainerProbe extends Probe {
     private Map<String, ContainerStats> previousContainersStats;
     private DockerRequestHelper dockerRequestHelper;
 
-    public DockerContainerProbe(String targetLabel, String dockerHostAddress, String ftaAddress) {
-        super(targetLabel, dockerHostAddress, ftaAddress);
+    public DockerContainerProbe(String targetLabel, String probeTarget, String targetDockerPort, String ftaAddress) {
+        super(targetLabel, probeTarget, ftaAddress);
         this.previousContainersStats = new HashMap<>();
-        this.dockerRequestHelper = new DockerRequestHelper(dockerHostAddress);
+        String dockerProbeTarget = probeTarget + ":" + targetDockerPort;
+        this.dockerRequestHelper = new DockerRequestHelper(dockerProbeTarget);
     }
 
     @Override

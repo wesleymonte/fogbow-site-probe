@@ -23,8 +23,7 @@ public abstract class FogbowProbe extends Probe {
         this.metricValueType = metricValueType;
     }
 
-    protected List<Metric> parseValuesToMetrics(List<Pair<String, Float>> values,
-        Timestamp currentTimestamp) {
+    List<Metric> parseValuesToMetrics(List<Pair<String, Float>> values, Timestamp currentTimestamp) {
         List<Metric> metrics = new ArrayList<>();
         for (Pair<String, Float> p : values) {
             Metric m = parsePairToMetric(p, currentTimestamp);
