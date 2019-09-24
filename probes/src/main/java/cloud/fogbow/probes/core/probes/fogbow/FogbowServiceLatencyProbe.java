@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -22,10 +23,10 @@ public class FogbowServiceLatencyProbe extends FogbowProbe {
     private static final Logger LOGGER = LogManager.getLogger(FogbowServiceLatencyProbe.class);
     private static final String HELP = "The time that elapses between the order being opened until the order is available.";
     private static final String METRIC_NAME = "latency";
-    private static final String METRIC_VALUE_TYPE = "resource";
+    private static final String RESOURCE_LABEL = "resource";
 
     public FogbowServiceLatencyProbe(String targetLabel, String probeTarget, String ftaAddress) {
-        super(targetLabel, probeTarget, ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE);
+        super(targetLabel, probeTarget, ftaAddress, HELP, METRIC_NAME);
     }
 
     protected List<Metric> getMetrics(Timestamp currentTimestamp) {
@@ -34,6 +35,10 @@ public class FogbowServiceLatencyProbe extends FogbowProbe {
         List<Metric> metrics = parseValuesToMetrics(values, currentTimestamp);
         LOGGER.info("Made a metric with name at [" + currentTimestamp.toString() + "]");
         return metrics;
+    }
+
+    protected void populateMetadata(Map<String, String> metadata, Pair<String, Float> p) {
+        metadata.put(RESOURCE_LABEL, p.getKey().toLowerCase());
     }
 
     private List<Pair<String, Float>> toValue(Long[] latencies) {

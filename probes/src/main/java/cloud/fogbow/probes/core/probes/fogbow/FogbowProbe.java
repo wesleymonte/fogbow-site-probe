@@ -14,16 +14,16 @@ public abstract class FogbowProbe extends Probe {
     private static final String probeTargetKey = "target_host";
     private String help;
     private String metricName;
-    private String metricValueType;
 
-    FogbowProbe(String targetLabel, String probeTarget, String ftaAddress, String help, String metricName, String metricValueType) {
+    FogbowProbe(String targetLabel, String probeTarget, String ftaAddress, String help,
+        String metricName) {
         super(targetLabel, probeTarget, ftaAddress);
         this.help = help;
         this.metricName = metricName;
-        this.metricValueType = metricValueType;
     }
 
-    List<Metric> parseValuesToMetrics(List<Pair<String, Float>> values, Timestamp currentTimestamp) {
+    List<Metric> parseValuesToMetrics(List<Pair<String, Float>> values,
+        Timestamp currentTimestamp) {
         List<Metric> metrics = new ArrayList<>();
         for (Pair<String, Float> p : values) {
             Metric m = parsePairToMetric(p, currentTimestamp);
@@ -34,11 +34,13 @@ public abstract class FogbowProbe extends Probe {
 
     private Metric parsePairToMetric(Pair<String, Float> p, Timestamp currentTimestamp) {
         Map<String, String> metadata = new HashMap<>();
-        metadata.put(metricValueType, p.getKey());
+        populateMetadata(metadata, p);
         metadata.put(targetLabelKey, targetLabel);
         metadata.put(probeTargetKey, probeTarget);
-        Metric m = new Metric(p.getKey().toLowerCase() + "_" + metricName, p.getValue(), currentTimestamp, help,
-            metadata);
+        Metric m = new Metric(p.getKey().toLowerCase() + "_" + metricName, p.getValue(),
+            currentTimestamp, help, metadata);
         return m;
     }
+
+    protected abstract void populateMetadata(Map<String, String> metadata, Pair<String, Float> p);
 }

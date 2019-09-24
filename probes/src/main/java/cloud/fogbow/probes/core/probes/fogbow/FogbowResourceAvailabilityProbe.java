@@ -7,6 +7,7 @@ import cloud.fogbow.probes.core.utils.Pair;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,13 +25,13 @@ public class FogbowResourceAvailabilityProbe extends FogbowProbe {
         .getLogger(FogbowResourceAvailabilityProbe.class);
     private static final String HELP = "Measures the level of failure to request a resource after the Order is open.";
     private static final String METRIC_NAME = "availability";
-    private static final String METRIC_VALUE_TYPE = "resource";
+    private static final String RESOURCE_LABEL = "resource";
     private static final ResourceType[] resourceTypes = {ResourceType.COMPUTE, ResourceType.VOLUME,
         ResourceType.NETWORK};
 
     public FogbowResourceAvailabilityProbe(String targetLabel, String probeTarget,
         String ftaAddress) {
-        super(targetLabel, probeTarget, ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE);
+        super(targetLabel, probeTarget, ftaAddress, HELP, METRIC_NAME);
     }
 
     protected List<Metric> getMetrics(Timestamp currentTimestamp) {
@@ -41,6 +42,10 @@ public class FogbowResourceAvailabilityProbe extends FogbowProbe {
         List<Metric> metrics = parseValuesToMetrics(resourcesAvailability, currentTimestamp);
         LOGGER.info("Made as metric at [" + currentTimestamp.toString() + "]");
         return metrics;
+    }
+
+    protected void populateMetadata(Map<String, String> metadata, Pair<String, Float> p) {
+        metadata.put(RESOURCE_LABEL, p.getKey().toLowerCase());
     }
 
     private Pair<String, Float> getResourceAvailabilityValue(ResourceType type) {

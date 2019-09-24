@@ -27,7 +27,7 @@ public class FogbowServiceReachabilityProbe extends FogbowProbe {
     private static final Logger LOGGER = LogManager.getLogger(FogbowServiceReachabilityProbe.class);
     private static final String HELP = "Returns 0 if the target service is not available or 1 if is.";
     private static final String METRIC_NAME = "reachability";
-    private static final String METRIC_VALUE_TYPE = "service";
+    private static final String SERVICE_LABEL = "service";
     private static final int ERROR_CODE = 777;
     private final int RESPONSE_CODE_LOWER_BOUND = 199;
     private final int RESPONSE_CODE_UPPER_BOUND = 300;
@@ -39,7 +39,7 @@ public class FogbowServiceReachabilityProbe extends FogbowProbe {
 
     public FogbowServiceReachabilityProbe(String targetLabel, String probeTarget, String ftaAddress,
         String asEndpoint, String rasEndpoint, String fnsEndpoint, String msEndpoint) {
-        super(targetLabel, probeTarget, ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE);
+        super(targetLabel, probeTarget, ftaAddress, HELP, METRIC_NAME);
         this.AS_ENDPOINT = probeTarget + asEndpoint;
         this.RAS_ENDPOINT = probeTarget + rasEndpoint;
         this.FNS_ENDPOINT = probeTarget + fnsEndpoint;
@@ -75,6 +75,10 @@ public class FogbowServiceReachabilityProbe extends FogbowProbe {
         List<Metric> metrics = parseValuesToMetrics(values, currentTimestamp);
         LOGGER.info("Made a metric with name at [" + currentTimestamp.toString() + "]");
         return metrics;
+    }
+
+    protected void populateMetadata(Map<String, String> metadata, Pair<String, Float> p) {
+        metadata.put(SERVICE_LABEL, p.getKey().toLowerCase());
     }
 
     private List<Pair<String, Float>> toValues(Map<String, Boolean> result) {
