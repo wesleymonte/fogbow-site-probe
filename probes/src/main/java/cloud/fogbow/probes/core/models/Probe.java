@@ -19,12 +19,12 @@ public abstract class Probe implements Runnable {
     protected Timestamp lastTimestampAwake;
     protected boolean firstTimeAwake;
     protected String targetLabel;
-    protected String targetHostAddress;
+    protected String probeTarget;
     private String ftaAddress;
 
-    public Probe(String targetLabel, String targetHostAddress, String ftaAddress) {
+    public Probe(String targetLabel, String probeTarget, String ftaAddress) {
         this.targetLabel = targetLabel;
-        this.targetHostAddress = targetHostAddress;
+        this.probeTarget = probeTarget;
         this.lastTimestampAwake = new Timestamp(System.currentTimeMillis());
         this.ftaAddress = ftaAddress;
         this.firstTimeAwake = true;

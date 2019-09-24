@@ -36,16 +36,17 @@ public class FogbowProbesController {
 
     public void init(DataProviderService dataProviderService) {
         String targetLabel = properties.getProperty(Constants.TARGET_LABEL);
-        String targetHostAddress = properties.getProperty(Constants.PROBE_TARGET);
+        String probeTarget = properties.getProperty(Constants.PROBE_TARGET);
         String ftaAddress = properties.getProperty(Constants.FTA_ADDRESS);
         LOGGER.debug("Init the Fogbow Probes Controller: FTA ADDRESS [" + ftaAddress + "]");
-        this.resourceAvailabilityProbe = new FogbowResourceAvailabilityProbe(targetLabel, ftaAddress,
-            targetHostAddress);
-        this.serviceLatencyProbe = new FogbowServiceLatencyProbe(targetLabel, ftaAddress, targetHostAddress);
-        this.serviceSuccessRateProbe = new FogbowServiceSuccessRateProbe(targetLabel, ftaAddress,
-            targetHostAddress);
-        this.serviceReachabilityProbe = new FogbowServiceReachabilityProbe(targetLabel, ftaAddress,
-            targetHostAddress, properties.getProperty(Constants.AS_ENDPOINT),
+        this.resourceAvailabilityProbe = new FogbowResourceAvailabilityProbe(targetLabel,
+            probeTarget, ftaAddress);
+        this.serviceLatencyProbe = new FogbowServiceLatencyProbe(targetLabel, probeTarget,
+            ftaAddress);
+        this.serviceSuccessRateProbe = new FogbowServiceSuccessRateProbe(targetLabel,
+            probeTarget, ftaAddress);
+        this.serviceReachabilityProbe = new FogbowServiceReachabilityProbe(targetLabel,
+            probeTarget, ftaAddress, properties.getProperty(Constants.AS_ENDPOINT),
             properties.getProperty(Constants.RAS_ENDPOINT),
             properties.getProperty(Constants.FNS_ENDPOINT),
             properties.getProperty(Constants.MS_ENDPOINT));

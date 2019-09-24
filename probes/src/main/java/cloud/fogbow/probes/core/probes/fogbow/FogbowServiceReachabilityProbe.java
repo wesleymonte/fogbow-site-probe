@@ -37,13 +37,13 @@ public class FogbowServiceReachabilityProbe extends FogbowProbe {
     private String MS_ENDPOINT;
     private Map<String, FogbowService> services;
 
-    public FogbowServiceReachabilityProbe(String targetLabel, String ftaAddress, String targetHostAddress, String asEndpoint, String rasEndpoint,
-        String fnsEndpoint, String msEndpoint) {
-        super(targetLabel, targetHostAddress, ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE);
-        this.AS_ENDPOINT = targetHostAddress + asEndpoint;
-        this.RAS_ENDPOINT = targetHostAddress + rasEndpoint;
-        this.FNS_ENDPOINT = targetHostAddress + fnsEndpoint;
-        this.MS_ENDPOINT = targetHostAddress + msEndpoint;
+    public FogbowServiceReachabilityProbe(String targetLabel, String probeTarget, String ftaAddress,
+        String asEndpoint, String rasEndpoint, String fnsEndpoint, String msEndpoint) {
+        super(targetLabel, probeTarget, ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE);
+        this.AS_ENDPOINT = probeTarget + asEndpoint;
+        this.RAS_ENDPOINT = probeTarget + rasEndpoint;
+        this.FNS_ENDPOINT = probeTarget + fnsEndpoint;
+        this.MS_ENDPOINT = probeTarget + msEndpoint;
         this.services = Collections.unmodifiableMap(buildServices());
     }
 

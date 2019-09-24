@@ -11,13 +11,13 @@ import java.util.Map;
 
 public abstract class FogbowProbe extends Probe {
 
-    private static final String targetHostKey = "target_host";
+    private static final String probeTargetKey = "target_host";
     private String help;
     private String metricName;
     private String metricValueType;
 
-    FogbowProbe(String targetLabel, String targetHostAddress, String ftaAddress, String help, String metricName, String metricValueType) {
-        super(targetLabel, targetHostAddress, ftaAddress);
+    FogbowProbe(String targetLabel, String probeTarget, String ftaAddress, String help, String metricName, String metricValueType) {
+        super(targetLabel, probeTarget, ftaAddress);
         this.help = help;
         this.metricName = metricName;
         this.metricValueType = metricValueType;
@@ -37,7 +37,7 @@ public abstract class FogbowProbe extends Probe {
         Map<String, String> metadata = new HashMap<>();
         metadata.put(metricValueType, p.getKey());
         metadata.put(targetLabelKey, targetLabel);
-        metadata.put(targetHostKey, targetHostAddress);
+        metadata.put(probeTargetKey, probeTarget);
         Metric m = new Metric(p.getKey() + "_" + metricName, p.getValue(), currentTimestamp, help,
             metadata);
         return m;
