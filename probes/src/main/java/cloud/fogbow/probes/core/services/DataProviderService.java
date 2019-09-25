@@ -96,12 +96,11 @@ public class DataProviderService {
     }
 
     public Long[] getLatencies(Timestamp timestamp, boolean firstTimeAwake) {
-        List<AuditableOrderStateChange> openEvents = getOpened(timestamp, firstTimeAwake);
         List<AuditableOrderStateChange> fulfilledEvents = getFulfilled(timestamp, firstTimeAwake);
 
-        Long computeLatency = computeLatencies(getEventsOfType(openEvents, ResourceType.COMPUTE), getEventsOfType(fulfilledEvents, ResourceType.COMPUTE));
-        Long networkLatency = computeLatencies(getEventsOfType(openEvents, ResourceType.NETWORK), getEventsOfType(fulfilledEvents, ResourceType.NETWORK));
-        Long volumeLatency = computeLatencies(getEventsOfType(openEvents, ResourceType.VOLUME), getEventsOfType(fulfilledEvents, ResourceType.VOLUME));
+        Long computeLatency = computeLatencies(getEventsOfType(fulfilledEvents, ResourceType.COMPUTE));
+        Long networkLatency = computeLatencies(getEventsOfType(fulfilledEvents, ResourceType.NETWORK));
+        Long volumeLatency = computeLatencies(getEventsOfType(fulfilledEvents, ResourceType.VOLUME));
 
         Long[] latencies = {computeLatency, networkLatency, volumeLatency};
 
@@ -131,12 +130,12 @@ public class DataProviderService {
         return value;
     }
 
-    private Long computeLatencies(List<AuditableOrderStateChange> openEvents, List<AuditableOrderStateChange> fulfilledEvents){
+    private Long computeLatencies(List<AuditableOrderStateChange> fulfilledEvents){
         List<Long> latencies = new ArrayList<>();
         for(AuditableOrderStateChange aosc : fulfilledEvents){
-            AuditableOrderStateChange auditableOrderStateChange = getEventWithOrder(openEvents, aosc.getOrder().getId());
-            if(!Objects.isNull(auditableOrderStateChange)){
-                Long latency = aosc.getTimestamp().getTime() - auditableOrderStateChange.getTimestamp().getTime();
+            AuditableOrderStateChange auditableOrderStateChangeOpen = dbManager.getEventByOrderAndState(aosc.getOrder(), OrderState.OPEN);
+            if(!Objects.isNull(auditableOrderStateChangeOpen)){
+                Long latency = aosc.getTimestamp().getTime() - auditableOrderStateChangeOpen.getTimestamp().getTime();
                 latencies.add(latency);
             }
         }
