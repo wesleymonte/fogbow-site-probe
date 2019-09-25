@@ -14,14 +14,17 @@ import org.apache.logging.log4j.Logger;
 public abstract class Probe implements Runnable {
 
     private static final Logger LOGGER = LogManager.getLogger(Probe.class);
+    protected static final String targetLabelKey = "target_label";
     protected DataProviderService providerService;
     protected Timestamp lastTimestampAwake;
     protected boolean firstTimeAwake;
+    protected String targetLabel;
+    protected String probeTarget;
     private String ftaAddress;
-    protected String targetHostAddress;
 
-    public Probe(String targetHostAddress, String ftaAddress) {
-        this.targetHostAddress = targetHostAddress;
+    public Probe(String targetLabel, String probeTarget, String ftaAddress) {
+        this.targetLabel = targetLabel;
+        this.probeTarget = probeTarget;
         this.lastTimestampAwake = new Timestamp(System.currentTimeMillis());
         this.ftaAddress = ftaAddress;
         this.firstTimeAwake = true;

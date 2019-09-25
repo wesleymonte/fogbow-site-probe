@@ -7,6 +7,7 @@ import cloud.fogbow.probes.core.utils.Pair;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -21,10 +22,11 @@ public class FogbowServiceSuccessRateProbe extends FogbowProbe {
     private static final Logger LOGGER = LogManager.getLogger(FogbowServiceSuccessRateProbe.class);
     private static final String HELP = "The success rate in requesting a resource.";
     private static final String METRIC_NAME = "success_rate";
-    private static final String METRIC_VALUE_TYPE = "resource";
+    private static final String RESOURCE_LABEL = "resource";
 
-    public FogbowServiceSuccessRateProbe(String ftaAddress, String targetHostAddress) {
-        super(targetHostAddress, ftaAddress, HELP, METRIC_NAME, METRIC_VALUE_TYPE);
+    public FogbowServiceSuccessRateProbe(String targetLabel, String probeTarget,
+        String ftaAddress) {
+        super(targetLabel, probeTarget, ftaAddress, HELP, METRIC_NAME);
     }
 
     protected List<Metric> getMetrics(Timestamp currentTimestamp) {
@@ -37,6 +39,10 @@ public class FogbowServiceSuccessRateProbe extends FogbowProbe {
         List<Metric> metrics = parseValuesToMetrics(resourcesAvailability, currentTimestamp);
         LOGGER.info("Made a metric with name at [" + currentTimestamp.toString() + "]");
         return metrics;
+    }
+
+    protected void populateMetadata(Map<String, String> metadata, Pair<String, Float> p) {
+        metadata.put(RESOURCE_LABEL, p.getKey().toLowerCase());
     }
 
     private Pair<String, Float> getResourceAvailabilityValue(ResourceType type) {

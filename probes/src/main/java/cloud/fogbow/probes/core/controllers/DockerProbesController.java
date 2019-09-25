@@ -28,11 +28,12 @@ public class DockerProbesController {
     }
 
     public void init() {
+        String targetLabel = properties.getProperty(Constants.TARGET_LABEL);
+        String probeTarget = properties.getProperty(Constants.PROBE_TARGET);
+        String targetDockerPort = properties.getProperty(Constants.TARGET_DOCKER_PORT);
         String ftaAddress = properties.getProperty(Constants.FTA_ADDRESS);
-        String targetHostAddress = properties.getProperty(Constants.PROBE_TARGET);
-        String dockerHostAddress = targetHostAddress + ":" + properties.getProperty(Constants.TARGET_DOCKER_PORT);
         LOGGER.debug("Init the Docker Probes Controller: FTA ADDRESS [" + ftaAddress + "]");
-        this.dockerContainerProbe = new DockerContainerProbe(dockerHostAddress, ftaAddress);
+        this.dockerContainerProbe = new DockerContainerProbe(targetLabel, probeTarget, targetDockerPort, ftaAddress);
     }
 
     public void startAll() {
