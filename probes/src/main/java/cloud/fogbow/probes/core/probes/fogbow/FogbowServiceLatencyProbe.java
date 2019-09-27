@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,13 +25,14 @@ public class FogbowServiceLatencyProbe extends FogbowProbe {
     private static final String HELP = "The time that elapses between the order being opened until the order is available.";
     private static final String METRIC_NAME = "latency";
     private static final String RESOURCE_LABEL = "resource";
+    private List<Pair<String, Float>> lastMetricObservation;
 
     public FogbowServiceLatencyProbe(String targetLabel, String probeTarget, String ftaAddress) {
         super(targetLabel, probeTarget, ftaAddress, HELP, METRIC_NAME);
     }
 
     protected List<Metric> getMetrics(Timestamp currentTimestamp) {
-        Long[] latencies = this.providerService.getLatencies(currentTimestamp, firstTimeAwake);
+        Long[] latencies = this.providerService.getLatencies(lastTimestampAwake);
         List<Pair<String, Float>> values = toValue(latencies);
         List<Metric> metrics = parseValuesToMetrics(values, currentTimestamp);
         LOGGER.info("Made a metric with name at [" + currentTimestamp.toString() + "]");
@@ -50,6 +52,14 @@ public class FogbowServiceLatencyProbe extends FogbowProbe {
             (float) latencies[2]);
         List<Pair<String, Float>> list = new ArrayList<>(
             Arrays.asList(computeLatency, networkLatency, volumeLatency));
+        if(Objects.nonNull(lastMetricObservation)){
+            for(int i = 0; i < 3; i++){
+                if(list.get(i).getValue() == 0){
+                    list.set(i, lastMetricObservation.get(i));
+                }
+            }
+        }
+        lastMetricObservation = list;
         return list;
     }
 }
