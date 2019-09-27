@@ -48,11 +48,9 @@ public class FogbowServiceSuccessRateProbe extends FogbowProbe {
     private Pair<String, Float> getResourceAvailabilityValue(ResourceType type) {
         LOGGER.debug("Getting audits from resource of type [" + type.getValue() + "]");
         Integer valueFailed = providerService
-            .getAuditsFromResourceByState(OrderState.FAILED_ON_REQUEST, type, lastTimestampAwake,
-                firstTimeAwake);
+            .getAuditsFromResourceByState(OrderState.FAILED_ON_REQUEST, type, lastTimestampAwake);
         Integer valueOpen = providerService
-            .getAuditsFromResourceByState(OrderState.OPEN, type, lastTimestampAwake,
-                firstTimeAwake);
+            .getAuditsFromResourceByState(OrderState.OPEN, type, lastTimestampAwake);
         Float availabilityData = calculateAvailabilityData(valueFailed, valueOpen);
         LOGGER.debug("Metric of availability data [" + availabilityData + "]");
         Pair<String, Float> pair = new Pair<>(type.getValue(), availabilityData);
