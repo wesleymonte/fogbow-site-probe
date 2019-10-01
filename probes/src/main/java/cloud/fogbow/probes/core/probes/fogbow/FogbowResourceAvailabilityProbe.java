@@ -52,10 +52,9 @@ public class FogbowResourceAvailabilityProbe extends FogbowProbe {
         LOGGER.debug("Getting audits from resource of type [" + type.getValue() + "]");
         Integer valueFailedAfterSuccessful = providerService
             .getAuditsFromResourceByState(OrderState.FAILED_AFTER_SUCCESSFUL_REQUEST, type,
-                lastTimestampAwake, firstTimeAwake);
+                lastTimestampAwake);
         Integer valueFulfilled = providerService
-            .getAuditsFromResourceByState(OrderState.FULFILLED, type, lastTimestampAwake,
-                firstTimeAwake);
+            .getAuditsFromResourceByState(OrderState.FULFILLED, type, lastTimestampAwake);
         Float availabilityData = calculateAvailabilityData(valueFailedAfterSuccessful,
             valueFulfilled);
         LOGGER.debug("Observation of availability data [" + availabilityData + "]");

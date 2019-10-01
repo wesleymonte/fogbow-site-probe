@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,11 +29,10 @@ public class FogbowServiceLatencyProbe extends FogbowProbe {
 
     public FogbowServiceLatencyProbe(String targetLabel, String probeTarget, String ftaAddress) {
         super(targetLabel, probeTarget, ftaAddress, HELP, METRIC_NAME);
-        this.lastMetricObservation = new ArrayList<>();
     }
 
     protected List<Metric> getMetrics(Timestamp currentTimestamp) {
-        Long[] latencies = this.providerService.getLatencies(lastTimestampAwake, firstTimeAwake);
+        Long[] latencies = this.providerService.getLatencies(lastTimestampAwake);
         List<Pair<String, Float>> values = toValue(latencies);
         List<Metric> metrics = parseValuesToMetrics(values, currentTimestamp);
         LOGGER.info("Made a metric with name at [" + currentTimestamp.toString() + "]");
@@ -52,7 +52,7 @@ public class FogbowServiceLatencyProbe extends FogbowProbe {
             (float) latencies[2]);
         List<Pair<String, Float>> list = new ArrayList<>(
             Arrays.asList(computeLatency, networkLatency, volumeLatency));
-        if(!firstTimeAwake){
+        if(Objects.nonNull(lastMetricObservation)){
             for(int i = 0; i < 3; i++){
                 if(list.get(i).getValue() == 0){
                     list.set(i, lastMetricObservation.get(i));

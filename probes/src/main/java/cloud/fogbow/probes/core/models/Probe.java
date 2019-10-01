@@ -17,7 +17,6 @@ public abstract class Probe implements Runnable {
     protected static final String targetLabelKey = "target_label";
     protected DataProviderService providerService;
     protected Timestamp lastTimestampAwake;
-    protected boolean firstTimeAwake;
     protected String targetLabel;
     protected String probeTarget;
     private String ftaAddress;
@@ -27,7 +26,6 @@ public abstract class Probe implements Runnable {
         this.probeTarget = probeTarget;
         this.lastTimestampAwake = new Timestamp(System.currentTimeMillis());
         this.ftaAddress = ftaAddress;
-        this.firstTimeAwake = true;
     }
 
     @Override
@@ -41,7 +39,6 @@ public abstract class Probe implements Runnable {
                 "Error while probe running at [" + currentTimestamp + "]: " + e.getMessage());
         }
         lastTimestampAwake = currentTimestamp;
-        firstTimeAwake = false;
     }
 
     protected abstract List<Metric> getMetrics(Timestamp timestamp);

@@ -27,76 +27,40 @@ public class DataProviderService {
 
     }
 
-    public List<AuditableOrderStateChange> getFailedOnRequest(Timestamp timestamp, boolean firstTimeAwake) {
-        if(firstTimeAwake) {
-            return dbManager.getEventsBeforeTimeAndState(timestamp, OrderState.FAILED_ON_REQUEST);
-        } else {
-            return dbManager.getEventsAfterTimeAndState(timestamp, OrderState.FAILED_ON_REQUEST);
-        }
-
+    public List<AuditableOrderStateChange> getFailedOnRequest(Timestamp timestamp) {
+        return dbManager.getEventsAfterTimeAndState(timestamp, OrderState.FAILED_ON_REQUEST);
     }
 
-    public List<AuditableOrderStateChange> getFulfilled(Timestamp timestamp, boolean firstTimeAwake) {
-        if(firstTimeAwake) {
-            return dbManager.getEventsBeforeTimeAndState(timestamp, OrderState.FULFILLED);
-        } else {
-            return dbManager.getEventsAfterTimeAndState(timestamp, OrderState.FULFILLED);
-        }
+    public List<AuditableOrderStateChange> getFulfilled(Timestamp timestamp) {
+        return dbManager.getEventsAfterTimeAndState(timestamp, OrderState.FULFILLED);
     }
 
-    public List<AuditableOrderStateChange> getFailed(Timestamp timestamp, boolean firstTimeAwake) {
-        if(firstTimeAwake) {
-            return dbManager.getEventsBeforeTimeAndState(timestamp, OrderState.FAILED_AFTER_SUCCESSFUL_REQUEST);
-        } else {
-            return dbManager.getEventsAfterTimeAndState(timestamp, OrderState.FAILED_AFTER_SUCCESSFUL_REQUEST);
-        }
-
+    public List<AuditableOrderStateChange> getFailed(Timestamp timestamp) {
+        return dbManager.getEventsAfterTimeAndState(timestamp, OrderState.FAILED_AFTER_SUCCESSFUL_REQUEST);
     }
 
-    public List<AuditableOrderStateChange> getOpened(Timestamp timestamp, boolean firstTimeAwake) {
-        if(firstTimeAwake) {
-            return dbManager.getEventsBeforeTimeAndState(timestamp, OrderState.OPEN);
-        } else {
-            return dbManager.getEventsAfterTimeAndState(timestamp, OrderState.OPEN);
-        }
+    public List<AuditableOrderStateChange> getOpened(Timestamp timestamp) {
+        return dbManager.getEventsAfterTimeAndState(timestamp, OrderState.OPEN);
     }
 
-    public List<AuditableOrderStateChange> getOpened(Timestamp timestamp, boolean firstTimeAwake, ResourceType type) {
-        if(firstTimeAwake) {
-            return getEventsOfType(dbManager.getEventsBeforeTimeAndState(timestamp, OrderState.OPEN), type);
-        } else {
-            return getEventsOfType(dbManager.getEventsAfterTimeAndState(timestamp, OrderState.OPEN), type);
-        }
+    public List<AuditableOrderStateChange> getOpened(Timestamp timestamp, ResourceType type) {
+        return getEventsOfType(dbManager.getEventsAfterTimeAndState(timestamp, OrderState.OPEN), type);
     }
 
-    public List<AuditableOrderStateChange> getFailedOnRequest(Timestamp timestamp, boolean firstTimeAwake, ResourceType type) {
-        if(firstTimeAwake) {
-            return getEventsOfType(dbManager.getEventsBeforeTimeAndState(timestamp, OrderState.FAILED_ON_REQUEST), type);
-        } else {
-            return getEventsOfType(dbManager.getEventsAfterTimeAndState(timestamp, OrderState.FAILED_ON_REQUEST), type);
-        }
-
+    public List<AuditableOrderStateChange> getFailedOnRequest(Timestamp timestamp, ResourceType type) {
+        return getEventsOfType(dbManager.getEventsAfterTimeAndState(timestamp, OrderState.FAILED_ON_REQUEST), type);
     }
 
-    public List<AuditableOrderStateChange> getFailed(Timestamp timestamp, boolean firstTimeAwake, ResourceType type) {
-        if(firstTimeAwake) {
-            return getEventsOfType(dbManager.getEventsBeforeTimeAndState(timestamp, OrderState.FAILED_AFTER_SUCCESSFUL_REQUEST), type);
-        } else {
-            return getEventsOfType(dbManager.getEventsAfterTimeAndState(timestamp, OrderState.FAILED_AFTER_SUCCESSFUL_REQUEST), type);
-        }
-
+    public List<AuditableOrderStateChange> getFailed(Timestamp timestamp, ResourceType type) {
+        return getEventsOfType(dbManager.getEventsAfterTimeAndState(timestamp, OrderState.FAILED_AFTER_SUCCESSFUL_REQUEST), type);
     }
 
-    public List<AuditableOrderStateChange> getFulfilled(Timestamp timestamp, boolean firstTimeAwake, ResourceType type) {
-        if(firstTimeAwake) {
-            return getEventsOfType(dbManager.getEventsBeforeTimeAndState(timestamp, OrderState.FULFILLED), type);
-        } else {
-            return getEventsOfType(dbManager.getEventsAfterTimeAndState(timestamp, OrderState.FULFILLED), type);
-        }
+    public List<AuditableOrderStateChange> getFulfilled(Timestamp timestamp, ResourceType type) {
+        return getEventsOfType(dbManager.getEventsAfterTimeAndState(timestamp, OrderState.FULFILLED), type);
     }
 
-    public Long[] getLatencies(Timestamp timestamp, boolean firstTimeAwake) {
-        List<AuditableOrderStateChange> fulfilledEvents = getFulfilled(timestamp, firstTimeAwake);
+    public Long[] getLatencies(Timestamp timestamp) {
+        List<AuditableOrderStateChange> fulfilledEvents = getFulfilled(timestamp);
 
         Long computeLatency = computeLatencies(getEventsOfType(fulfilledEvents, ResourceType.COMPUTE));
         Long networkLatency = computeLatencies(getEventsOfType(fulfilledEvents, ResourceType.NETWORK));
@@ -108,20 +72,20 @@ public class DataProviderService {
     }
 
     public Integer getAuditsFromResourceByState(OrderState orderState, ResourceType type,
-        Timestamp lastTimestampAwake, boolean firstTimeAwake) {
+        Timestamp lastTimestampAwake) {
         Integer value;
         switch (orderState) {
             case FAILED_ON_REQUEST:
-                value = getFailedOnRequest(lastTimestampAwake, firstTimeAwake, type).size();
+                value = getFailedOnRequest(lastTimestampAwake, type).size();
                 break;
             case FAILED_AFTER_SUCCESSFUL_REQUEST:
-                value = getFailed(lastTimestampAwake, firstTimeAwake, type).size();
+                value = getFailed(lastTimestampAwake, type).size();
                 break;
             case FULFILLED:
-                value = getFulfilled(lastTimestampAwake, firstTimeAwake, type).size();
+                value = getFulfilled(lastTimestampAwake, type).size();
                 break;
             case OPEN:
-                value = getOpened(lastTimestampAwake, firstTimeAwake, type).size();
+                value = getOpened(lastTimestampAwake, type).size();
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + orderState);
