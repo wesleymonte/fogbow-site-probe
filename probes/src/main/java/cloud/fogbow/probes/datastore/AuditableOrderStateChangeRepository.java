@@ -18,4 +18,8 @@ public interface AuditableOrderStateChangeRepository extends JpaRepository<Audit
     List<AuditableOrderStateChange> findByTimestampLessThanEqualAndNewState(Timestamp timestamp, OrderState state);
 
     AuditableOrderStateChange findByOrderAndNewState(Order order, OrderState state);
+
+    @Query("SELECT MAX (timestamp) FROM AuditableOrderStateChange")
+    Timestamp findMaxTimestamp();
+
 }
