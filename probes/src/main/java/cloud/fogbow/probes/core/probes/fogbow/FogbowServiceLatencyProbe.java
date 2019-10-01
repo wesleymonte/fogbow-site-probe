@@ -25,7 +25,6 @@ public class FogbowServiceLatencyProbe extends FogbowProbe {
     private static final String HELP = "The time that elapses between the order being opened until the order is available.";
     private static final String METRIC_NAME = "latency";
     private static final String RESOURCE_LABEL = "resource";
-    private List<Pair<String, Float>> lastMetricObservation;
 
     public FogbowServiceLatencyProbe(String targetLabel, String probeTarget, String ftaAddress) {
         super(targetLabel, probeTarget, ftaAddress, HELP, METRIC_NAME);
@@ -52,14 +51,6 @@ public class FogbowServiceLatencyProbe extends FogbowProbe {
             (float) latencies[2]);
         List<Pair<String, Float>> list = new ArrayList<>(
             Arrays.asList(computeLatency, networkLatency, volumeLatency));
-        if(Objects.nonNull(lastMetricObservation)){
-            for(int i = 0; i < 3; i++){
-                if(list.get(i).getValue() == 0){
-                    list.set(i, lastMetricObservation.get(i));
-                }
-            }
-        }
-        lastMetricObservation = list;
         return list;
     }
 }
