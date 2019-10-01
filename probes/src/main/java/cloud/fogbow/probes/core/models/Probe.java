@@ -27,22 +27,26 @@ public abstract class Probe implements Runnable {
     public Probe(String targetLabel, String probeTarget, String ftaAddress) {
         this.targetLabel = targetLabel;
         this.probeTarget = probeTarget;
-        this.lastTimestampAwake = new Timestamp(System.currentTimeMillis());
+        this.lastTimestampAwake = providerService.getMaxTimestampFromAuditOrders();
         this.ftaAddress = ftaAddress;
     }
 
     @Override
     public void run() {
-        try {
-            List<Metric> metric = getMetrics(lastTimestampAwake);
-            Timestamp currentTimestamp = getBiggerTimestamp(metric);
-            if (Objects.nonNull(currentTimestamp)) {
-                lastTimestampAwake = currentTimestamp;
+        if(Objects.isNull(lastTimestampAwake)){
+            lastTimestampAwake = providerService.getMaxTimestampFromAuditOrders();
+        } else {
+            try {
+                List<Metric> metric = getMetrics(lastTimestampAwake);
+                Timestamp currentTimestamp = getBiggerTimestamp(metric);
+                if (Objects.nonNull(currentTimestamp)) {
+                    lastTimestampAwake = currentTimestamp;
+                }
+                FtaSender.sendMetrics(ftaAddress, metric);
+            } catch (IllegalArgumentException e) {
+                LOGGER.error(
+                    "Error while probe running at [" + lastTimestampAwake + "]: " + e.getMessage());
             }
-            FtaSender.sendMetrics(ftaAddress, metric);
-        } catch (IllegalArgumentException e) {
-            LOGGER.error(
-                "Error while probe running at [" + lastTimestampAwake + "]: " + e.getMessage());
         }
     }
 
@@ -59,5 +63,4 @@ public abstract class Probe implements Runnable {
         }
         return null;
     }
-
 }
