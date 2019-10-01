@@ -3,7 +3,10 @@ package cloud.fogbow.probes.core.models;
 import cloud.fogbow.probes.core.fta.FtaSender;
 import cloud.fogbow.probes.core.services.DataProviderService;
 import java.sql.Timestamp;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,8 +16,8 @@ import org.apache.logging.log4j.Logger;
  */
 public abstract class Probe implements Runnable {
 
-    private static final Logger LOGGER = LogManager.getLogger(Probe.class);
     protected static final String targetLabelKey = "target_label";
+    private static final Logger LOGGER = LogManager.getLogger(Probe.class);
     protected DataProviderService providerService;
     protected Timestamp lastTimestampAwake;
     protected String targetLabel;
@@ -30,21 +33,31 @@ public abstract class Probe implements Runnable {
 
     @Override
     public void run() {
-        Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
         try {
-            List<Metric> metric = getMetrics(currentTimestamp);
+            List<Metric> metric = getMetrics(lastTimestampAwake);
+            Timestamp currentTimestamp = getBiggerTimestamp(metric);
+            if (Objects.nonNull(currentTimestamp)) {
+                lastTimestampAwake = currentTimestamp;
+            }
             FtaSender.sendMetrics(ftaAddress, metric);
         } catch (IllegalArgumentException e) {
             LOGGER.error(
-                "Error while probe running at [" + currentTimestamp + "]: " + e.getMessage());
+                "Error while probe running at [" + lastTimestampAwake + "]: " + e.getMessage());
         }
-        lastTimestampAwake = currentTimestamp;
     }
 
     protected abstract List<Metric> getMetrics(Timestamp timestamp);
 
     public void setProviderService(DataProviderService providerService) {
         this.providerService = providerService;
+    }
+
+    private Timestamp getBiggerTimestamp(List<Metric> metric) {
+        Optional<Metric> opt = metric.stream().max(Comparator.comparing(Metric::getTimestamp));
+        if (opt.isPresent()) {
+            return opt.get().getTimestamp();
+        }
+        return null;
     }
 
 }
