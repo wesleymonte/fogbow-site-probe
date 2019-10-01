@@ -61,7 +61,7 @@ public class FogbowResourceAvailabilityProbe extends FogbowProbe {
         Integer valueFulfilled = providerService
             .getAuditsFromResourceByState(OrderState.FULFILLED, type, lastTimestampAwake);
         if(valueFailedAfterSuccessful == 0 && valueFulfilled == 0){
-            throw new Exception("Not found resource data to calculate.");
+            throw new Exception("Not found resource data to calculate resource availability.");
         }
         Float availabilityData = AppUtil.percent(valueFailedAfterSuccessful,
             valueFulfilled);

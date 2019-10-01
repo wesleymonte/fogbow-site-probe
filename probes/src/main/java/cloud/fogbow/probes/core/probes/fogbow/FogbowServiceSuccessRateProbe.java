@@ -57,7 +57,7 @@ public class FogbowServiceSuccessRateProbe extends FogbowProbe {
         Integer valueOpen = providerService
             .getAuditsFromResourceByState(OrderState.OPEN, type, lastTimestampAwake);
         if(valueFailed == 0 && valueOpen == 0){
-            throw new Exception("Not found resource data to calculate.");
+            throw new Exception("Not found resource data to calculate service success rate.");
         }
         Float availabilityData = AppUtil.percent(valueFailed, valueOpen);
         LOGGER.debug("Metric of availability data [" + availabilityData + "]");
