@@ -49,8 +49,13 @@ public class FogbowServiceLatencyProbe extends FogbowProbe {
             (float) latencies[1]);
         Pair<String, Float> volumeLatency = new Pair<>(ResourceType.VOLUME.getValue(),
             (float) latencies[2]);
-        List<Pair<String, Float>> list = new ArrayList<>(
-            Arrays.asList(computeLatency, networkLatency, volumeLatency));
+        List<Pair<String, Float>> list = new ArrayList<>();
+        for(Pair<String, Float> p : Arrays.asList(computeLatency, networkLatency, volumeLatency)){
+            //To avoid adding data when there are no audits to calculate
+            if(p.getValue() != 0){
+                list.add(p);
+            }
+        }
         return list;
     }
 }
