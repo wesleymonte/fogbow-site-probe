@@ -34,7 +34,11 @@ public class FogbowServiceSuccessRateProbe extends FogbowProbe {
         ResourceType[] resourceTypes = {ResourceType.COMPUTE, ResourceType.VOLUME,
             ResourceType.NETWORK};
         for (ResourceType r : resourceTypes) {
-            resourcesAvailability.add(getResourceAvailabilityValue(r));
+            try {
+                resourcesAvailability.add(getResourceAvailabilityValue(r));
+            } catch (Exception e){
+                LOGGER.error(r.getValue() + ": " + e.getMessage());
+            }
         }
         List<Metric> metrics = parseValuesToMetrics(resourcesAvailability, currentTimestamp);
         LOGGER.info("Made a metric with name at [" + currentTimestamp.toString() + "]");
@@ -45,12 +49,15 @@ public class FogbowServiceSuccessRateProbe extends FogbowProbe {
         metadata.put(RESOURCE_LABEL, p.getKey().toLowerCase());
     }
 
-    private Pair<String, Float> getResourceAvailabilityValue(ResourceType type) {
+    private Pair<String, Float> getResourceAvailabilityValue(ResourceType type) throws Exception {
         LOGGER.debug("Getting audits from resource of type [" + type.getValue() + "]");
         Integer valueFailed = providerService
             .getAuditsFromResourceByState(OrderState.FAILED_ON_REQUEST, type, lastTimestampAwake);
         Integer valueOpen = providerService
             .getAuditsFromResourceByState(OrderState.OPEN, type, lastTimestampAwake);
+        if(valueFailed == 0 && valueOpen == 0){
+            throw new Exception("Not found resource data to calculate.");
+        }
         Float availabilityData = calculateAvailabilityData(valueFailed, valueOpen);
         LOGGER.debug("Metric of availability data [" + availabilityData + "]");
         Pair<String, Float> pair = new Pair<>(type.getValue(), availabilityData);
