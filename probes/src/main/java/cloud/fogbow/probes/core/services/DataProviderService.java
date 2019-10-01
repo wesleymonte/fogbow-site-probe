@@ -62,9 +62,9 @@ public class DataProviderService {
     public Long[] getLatencies(Timestamp timestamp) {
         List<AuditableOrderStateChange> fulfilledEvents = getFulfilled(timestamp);
 
-        Long computeLatency = computeLatencies(getEventsOfType(fulfilledEvents, ResourceType.COMPUTE));
-        Long networkLatency = computeLatencies(getEventsOfType(fulfilledEvents, ResourceType.NETWORK));
-        Long volumeLatency = computeLatencies(getEventsOfType(fulfilledEvents, ResourceType.VOLUME));
+        Long computeLatency = calculateLatency(getEventsOfType(fulfilledEvents, ResourceType.COMPUTE));
+        Long networkLatency = calculateLatency(getEventsOfType(fulfilledEvents, ResourceType.NETWORK));
+        Long volumeLatency = calculateLatency(getEventsOfType(fulfilledEvents, ResourceType.VOLUME));
 
         Long[] latencies = {computeLatency, networkLatency, volumeLatency};
 
@@ -94,7 +94,7 @@ public class DataProviderService {
         return value;
     }
 
-    private Long computeLatencies(List<AuditableOrderStateChange> fulfilledEvents){
+    private Long calculateLatency(List<AuditableOrderStateChange> fulfilledEvents){
         List<Long> latencies = new ArrayList<>();
         for(AuditableOrderStateChange aosc : fulfilledEvents){
             AuditableOrderStateChange auditableOrderStateChangeOpen = dbManager.getEventByOrderAndState(aosc.getOrder(), OrderState.OPEN);
