@@ -37,7 +37,11 @@ public class FogbowResourceAvailabilityProbe extends FogbowProbe {
     protected List<Metric> getMetrics(Timestamp currentTimestamp) {
         List<Pair<String, Float>> resourcesAvailability = new ArrayList<>();
         for (ResourceType r : resourceTypes) {
-            resourcesAvailability.add(getResourceAvailabilityValue(r));
+            try {
+                resourcesAvailability.add(getResourceAvailabilityValue(r));
+            } catch (Exception e){
+                LOGGER.error(r.getValue() + ": " + e.getMessage());
+            }
         }
         List<Metric> metrics = parseValuesToMetrics(resourcesAvailability, currentTimestamp);
         LOGGER.info("Made as metric at [" + currentTimestamp.toString() + "]");
@@ -48,13 +52,16 @@ public class FogbowResourceAvailabilityProbe extends FogbowProbe {
         metadata.put(RESOURCE_LABEL, p.getKey().toLowerCase());
     }
 
-    private Pair<String, Float> getResourceAvailabilityValue(ResourceType type) {
+    private Pair<String, Float> getResourceAvailabilityValue(ResourceType type) throws Exception {
         LOGGER.debug("Getting audits from resource of type [" + type.getValue() + "]");
         Integer valueFailedAfterSuccessful = providerService
             .getAuditsFromResourceByState(OrderState.FAILED_AFTER_SUCCESSFUL_REQUEST, type,
                 lastTimestampAwake);
         Integer valueFulfilled = providerService
             .getAuditsFromResourceByState(OrderState.FULFILLED, type, lastTimestampAwake);
+        if(valueFailedAfterSuccessful == 0 && valueFulfilled == 0){
+            throw new Exception("Not found resource data to calculate.");
+        }
         Float availabilityData = calculateAvailabilityData(valueFailedAfterSuccessful,
             valueFulfilled);
         LOGGER.debug("Observation of availability data [" + availabilityData + "]");
