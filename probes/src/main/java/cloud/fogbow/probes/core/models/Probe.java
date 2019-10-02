@@ -23,6 +23,8 @@ public abstract class Probe implements Runnable {
     protected String targetLabel;
     protected String probeTarget;
     private String ftaAddress;
+    //To avoid send duplicate metrics from same timestamp
+    private Timestamp lastSubmissionTimestamp;
 
     public Probe(String targetLabel, String probeTarget, String ftaAddress) {
         this.targetLabel = targetLabel;
@@ -32,17 +34,18 @@ public abstract class Probe implements Runnable {
 
     @Override
     public void run() {
-        if(Objects.isNull(lastTimestampAwake)){
+        if (Objects.isNull(lastTimestampAwake)) {
             lastTimestampAwake = providerService.getMaxTimestampFromAuditOrders();
-        } else {
+        } else if (!lastTimestampAwake.equals(lastSubmissionTimestamp)) {
             try {
                 List<Metric> metric = getMetrics(lastTimestampAwake);
-                Timestamp currentTimestamp = getBiggerTimestamp(metric);
-                if (Objects.nonNull(currentTimestamp)) {
-                    lastTimestampAwake = currentTimestamp;
-                }
                 FtaSender.sendMetrics(ftaAddress, metric);
-            } catch (IllegalArgumentException e) {
+                lastSubmissionTimestamp = lastTimestampAwake;
+                Timestamp newTimestamp = getBiggerTimestamp(metric);
+                if (Objects.nonNull(newTimestamp)) {
+                    lastTimestampAwake = newTimestamp;
+                }
+            } catch (Exception e) {
                 LOGGER.error(
                     "Error while probe running at [" + lastTimestampAwake + "]: " + e.getMessage());
             }
