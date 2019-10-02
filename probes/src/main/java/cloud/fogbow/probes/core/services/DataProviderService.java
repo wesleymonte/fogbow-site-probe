@@ -59,6 +59,10 @@ public class DataProviderService {
         return getEventsOfType(dbManager.getEventsAfterTimeAndState(timestamp, OrderState.FULFILLED), type);
     }
 
+    public Timestamp getMaxTimestampFromAuditOrders(){
+        return dbManager.getMaxTimestamp();
+    }
+
     public Long[] getLatencies(Timestamp timestamp) {
         List<AuditableOrderStateChange> fulfilledEvents = getFulfilled(timestamp);
 
