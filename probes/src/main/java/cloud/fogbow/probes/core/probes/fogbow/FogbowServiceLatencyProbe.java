@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -50,9 +49,9 @@ public class FogbowServiceLatencyProbe extends FogbowProbe {
         Pair<String, Float> volumeLatency = new Pair<>(ResourceType.VOLUME.getValue(),
             (float) latencies[2]);
         List<Pair<String, Float>> list = new ArrayList<>();
-        for(Pair<String, Float> p : Arrays.asList(computeLatency, networkLatency, volumeLatency)){
+        for (Pair<String, Float> p : Arrays.asList(computeLatency, networkLatency, volumeLatency)) {
             //To avoid adding data when there are no audits to calculate
-            if(p.getValue() != 0){
+            if (p.getValue() != 0) {
                 list.add(p);
             }
         }
