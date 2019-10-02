@@ -3,6 +3,7 @@ package cloud.fogbow.probes.core.probes.fogbow;
 import cloud.fogbow.probes.core.models.Metric;
 import cloud.fogbow.probes.core.models.OrderState;
 import cloud.fogbow.probes.core.models.ResourceType;
+import cloud.fogbow.probes.core.probes.exception.OrdersStateChangeNotFoundException;
 import cloud.fogbow.probes.core.utils.AppUtil;
 import cloud.fogbow.probes.core.utils.Pair;
 import java.sql.Timestamp;
@@ -53,7 +54,7 @@ public class FogbowResourceAvailabilityProbe extends FogbowProbe {
         metadata.put(RESOURCE_LABEL, p.getKey().toLowerCase());
     }
 
-    private Pair<String, Float> getResourceAvailabilityValue(ResourceType type) throws Exception {
+    private Pair<String, Float> getResourceAvailabilityValue(ResourceType type) {
         LOGGER.debug("Getting audits from resource of type [" + type.getValue() + "]");
         Integer valueFailedAfterSuccessful = providerService
             .getAuditsFromResourceByState(OrderState.FAILED_AFTER_SUCCESSFUL_REQUEST, type,
@@ -61,7 +62,7 @@ public class FogbowResourceAvailabilityProbe extends FogbowProbe {
         Integer valueFulfilled = providerService
             .getAuditsFromResourceByState(OrderState.FULFILLED, type, lastTimestampAwake);
         if(valueFailedAfterSuccessful == 0 && valueFulfilled == 0){
-            throw new Exception("Not found resource data to calculate resource availability.");
+            throw new OrdersStateChangeNotFoundException("Not found resource data to calculate resource availability.");
         }
         Float availabilityData = AppUtil.percent(valueFailedAfterSuccessful,
             valueFulfilled);
