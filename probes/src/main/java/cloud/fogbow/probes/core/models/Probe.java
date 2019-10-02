@@ -27,7 +27,6 @@ public abstract class Probe implements Runnable {
     public Probe(String targetLabel, String probeTarget, String ftaAddress) {
         this.targetLabel = targetLabel;
         this.probeTarget = probeTarget;
-        this.lastTimestampAwake = providerService.getMaxTimestampFromAuditOrders();
         this.ftaAddress = ftaAddress;
     }
 
