@@ -3,6 +3,8 @@ package cloud.fogbow.probes.core.probes.fogbow;
 import cloud.fogbow.probes.core.models.Metric;
 import cloud.fogbow.probes.core.models.OrderState;
 import cloud.fogbow.probes.core.models.ResourceType;
+import cloud.fogbow.probes.core.probes.exception.OrdersStateChangeNotFoundException;
+import cloud.fogbow.probes.core.utils.AppUtil;
 import cloud.fogbow.probes.core.utils.Pair;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -37,7 +39,11 @@ public class FogbowResourceAvailabilityProbe extends FogbowProbe {
     protected List<Metric> getMetrics(Timestamp currentTimestamp) {
         List<Pair<String, Float>> resourcesAvailability = new ArrayList<>();
         for (ResourceType r : resourceTypes) {
-            resourcesAvailability.add(getResourceAvailabilityValue(r));
+            try {
+                resourcesAvailability.add(getResourceAvailabilityValue(r));
+            } catch (Exception e){
+                LOGGER.error(r.getValue() + ": " + e.getMessage());
+            }
         }
         List<Metric> metrics = parseValuesToMetrics(resourcesAvailability, currentTimestamp);
         LOGGER.info("Made as metric at [" + currentTimestamp.toString() + "]");
@@ -55,27 +61,14 @@ public class FogbowResourceAvailabilityProbe extends FogbowProbe {
                 lastTimestampAwake);
         Integer valueFulfilled = providerService
             .getAuditsFromResourceByState(OrderState.FULFILLED, type, lastTimestampAwake);
-        Float availabilityData = calculateAvailabilityData(valueFailedAfterSuccessful,
+        if(valueFailedAfterSuccessful == 0 && valueFulfilled == 0){
+            throw new OrdersStateChangeNotFoundException("Not found resource data to calculate resource availability.");
+        }
+        Float availabilityData = AppUtil.percent(valueFailedAfterSuccessful,
             valueFulfilled);
         LOGGER.debug("Observation of availability data [" + availabilityData + "]");
         Pair<String, Float> pair = new Pair<>(type.getValue(), availabilityData);
         return pair;
-    }
-
-    /**
-     * Calculates the percentage of Orders that did not fail after the request.
-     *
-     * @param valueFailedAfterSuccessful Quantity of orders in {@link OrderState#FAILED_AFTER_SUCCESSFUL_REQUEST}
-     * @param valueFulfilled Quantity of orders in {@link OrderState#FULFILLED}
-     * @return float with the resulting percentage
-     */
-    private Float calculateAvailabilityData(Integer valueFailedAfterSuccessful,
-        Integer valueFulfilled) {
-        float result = 100;
-        if (valueFulfilled != 0) {
-            result = 100 * (1 - (float) valueFailedAfterSuccessful / (float) valueFulfilled);
-        }
-        return result;
     }
 
 

@@ -46,4 +46,12 @@ public class AppUtil {
         sdf.setTimeZone(java.util.TimeZone.getTimeZone("GMT-3"));
         return sdf.format(date);
     }
+
+    public static Float percent(Integer dividend, Integer divisor) {
+        float result = 100;
+        if (divisor != 0) {
+            result = 100 * (1 - (float) dividend / (float) divisor);
+        }
+        return result;
+    }
 }
