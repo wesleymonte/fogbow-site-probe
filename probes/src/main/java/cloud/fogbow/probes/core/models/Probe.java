@@ -34,21 +34,29 @@ public abstract class Probe implements Runnable {
 
     @Override
     public void run() {
-        if (Objects.isNull(lastTimestampAwake)) {
-            lastTimestampAwake = providerService.getMaxTimestampFromAuditOrders();
-        } else if (!lastTimestampAwake.equals(lastSubmissionTimestamp)) {
-            try {
-                List<Metric> metric = getMetrics(lastTimestampAwake);
-                FtaSender.sendMetrics(ftaAddress, metric);
-                lastSubmissionTimestamp = lastTimestampAwake;
-                Timestamp newTimestamp = getBiggerTimestamp(metric);
-                if (Objects.nonNull(newTimestamp)) {
-                    lastTimestampAwake = newTimestamp;
+        LOGGER.info("Running probe [" + Thread.currentThread().getName() + "] ...");
+
+        if (Objects.nonNull(lastTimestampAwake)) {
+            if (!lastTimestampAwake.equals(lastSubmissionTimestamp)) {
+                LOGGER.info("Current timestamp: " + lastTimestampAwake);
+                try {
+                    List<Metric> metric = getMetrics(lastTimestampAwake);
+                    FtaSender.sendMetrics(ftaAddress, metric);
+                    lastSubmissionTimestamp = lastTimestampAwake;
+                    Timestamp newTimestamp = getBiggerTimestamp(metric);
+                    if (Objects.nonNull(newTimestamp)) {
+                        lastTimestampAwake = newTimestamp;
+                    }
+                } catch (Exception e) {
+                    LOGGER.error("Error while probe running at [" + lastTimestampAwake + "]: " + e
+                        .getMessage());
                 }
-            } catch (Exception e) {
-                LOGGER.error(
-                    "Error while probe running at [" + lastTimestampAwake + "]: " + e.getMessage());
+            } else {
+                LOGGER.info("No new data to analyze");
             }
+        } else {
+            LOGGER.info("Getting a timestamp for performing database queries...");
+            lastTimestampAwake = providerService.getMaxTimestampFromAuditOrders();
         }
     }
 
