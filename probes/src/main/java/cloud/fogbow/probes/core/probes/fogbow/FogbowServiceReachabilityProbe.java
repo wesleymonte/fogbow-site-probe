@@ -73,7 +73,6 @@ public class FogbowServiceReachabilityProbe extends FogbowProbe {
         Map<String, Boolean> result = doGetRequest();
         List<Pair<String, Float>> values = toValues(result);
         List<Metric> metrics = parseValuesToMetrics(values, currentTimestamp);
-        LOGGER.info("Made a metric with name at [" + currentTimestamp.toString() + "]");
         return metrics;
     }
 

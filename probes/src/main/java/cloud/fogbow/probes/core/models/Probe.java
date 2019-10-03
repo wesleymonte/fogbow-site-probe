@@ -40,10 +40,11 @@ public abstract class Probe implements Runnable {
             if (!lastTimestampAwake.equals(lastSubmissionTimestamp)) {
                 LOGGER.info("Current timestamp: " + lastTimestampAwake);
                 try {
-                    List<Metric> metric = getMetrics(lastTimestampAwake);
-                    FtaSender.sendMetrics(ftaAddress, metric);
+                    List<Metric> metrics = getMetrics(lastTimestampAwake);
+                    LOGGER.info("Made as metrics [" + metrics.size() + "] at [" + lastTimestampAwake.toString() + "]");
+                    FtaSender.sendMetrics(ftaAddress, metrics);
                     lastSubmissionTimestamp = lastTimestampAwake;
-                    Timestamp newTimestamp = getBiggerTimestamp(metric);
+                    Timestamp newTimestamp = getBiggerTimestamp(metrics);
                     if (Objects.nonNull(newTimestamp)) {
                         lastTimestampAwake = newTimestamp;
                     }

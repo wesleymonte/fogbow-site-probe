@@ -43,7 +43,6 @@ public class FogbowServiceSuccessRateProbe extends FogbowProbe {
             }
         }
         List<Metric> metrics = parseValuesToMetrics(resourcesAvailability, currentTimestamp);
-        LOGGER.info("Made a metric with name at [" + currentTimestamp.toString() + "]");
         return metrics;
     }
 

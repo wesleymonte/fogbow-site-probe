@@ -46,7 +46,6 @@ public class FogbowResourceAvailabilityProbe extends FogbowProbe {
             }
         }
         List<Metric> metrics = parseValuesToMetrics(resourcesAvailability, currentTimestamp);
-        LOGGER.info("Made as metric at [" + currentTimestamp.toString() + "]");
         return metrics;
     }
 
