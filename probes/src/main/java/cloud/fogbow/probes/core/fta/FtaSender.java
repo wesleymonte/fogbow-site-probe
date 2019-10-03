@@ -15,10 +15,12 @@ public class FtaSender {
 
     public static void sendMetrics(String address, List<Metric> metrics) {
         try {
-            LOGGER.info("Sending metric to [" + address + "]");
-            for(Metric metric : metrics){
-                StringEntity body = new StringEntity(metric.toJson().toString());
-                HttpWrapper.doRequest(HttpPost.METHOD_NAME, address, new ArrayList<>(), body);
+            if(!metrics.isEmpty()){
+                LOGGER.info("Sending metric to [" + address + "]");
+                for(Metric metric : metrics){
+                    StringEntity body = new StringEntity(metric.toJson().toString());
+                    HttpWrapper.doRequest(HttpPost.METHOD_NAME, address, new ArrayList<>(), body);
+                }
             }
         } catch (Exception e) {
             LOGGER.error("Error while sending metrics: " + e.getMessage());
