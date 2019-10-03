@@ -54,6 +54,7 @@ public abstract class Probe implements Runnable {
                 }
             } else {
                 LOGGER.info("No new data to analyze");
+                lastTimestampAwake = providerService.getMaxTimestampFromAuditOrders();
             }
         } else {
             LOGGER.info("Getting a timestamp for performing database queries...");
