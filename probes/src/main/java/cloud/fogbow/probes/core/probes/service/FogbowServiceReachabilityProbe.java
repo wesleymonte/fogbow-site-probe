@@ -1,8 +1,10 @@
-package cloud.fogbow.probes.core.probes.fogbow;
+package cloud.fogbow.probes.core.probes.service;
 
 import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.PropertiesHolder;
+import cloud.fogbow.probes.core.fta.FtaSender;
 import cloud.fogbow.probes.core.models.Metric;
+import cloud.fogbow.probes.core.probes.Probe;
 import cloud.fogbow.probes.core.utils.AppUtil;
 import cloud.fogbow.probes.core.utils.Pair;
 import java.io.IOException;
@@ -24,8 +26,10 @@ import org.apache.logging.log4j.Logger;
  * Availability is verified by performing http requests to services at specific verification
  * addresses.
  */
-public class FogbowServiceReachabilityProbe extends FogbowProbe {
+public class FogbowServiceReachabilityProbe implements Probe, Runnable {
 
+    private static final String probeTargetKey = "target_host";
+    private static final String targetLabelKey = "target_label";
     private static final Logger LOGGER = LogManager.getLogger(FogbowServiceReachabilityProbe.class);
     private static final String HELP = "Returns 0 if the target service is not available or 1 if is.";
     private static final String METRIC_NAME = "reachability";
@@ -40,12 +44,15 @@ public class FogbowServiceReachabilityProbe extends FogbowProbe {
     private Map<String, FogbowService> services;
 
     public FogbowServiceReachabilityProbe() {
-        super(HELP, METRIC_NAME);
         String probeTarget = PropertiesHolder.getInstance().getHostAddressProperty();
-        this.AS_ENDPOINT = probeTarget + PropertiesHolder.getInstance().getProperty(Constants.AS_ENDPOINT);
-        this.RAS_ENDPOINT = probeTarget + PropertiesHolder.getInstance().getProperty(Constants.RAS_ENDPOINT);
-        this.FNS_ENDPOINT = probeTarget + PropertiesHolder.getInstance().getProperty(Constants.FNS_ENDPOINT);
-        this.MS_ENDPOINT = probeTarget + PropertiesHolder.getInstance().getProperty(Constants.MS_ENDPOINT);
+        this.AS_ENDPOINT =
+            probeTarget + PropertiesHolder.getInstance().getProperty(Constants.AS_ENDPOINT);
+        this.RAS_ENDPOINT =
+            probeTarget + PropertiesHolder.getInstance().getProperty(Constants.RAS_ENDPOINT);
+        this.FNS_ENDPOINT =
+            probeTarget + PropertiesHolder.getInstance().getProperty(Constants.FNS_ENDPOINT);
+        this.MS_ENDPOINT =
+            probeTarget + PropertiesHolder.getInstance().getProperty(Constants.MS_ENDPOINT);
         this.services = Collections.unmodifiableMap(buildServices());
     }
 
@@ -71,14 +78,36 @@ public class FogbowServiceReachabilityProbe extends FogbowProbe {
         return services;
     }
 
-    public List<Metric> getMetrics(Timestamp currentTimestamp) {
+    @Override
+    public List<Metric> getMetrics(Timestamp timestamp) {
         Map<String, Boolean> result = doGetRequest();
         List<Pair<String, Float>> values = toValues(result);
-        List<Metric> metrics = parseValuesToMetrics(values, currentTimestamp);
+        List<Metric> metrics = parseValuesToMetrics(values, timestamp);
         return metrics;
     }
 
-    protected void populateMetadata(Map<String, String> metadata, Pair<String, Float> p) {
+    List<Metric> parseValuesToMetrics(List<Pair<String, Float>> values,
+        Timestamp currentTimestamp) {
+        List<Metric> metrics = new ArrayList<>();
+        for (Pair<String, Float> p : values) {
+            Metric m = parsePairToMetric(p, currentTimestamp);
+            metrics.add(m);
+        }
+        return metrics;
+    }
+
+    private Metric parsePairToMetric(Pair<String, Float> p, Timestamp currentTimestamp) {
+        Map<String, String> metadata = new HashMap<>();
+        populateMetadata(metadata, p);
+        metadata.put(targetLabelKey, PropertiesHolder.getInstance().getHostLabelProperty());
+        metadata.put(probeTargetKey, PropertiesHolder.getInstance().getHostAddressProperty());
+        Metric m = new Metric(p.getKey().toLowerCase() + "_" + METRIC_NAME, p.getValue(),
+            currentTimestamp, HELP, metadata);
+        return m;
+    }
+
+    @Override
+    public void populateMetadata(Map<String, String> metadata, Pair<String, Float> p) {
         metadata.put(SERVICE_LABEL, p.getKey().toLowerCase());
     }
 
@@ -147,6 +176,18 @@ public class FogbowServiceReachabilityProbe extends FogbowProbe {
 
     private boolean hasFailed(int responseCode) {
         return responseCode > RESPONSE_CODE_UPPER_BOUND || responseCode < RESPONSE_CODE_LOWER_BOUND;
+    }
+
+    @Override
+    public void run() {
+        Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
+        try {
+            List<Metric> metrics = this.getMetrics(currentTimestamp);
+            FtaSender.sendMetrics(PropertiesHolder.getInstance().getFtaAddressProperty(), metrics);
+        } catch (Exception e){
+            LOGGER.error("Error while probe running at [" + currentTimestamp + "]: " + e
+                .getMessage());
+        }
     }
 
     private class FogbowService {

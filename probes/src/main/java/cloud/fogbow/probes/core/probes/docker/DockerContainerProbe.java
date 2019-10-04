@@ -1,10 +1,12 @@
 package cloud.fogbow.probes.core.probes.docker;
 
 import cloud.fogbow.probes.core.PropertiesHolder;
+import cloud.fogbow.probes.core.fta.FtaSender;
 import cloud.fogbow.probes.core.models.Metric;
 import cloud.fogbow.probes.core.probes.Probe;
 import cloud.fogbow.probes.core.probes.docker.container.ContainerStats;
 import cloud.fogbow.probes.core.probes.docker.container.DockerRequestHelper;
+import cloud.fogbow.probes.core.utils.Pair;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,7 +18,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
-public class DockerContainerProbe implements Probe {
+public class DockerContainerProbe implements Probe, Runnable {
 
     protected static final String targetLabelKey = "target_label";
     private static final String HELP = "Help";
@@ -45,6 +47,11 @@ public class DockerContainerProbe implements Probe {
         }
         previousContainersStats = currentStats;
         return metrics;
+    }
+
+    @Override
+    public void populateMetadata(Map<String, String> metadata, Pair<String, Float> p) {
+
     }
 
     private ContainerStats getContainerStats(String containerName) {
@@ -92,6 +99,13 @@ public class DockerContainerProbe implements Probe {
 
     @Override
     public void run() {
-
+        Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
+        try {
+            List<Metric> metrics = this.getMetrics(currentTimestamp);
+            FtaSender.sendMetrics(PropertiesHolder.getInstance().getFtaAddressProperty(), metrics);
+        } catch (Exception e){
+            LOGGER.error("Error while probe running at [" + currentTimestamp + "]: " + e
+                .getMessage());
+        }
     }
 }
