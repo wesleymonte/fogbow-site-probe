@@ -21,15 +21,13 @@ public class FogbowProbesController {
     private static final int POOL_SIZE = 4;
 
     private boolean isStarted;
-    private Properties properties;
     private FogbowResourceAvailabilityProbe resourceAvailabilityProbe;
     private FogbowServiceLatencyProbe serviceLatencyProbe;
     private FogbowServiceSuccessRateProbe serviceSuccessRateProbe;
     private FogbowServiceReachabilityProbe serviceReachabilityProbe;
     private ScheduledExecutorService scheduled;
 
-    public FogbowProbesController(Properties properties) {
-        this.properties = properties;
+    public FogbowProbesController() {
         this.scheduled = new ScheduledThreadPoolExecutor(POOL_SIZE,
             new DefaultThreadFactory(THREAD_NAME_PREFIX));
     }

@@ -1,6 +1,7 @@
 package cloud.fogbow.probes.core.controllers;
 
 import cloud.fogbow.probes.core.Constants;
+import cloud.fogbow.probes.core.PropertiesHolder;
 import cloud.fogbow.probes.core.controllers.threadfactory.DefaultThreadFactory;
 import cloud.fogbow.probes.core.probes.docker.DockerContainerProbe;
 import java.util.Properties;
@@ -17,22 +18,20 @@ public class DockerProbesController {
     private static final int POOL_SIZE = 1;
 
     private boolean isStarted;
-    private Properties properties;
     private DockerContainerProbe dockerContainerProbe;
     private ScheduledExecutorService scheduled;
 
-    public DockerProbesController(Properties properties) {
-        this.properties = properties;
+    public DockerProbesController() {
         this.scheduled = new ScheduledThreadPoolExecutor(POOL_SIZE,
             new DefaultThreadFactory(THREAD_NAME_PREFIX));
     }
 
     public void init() {
-        String targetLabel = properties.getProperty(Constants.TARGET_LABEL);
-        String probeTarget = properties.getProperty(Constants.PROBE_TARGET);
-        String targetDockerPort = properties.getProperty(Constants.TARGET_DOCKER_PORT);
-        String ftaAddress = properties.getProperty(Constants.FTA_ADDRESS);
-        LOGGER.debug("Init the Docker Probes Controller: FTA ADDRESS [" + ftaAddress + "]");
+//        LOGGER.debug("Init the Docker Probes Controller: FTA ADDRESS [" + ftaAddress + "]");
+        String targetLabel = PropertiesHolder.getInstance().getHostLabelProperty();
+        String probeTarget = PropertiesHolder.getInstance().getHostAddressProperty();
+        String targetDockerPort = PropertiesHolder.getInstance().getTargetDockerPortProperty();
+        String ftaAddress = PropertiesHolder.getInstance().getFtaAddressProperty();
         this.dockerContainerProbe = new DockerContainerProbe(targetLabel, probeTarget, targetDockerPort, ftaAddress);
     }
 
