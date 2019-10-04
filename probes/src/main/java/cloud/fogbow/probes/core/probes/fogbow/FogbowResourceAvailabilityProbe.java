@@ -31,12 +31,11 @@ public class FogbowResourceAvailabilityProbe extends FogbowProbe {
     private static final ResourceType[] resourceTypes = {ResourceType.COMPUTE, ResourceType.VOLUME,
         ResourceType.NETWORK};
 
-    public FogbowResourceAvailabilityProbe(String targetLabel, String probeTarget,
-        String ftaAddress) {
-        super(targetLabel, probeTarget, ftaAddress, HELP, METRIC_NAME);
+    public FogbowResourceAvailabilityProbe() {
+        super(HELP, METRIC_NAME);
     }
 
-    protected List<Metric> getMetrics(Timestamp currentTimestamp) {
+    public List<Metric> getMetrics(Timestamp currentTimestamp) {
         List<Pair<String, Float>> resourcesAvailability = new ArrayList<>();
         for (ResourceType r : resourceTypes) {
             try {

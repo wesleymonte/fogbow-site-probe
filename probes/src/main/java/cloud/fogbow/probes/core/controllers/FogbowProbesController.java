@@ -1,6 +1,7 @@
 package cloud.fogbow.probes.core.controllers;
 
 import cloud.fogbow.probes.core.Constants;
+import cloud.fogbow.probes.core.PropertiesHolder;
 import cloud.fogbow.probes.core.controllers.threadfactory.DefaultThreadFactory;
 import cloud.fogbow.probes.core.probes.fogbow.FogbowResourceAvailabilityProbe;
 import cloud.fogbow.probes.core.probes.fogbow.FogbowServiceLatencyProbe;
@@ -33,21 +34,11 @@ public class FogbowProbesController {
     }
 
     public void init(DataProviderService dataProviderService) {
-        String targetLabel = properties.getProperty(Constants.TARGET_LABEL);
-        String probeTarget = properties.getProperty(Constants.PROBE_TARGET);
-        String ftaAddress = properties.getProperty(Constants.FTA_ADDRESS);
-        LOGGER.debug("Init the Fogbow Probes Controller: FTA ADDRESS [" + ftaAddress + "]");
-        this.resourceAvailabilityProbe = new FogbowResourceAvailabilityProbe(targetLabel,
-            probeTarget, ftaAddress);
-        this.serviceLatencyProbe = new FogbowServiceLatencyProbe(targetLabel, probeTarget,
-            ftaAddress);
-        this.serviceSuccessRateProbe = new FogbowServiceSuccessRateProbe(targetLabel,
-            probeTarget, ftaAddress);
-        this.serviceReachabilityProbe = new FogbowServiceReachabilityProbe(targetLabel,
-            probeTarget, ftaAddress, properties.getProperty(Constants.AS_ENDPOINT),
-            properties.getProperty(Constants.RAS_ENDPOINT),
-            properties.getProperty(Constants.FNS_ENDPOINT),
-            properties.getProperty(Constants.MS_ENDPOINT));
+//        LOGGER.debug("Init the Fogbow Probes Controller: FTA ADDRESS [" + ftaAddress + "]");
+        this.resourceAvailabilityProbe = new FogbowResourceAvailabilityProbe();
+        this.serviceLatencyProbe = new FogbowServiceLatencyProbe();
+        this.serviceSuccessRateProbe = new FogbowServiceSuccessRateProbe();
+        this.serviceReachabilityProbe = new FogbowServiceReachabilityProbe();
         this.setProviderService(dataProviderService);
     }
 
@@ -60,7 +51,7 @@ public class FogbowProbesController {
     }
 
     private void submitTasks() {
-        long delay = Long.parseLong(properties.getProperty(Constants.DELAY));
+        long delay = Long.parseLong(PropertiesHolder.getInstance().getProperty(Constants.DELAY));
         long initialDelay = 5000;
         LOGGER.debug(
             "Scheduling Fogbow Container Probes: INITIAL_DELAY [" + initialDelay + "]; DELAY ["

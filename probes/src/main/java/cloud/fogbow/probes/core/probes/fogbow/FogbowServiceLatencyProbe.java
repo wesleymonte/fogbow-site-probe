@@ -25,11 +25,11 @@ public class FogbowServiceLatencyProbe extends FogbowProbe {
     private static final String METRIC_NAME = "latency";
     private static final String RESOURCE_LABEL = "resource";
 
-    public FogbowServiceLatencyProbe(String targetLabel, String probeTarget, String ftaAddress) {
-        super(targetLabel, probeTarget, ftaAddress, HELP, METRIC_NAME);
+    public FogbowServiceLatencyProbe() {
+        super(HELP, METRIC_NAME);
     }
 
-    protected List<Metric> getMetrics(Timestamp currentTimestamp) {
+    public List<Metric> getMetrics(Timestamp currentTimestamp) {
         Long[] latencies = this.providerService.getLatencies(lastTimestampAwake);
         List<Pair<String, Float>> values = toValue(latencies);
         List<Metric> metrics = parseValuesToMetrics(values, currentTimestamp);

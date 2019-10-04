@@ -28,11 +28,7 @@ public class DockerProbesController {
 
     public void init() {
 //        LOGGER.debug("Init the Docker Probes Controller: FTA ADDRESS [" + ftaAddress + "]");
-        String targetLabel = PropertiesHolder.getInstance().getHostLabelProperty();
-        String probeTarget = PropertiesHolder.getInstance().getHostAddressProperty();
-        String targetDockerPort = PropertiesHolder.getInstance().getTargetDockerPortProperty();
-        String ftaAddress = PropertiesHolder.getInstance().getFtaAddressProperty();
-        this.dockerContainerProbe = new DockerContainerProbe(targetLabel, probeTarget, targetDockerPort, ftaAddress);
+        this.dockerContainerProbe = new DockerContainerProbe();
     }
 
     public void startAll() {
@@ -44,7 +40,7 @@ public class DockerProbesController {
     }
 
     private void submitTasks() {
-        long delay = Long.parseLong(properties.getProperty(Constants.DELAY));
+        long delay = Long.parseLong(PropertiesHolder.getInstance().getProperty(Constants.DELAY));
         long initialDelay = 5000;
         LOGGER.debug(
             "Scheduling Docker Container Probes: INITIAL_DELAY [" + initialDelay + "]; DELAY ["

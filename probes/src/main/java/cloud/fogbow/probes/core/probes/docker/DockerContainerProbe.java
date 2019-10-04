@@ -1,7 +1,8 @@
 package cloud.fogbow.probes.core.probes.docker;
 
+import cloud.fogbow.probes.core.PropertiesHolder;
 import cloud.fogbow.probes.core.models.Metric;
-import cloud.fogbow.probes.core.models.Probe;
+import cloud.fogbow.probes.core.probes.Probe;
 import cloud.fogbow.probes.core.probes.docker.container.ContainerStats;
 import cloud.fogbow.probes.core.probes.docker.container.DockerRequestHelper;
 import java.sql.Timestamp;
@@ -15,22 +16,24 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
-public class DockerContainerProbe extends Probe {
+public class DockerContainerProbe implements Probe {
 
+    protected static final String targetLabelKey = "target_label";
     private static final String HELP = "Help";
     private static final Logger LOGGER = LogManager.getLogger(DockerContainerProbe.class);
     private Map<String, ContainerStats> previousContainersStats;
     private DockerRequestHelper dockerRequestHelper;
 
-    public DockerContainerProbe(String targetLabel, String probeTarget, String targetDockerPort, String ftaAddress) {
-        super(targetLabel, probeTarget, ftaAddress);
+    public DockerContainerProbe() {
         this.previousContainersStats = new HashMap<>();
-        String dockerProbeTarget = probeTarget + ":" + targetDockerPort;
+        String dockerProbeTarget =
+            PropertiesHolder.getInstance().getHostAddressProperty() + ":" + PropertiesHolder
+                .getInstance().getTargetDockerPortProperty();
         this.dockerRequestHelper = new DockerRequestHelper(dockerProbeTarget);
     }
 
     @Override
-    protected List<Metric> getMetrics(Timestamp timestamp) {
+    public List<Metric> getMetrics(Timestamp timestamp) {
         Map<String, ContainerStats> currentStats = new HashMap<>();
         List<Metric> metrics = new ArrayList<>();
         List<String> containerNames = dockerRequestHelper.listContainersName();
@@ -82,9 +85,13 @@ public class DockerContainerProbe extends Probe {
         Map<String, String> metadata = new HashMap<>();
         metadata.put("resource", "container");
         metadata.put("name", containerName);
-        metadata.put(targetLabelKey, targetLabel);
+        metadata.put(targetLabelKey, PropertiesHolder.getInstance().getHostLabelProperty());
         return metadata;
     }
 
 
+    @Override
+    public void run() {
+
+    }
 }

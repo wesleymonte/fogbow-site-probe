@@ -1,5 +1,7 @@
 package cloud.fogbow.probes.core.probes.fogbow;
 
+import cloud.fogbow.probes.core.Constants;
+import cloud.fogbow.probes.core.PropertiesHolder;
 import cloud.fogbow.probes.core.models.Metric;
 import cloud.fogbow.probes.core.utils.AppUtil;
 import cloud.fogbow.probes.core.utils.Pair;
@@ -37,13 +39,13 @@ public class FogbowServiceReachabilityProbe extends FogbowProbe {
     private String MS_ENDPOINT;
     private Map<String, FogbowService> services;
 
-    public FogbowServiceReachabilityProbe(String targetLabel, String probeTarget, String ftaAddress,
-        String asEndpoint, String rasEndpoint, String fnsEndpoint, String msEndpoint) {
-        super(targetLabel, probeTarget, ftaAddress, HELP, METRIC_NAME);
-        this.AS_ENDPOINT = probeTarget + asEndpoint;
-        this.RAS_ENDPOINT = probeTarget + rasEndpoint;
-        this.FNS_ENDPOINT = probeTarget + fnsEndpoint;
-        this.MS_ENDPOINT = probeTarget + msEndpoint;
+    public FogbowServiceReachabilityProbe() {
+        super(HELP, METRIC_NAME);
+        String probeTarget = PropertiesHolder.getInstance().getHostAddressProperty();
+        this.AS_ENDPOINT = probeTarget + PropertiesHolder.getInstance().getProperty(Constants.AS_ENDPOINT);
+        this.RAS_ENDPOINT = probeTarget + PropertiesHolder.getInstance().getProperty(Constants.RAS_ENDPOINT);
+        this.FNS_ENDPOINT = probeTarget + PropertiesHolder.getInstance().getProperty(Constants.FNS_ENDPOINT);
+        this.MS_ENDPOINT = probeTarget + PropertiesHolder.getInstance().getProperty(Constants.MS_ENDPOINT);
         this.services = Collections.unmodifiableMap(buildServices());
     }
 
@@ -69,7 +71,7 @@ public class FogbowServiceReachabilityProbe extends FogbowProbe {
         return services;
     }
 
-    protected List<Metric> getMetrics(Timestamp currentTimestamp) {
+    public List<Metric> getMetrics(Timestamp currentTimestamp) {
         Map<String, Boolean> result = doGetRequest();
         List<Pair<String, Float>> values = toValues(result);
         List<Metric> metrics = parseValuesToMetrics(values, currentTimestamp);

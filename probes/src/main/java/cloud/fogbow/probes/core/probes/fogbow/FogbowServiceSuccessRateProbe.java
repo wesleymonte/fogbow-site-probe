@@ -26,12 +26,11 @@ public class FogbowServiceSuccessRateProbe extends FogbowProbe {
     private static final String METRIC_NAME = "success_rate";
     private static final String RESOURCE_LABEL = "resource";
 
-    public FogbowServiceSuccessRateProbe(String targetLabel, String probeTarget,
-        String ftaAddress) {
-        super(targetLabel, probeTarget, ftaAddress, HELP, METRIC_NAME);
+    public FogbowServiceSuccessRateProbe() {
+        super(HELP, METRIC_NAME);
     }
 
-    protected List<Metric> getMetrics(Timestamp currentTimestamp) {
+    public List<Metric> getMetrics(Timestamp currentTimestamp) {
         List<Pair<String, Float>> resourcesAvailability = new ArrayList<>();
         ResourceType[] resourceTypes = {ResourceType.COMPUTE, ResourceType.VOLUME,
             ResourceType.NETWORK};
