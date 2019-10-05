@@ -15,19 +15,22 @@ import org.apache.logging.log4j.Logger;
 
 public class FogbowProbe implements Runnable {
 
-    public static final String probeTargetKey = "target_host";
-    public static final String targetLabelKey = "target_label";
+    static final String probeTargetKey = "target_host";
+    static final String targetLabelKey = "target_label";
     private static final Logger LOGGER = LogManager.getLogger(FogbowProbe.class);
 
-    protected Timestamp lastTimestampAwake;
-    protected DataProviderService providerService;
+    private Timestamp lastTimestampAwake;
+
+    private DataProviderService providerService;
     //To avoid send duplicate metrics from same timestamp
     private Timestamp lastSubmissionTimestamp;
 
     private Probe probe;
 
-    public FogbowProbe(Probe probe) {
+    public FogbowProbe(Probe probe, DataProviderService providerService) {
         this.probe = probe;
+        this.providerService = providerService;
+        this.lastTimestampAwake = providerService.getMaxTimestampFromAuditOrders();
     }
 
     @Override

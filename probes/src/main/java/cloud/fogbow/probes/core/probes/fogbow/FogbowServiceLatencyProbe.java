@@ -80,8 +80,4 @@ public class FogbowServiceLatencyProbe implements Probe {
             currentTimestamp, HELP, metadata);
         return m;
     }
-
-    public void setProviderService(DataProviderService providerService) {
-        this.providerService = providerService;
-    }
 }

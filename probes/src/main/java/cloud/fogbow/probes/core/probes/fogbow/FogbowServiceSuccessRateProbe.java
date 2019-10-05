@@ -89,8 +89,4 @@ public class FogbowServiceSuccessRateProbe implements Probe {
             currentTimestamp, HELP, metadata);
         return m;
     }
-
-    public void setProviderService(DataProviderService providerService) {
-        this.providerService = providerService;
-    }
 }
