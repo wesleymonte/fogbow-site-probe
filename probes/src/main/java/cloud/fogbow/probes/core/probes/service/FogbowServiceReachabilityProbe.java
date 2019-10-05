@@ -86,6 +86,16 @@ public class FogbowServiceReachabilityProbe implements Probe, Runnable {
         return metrics;
     }
 
+    @Override
+    public String getMetricName() {
+        return METRIC_NAME;
+    }
+
+    @Override
+    public String getHelp() {
+        return HELP;
+    }
+
     List<Metric> parseValuesToMetrics(List<Pair<String, Float>> values,
         Timestamp currentTimestamp) {
         List<Metric> metrics = new ArrayList<>();

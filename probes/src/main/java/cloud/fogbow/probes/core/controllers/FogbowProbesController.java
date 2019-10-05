@@ -5,6 +5,9 @@ import cloud.fogbow.probes.core.PropertiesHolder;
 import cloud.fogbow.probes.core.controllers.threadfactory.DefaultThreadFactory;
 import cloud.fogbow.probes.core.probes.fogbow.FogbowProbe;
 import cloud.fogbow.probes.core.probes.fogbow.FogbowResourceAvailabilityProbe;
+import cloud.fogbow.probes.core.probes.fogbow.FogbowServiceLatencyProbe;
+import cloud.fogbow.probes.core.probes.fogbow.FogbowServiceSuccessRateProbe;
+import cloud.fogbow.probes.core.probes.service.FogbowServiceReachabilityProbe;
 import cloud.fogbow.probes.core.services.DataProviderService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -22,7 +25,7 @@ public class FogbowProbesController {
     private FogbowProbe resourceAvailabilityProbe;
     private FogbowProbe serviceLatencyProbe;
     private FogbowProbe serviceSuccessRateProbe;
-    private FogbowProbe serviceReachabilityProbe;
+    private FogbowServiceReachabilityProbe serviceReachabilityProbe;
     private ScheduledExecutorService scheduled;
 
     public FogbowProbesController() {
@@ -35,14 +38,14 @@ public class FogbowProbesController {
         FogbowResourceAvailabilityProbe fogbowResourceAvailabilityProbe = new FogbowResourceAvailabilityProbe(dataProviderService);
         this.resourceAvailabilityProbe = new FogbowProbe(fogbowResourceAvailabilityProbe, dataProviderService);
 
-        FogbowResourceAvailabilityProbe fogbowServiceLatencyProbe = new FogbowResourceAvailabilityProbe(dataProviderService);
+        FogbowServiceLatencyProbe fogbowServiceLatencyProbe = new FogbowServiceLatencyProbe(dataProviderService);
         this.serviceLatencyProbe = new FogbowProbe(fogbowServiceLatencyProbe, dataProviderService);
 
-        FogbowResourceAvailabilityProbe fogbowServiceSuccessRateProbe = new FogbowResourceAvailabilityProbe(dataProviderService);
+        FogbowServiceSuccessRateProbe fogbowServiceSuccessRateProbe = new FogbowServiceSuccessRateProbe(dataProviderService);
         this.serviceSuccessRateProbe = new FogbowProbe(fogbowServiceSuccessRateProbe, dataProviderService);
 
-        FogbowResourceAvailabilityProbe fogbowServiceReachabilityProbe = new FogbowResourceAvailabilityProbe(dataProviderService);
-        this.serviceReachabilityProbe = new FogbowProbe(fogbowServiceReachabilityProbe, dataProviderService);
+        this.serviceReachabilityProbe = new FogbowServiceReachabilityProbe();
+
     }
 
     public void startAll() {

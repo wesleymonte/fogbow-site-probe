@@ -29,6 +29,10 @@ public class FogbowServiceLatencyProbe implements Probe {
     private static final String RESOURCE_LABEL = "resource";
     protected DataProviderService providerService;
 
+    public FogbowServiceLatencyProbe(DataProviderService providerService) {
+        this.providerService = providerService;
+    }
+
     public List<Metric> getMetrics(Timestamp timestamp) {
         Long[] latencies = this.providerService.getLatencies(timestamp);
         List<Pair<String, Float>> values = toValue(latencies);

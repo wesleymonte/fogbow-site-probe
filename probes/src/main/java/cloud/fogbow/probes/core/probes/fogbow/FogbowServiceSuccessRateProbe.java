@@ -30,6 +30,10 @@ public class FogbowServiceSuccessRateProbe implements Probe {
     private static final String RESOURCE_LABEL = "resource";
     protected DataProviderService providerService;
 
+    public FogbowServiceSuccessRateProbe(DataProviderService providerService) {
+        this.providerService = providerService;
+    }
+
     public List<Metric> getMetrics(Timestamp currentTimestamp) {
         List<Pair<String, Float>> resourcesAvailability = new ArrayList<>();
         ResourceType[] resourceTypes = {ResourceType.COMPUTE, ResourceType.VOLUME,
