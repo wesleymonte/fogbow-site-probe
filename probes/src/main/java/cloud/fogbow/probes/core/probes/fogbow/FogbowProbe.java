@@ -37,30 +37,24 @@ public class FogbowProbe implements Runnable {
     public void run() {
         LOGGER.info("Running probe [" + Thread.currentThread().getName() + "] ...");
 
-        if (Objects.nonNull(lastTimestampAwake)) {
-            if (!lastTimestampAwake.equals(lastSubmissionTimestamp)) {
-                LOGGER.info("Current timestamp: " + lastTimestampAwake);
-                try {
-                    List<Metric> metrics = probe.getMetrics(lastTimestampAwake);
-                    LOGGER.info("Made as metrics [" + metrics.size() + "] at [" + lastTimestampAwake
-                        .toString() + "]");
-                    FtaSender.sendMetrics(PropertiesHolder.getInstance().getFtaAddressProperty(),
-                        metrics);
+        if (Objects.nonNull(lastTimestampAwake) && !lastTimestampAwake.equals(lastSubmissionTimestamp)) {
+            LOGGER.info("Last Timestamp Awake: " + lastTimestampAwake);
+            LOGGER.debug("Last Submission Timestamp: " + lastSubmissionTimestamp);
+            try {
+                List<Metric> metrics = probe.getMetrics(lastTimestampAwake);
+                LOGGER.info("Metrics [" + metrics.size() + "] created at [" + lastTimestampAwake + "]");
+                if (metrics.size() > 0) {
+                    FtaSender.sendMetrics(PropertiesHolder.getInstance().getFtaAddressProperty(), metrics);
                     lastSubmissionTimestamp = lastTimestampAwake;
-                    Timestamp newTimestamp = getBiggerTimestamp(metrics);
-                    if (Objects.nonNull(newTimestamp)) {
-                        lastTimestampAwake = newTimestamp;
-                    }
-                } catch (Exception e) {
-                    LOGGER.error("Error while probe running at [" + lastTimestampAwake + "]: " + e
-                        .getMessage());
+                    lastTimestampAwake = getBiggerTimestamp(metrics);
                 }
-            } else {
-                LOGGER.info("No new data to analyze");
-                lastTimestampAwake = providerService.getMaxTimestampFromAuditOrders();
+            } catch (Exception e) {
+                LOGGER.error(
+                    "Error while probe running at [" + lastTimestampAwake + "]: " + e.getMessage());
             }
         } else {
-            LOGGER.info("Getting a timestamp for performing database queries...");
+            LOGGER.info("No data to analyze");
+            LOGGER.info("Getting a timestamp from database for performing database queries...");
             lastTimestampAwake = providerService.getMaxTimestampFromAuditOrders();
         }
     }
