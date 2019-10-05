@@ -14,5 +14,7 @@ import java.util.Map;
 public interface Probe {
 
     List<Metric> getMetrics(Timestamp timestamp);
+    String getMetricName();
+    String getHelp();
     void populateMetadata(Map<String, String> metadata, Pair<String, Float> p);
 }

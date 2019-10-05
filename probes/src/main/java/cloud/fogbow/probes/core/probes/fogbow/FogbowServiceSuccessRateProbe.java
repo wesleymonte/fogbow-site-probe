@@ -1,17 +1,16 @@
 package cloud.fogbow.probes.core.probes.fogbow;
 
-import cloud.fogbow.probes.core.PropertiesHolder;
 import cloud.fogbow.probes.core.models.Metric;
 import cloud.fogbow.probes.core.models.OrderState;
 import cloud.fogbow.probes.core.models.ResourceType;
 import cloud.fogbow.probes.core.probes.Probe;
 import cloud.fogbow.probes.core.probes.exception.OrdersStateChangeNotFoundException;
+import cloud.fogbow.probes.core.probes.fogbow.util.FogbowProbeUtils;
 import cloud.fogbow.probes.core.services.DataProviderService;
 import cloud.fogbow.probes.core.utils.AppUtil;
 import cloud.fogbow.probes.core.utils.Pair;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.logging.log4j.LogManager;
@@ -42,8 +41,19 @@ public class FogbowServiceSuccessRateProbe implements Probe {
                 LOGGER.error(r.getValue() + ": " + e.getMessage());
             }
         }
-        List<Metric> metrics = parseValuesToMetrics(resourcesAvailability, currentTimestamp);
+        List<Metric> metrics = FogbowProbeUtils
+            .parsePairsToMetrics(this, resourcesAvailability, currentTimestamp);
         return metrics;
+    }
+
+    @Override
+    public String getMetricName() {
+        return METRIC_NAME;
+    }
+
+    @Override
+    public String getHelp() {
+        return HELP;
     }
 
     @Override
@@ -66,27 +76,5 @@ public class FogbowServiceSuccessRateProbe implements Probe {
         LOGGER.debug("Metric of availability data [" + availabilityData + "]");
         Pair<String, Float> pair = new Pair<>(type.getValue(), availabilityData);
         return pair;
-    }
-
-    private List<Metric> parseValuesToMetrics(List<Pair<String, Float>> values,
-        Timestamp currentTimestamp) {
-        List<Metric> metrics = new ArrayList<>();
-        for (Pair<String, Float> p : values) {
-            Metric m = parsePairToMetric(p, currentTimestamp);
-            metrics.add(m);
-        }
-        return metrics;
-    }
-
-    private Metric parsePairToMetric(Pair<String, Float> p, Timestamp currentTimestamp) {
-        Map<String, String> metadata = new HashMap<>();
-        populateMetadata(metadata, p);
-        metadata
-            .put(FogbowProbe.targetLabelKey, PropertiesHolder.getInstance().getHostLabelProperty());
-        metadata.put(FogbowProbe.probeTargetKey,
-            PropertiesHolder.getInstance().getHostAddressProperty());
-        Metric m = new Metric(p.getKey().toLowerCase() + "_" + METRIC_NAME, p.getValue(),
-            currentTimestamp, HELP, metadata);
-        return m;
     }
 }
