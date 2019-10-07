@@ -1,7 +1,9 @@
 package cloud.fogbow.probes.core;
 
-import cloud.fogbow.probes.core.controllers.DockerProbesController;
-import cloud.fogbow.probes.core.controllers.FogbowProbesController;
+import cloud.fogbow.probes.core.controllers.DefaultProbesController;
+import cloud.fogbow.probes.core.probes.ProbeCreator;
+import cloud.fogbow.probes.core.probes.docker.DockerProbeCreator;
+import cloud.fogbow.probes.core.probes.fogbow.FogbowProbeCreator;
 import cloud.fogbow.probes.core.services.DataProviderService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,23 +12,27 @@ public class ProbesManager {
 
     private static final Logger LOGGER = LogManager.getLogger(ProbesManager.class);
     private static ProbesManager ourInstance = new ProbesManager();
-    private FogbowProbesController fogbowProbesController;
-    private DockerProbesController dockerProbesController;
+    private DefaultProbesController defaultProbesController;
 
     public static ProbesManager getInstance() {
         return ourInstance;
     }
 
-    public void init(DataProviderService dataProviderService) {
-        this.fogbowProbesController = new FogbowProbesController();
-        this.fogbowProbesController.init(dataProviderService);
-        this.dockerProbesController = new DockerProbesController();
-        this.dockerProbesController.init();
+    public ProbesManager() {
+        this.defaultProbesController = new DefaultProbesController();
     }
 
-    public void start() {
-        LOGGER.info("Starting Probes...");
-        fogbowProbesController.startAll();
-        dockerProbesController.startAll();
+    public void startFogbowProbes(DataProviderService dataProviderService){
+        LOGGER.info("Starting Fogbow Probes...");
+        ProbeCreator fogbowProbeCreator = new FogbowProbeCreator(dataProviderService);
+        defaultProbesController.setProbeCreator(fogbowProbeCreator);
+        defaultProbesController.submitProbes();
+    }
+
+    public void startDockerProbes(){
+        LOGGER.info("Starting Docker Probes...");
+        ProbeCreator dockerProbeCreator = new DockerProbeCreator();
+        defaultProbesController.setProbeCreator(dockerProbeCreator);
+        defaultProbesController.submitProbes();
     }
 }
