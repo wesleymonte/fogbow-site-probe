@@ -1,4 +1,4 @@
-package cloud.fogbow.probes.core.probes.fogbow;
+package cloud.fogbow.probes.core.probes.fogbow.collectors;
 
 import cloud.fogbow.probes.core.models.Metric;
 import cloud.fogbow.probes.core.models.OrderState;

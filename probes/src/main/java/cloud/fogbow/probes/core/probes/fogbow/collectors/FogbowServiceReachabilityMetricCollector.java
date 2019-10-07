@@ -1,4 +1,4 @@
-package cloud.fogbow.probes.core.probes.service;
+package cloud.fogbow.probes.core.probes.fogbow.collectors;
 
 import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.PropertiesHolder;
