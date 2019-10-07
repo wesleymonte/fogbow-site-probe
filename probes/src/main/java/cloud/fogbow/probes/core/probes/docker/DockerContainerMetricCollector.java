@@ -106,17 +106,4 @@ public class DockerContainerMetricCollector implements MetricCollector {
         metadata.put(targetLabelKey, PropertiesHolder.getInstance().getHostLabelProperty());
         return metadata;
     }
-
-
-    @Override
-    public void run() {
-        Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
-        try {
-            List<Metric> metrics = this.collect(currentTimestamp);
-            FtaSender.sendMetrics(PropertiesHolder.getInstance().getFtaAddressProperty(), metrics);
-        } catch (Exception e) {
-            LOGGER.error(
-                "Error while probe running at [" + currentTimestamp + "]: " + e.getMessage());
-        }
-    }
 }
