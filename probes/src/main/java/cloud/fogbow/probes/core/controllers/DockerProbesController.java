@@ -3,8 +3,7 @@ package cloud.fogbow.probes.core.controllers;
 import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.PropertiesHolder;
 import cloud.fogbow.probes.core.controllers.threadfactory.DefaultThreadFactory;
-import cloud.fogbow.probes.core.probes.docker.DockerContainerProbe;
-import java.util.Properties;
+import cloud.fogbow.probes.core.probes.docker.DockerContainerMetricCollector;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -18,7 +17,7 @@ public class DockerProbesController {
     private static final int POOL_SIZE = 1;
 
     private boolean isStarted;
-    private DockerContainerProbe dockerContainerProbe;
+    private DockerContainerMetricCollector dockerContainerMetricCollector;
     private ScheduledExecutorService scheduled;
 
     public DockerProbesController() {
@@ -28,7 +27,7 @@ public class DockerProbesController {
 
     public void init() {
 //        LOGGER.debug("Init the Docker Probes Controller: FTA ADDRESS [" + ftaAddress + "]");
-        this.dockerContainerProbe = new DockerContainerProbe();
+        this.dockerContainerMetricCollector = new DockerContainerMetricCollector();
     }
 
     public void startAll() {
@@ -45,7 +44,7 @@ public class DockerProbesController {
         LOGGER.debug(
             "Scheduling Docker Container Probes: INITIAL_DELAY [" + initialDelay + "]; DELAY ["
                 + delay + "]");
-        scheduled.scheduleWithFixedDelay(dockerContainerProbe, initialDelay, delay,
+        scheduled.scheduleWithFixedDelay(dockerContainerMetricCollector, initialDelay, delay,
             TimeUnit.MILLISECONDS);
     }
 

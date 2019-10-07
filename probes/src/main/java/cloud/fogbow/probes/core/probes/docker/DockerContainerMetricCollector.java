@@ -18,15 +18,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
-public class DockerContainerProbe implements MetricCollector, Runnable {
+public class DockerContainerMetricCollector implements MetricCollector {
 
     protected static final String targetLabelKey = "target_label";
     private static final String HELP = "Help";
-    private static final Logger LOGGER = LogManager.getLogger(DockerContainerProbe.class);
+    private static final Logger LOGGER = LogManager.getLogger(DockerContainerMetricCollector.class);
     private Map<String, ContainerStats> previousContainersStats;
     private DockerRequestHelper dockerRequestHelper;
 
-    public DockerContainerProbe() {
+    public DockerContainerMetricCollector() {
         this.previousContainersStats = new HashMap<>();
         String dockerProbeTarget =
             PropertiesHolder.getInstance().getHostAddressProperty() + ":" + PropertiesHolder
@@ -103,9 +103,9 @@ public class DockerContainerProbe implements MetricCollector, Runnable {
         try {
             List<Metric> metrics = this.collect(currentTimestamp);
             FtaSender.sendMetrics(PropertiesHolder.getInstance().getFtaAddressProperty(), metrics);
-        } catch (Exception e){
-            LOGGER.error("Error while probe running at [" + currentTimestamp + "]: " + e
-                .getMessage());
+        } catch (Exception e) {
+            LOGGER.error(
+                "Error while probe running at [" + currentTimestamp + "]: " + e.getMessage());
         }
     }
 }
