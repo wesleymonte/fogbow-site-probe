@@ -3,7 +3,7 @@ package cloud.fogbow.probes.core.controllers;
 import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.PropertiesHolder;
 import cloud.fogbow.probes.core.controllers.threadfactory.DefaultThreadFactory;
-import cloud.fogbow.probes.core.probes.docker.DockerContainerMetricCollector;
+import cloud.fogbow.probes.core.probes.docker.collectors.DockerContainerMetricCollector;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;

@@ -1,11 +1,10 @@
-package cloud.fogbow.probes.core.probes.docker;
+package cloud.fogbow.probes.core.probes.docker.collectors;
 
 import cloud.fogbow.probes.core.PropertiesHolder;
-import cloud.fogbow.probes.core.fta.FtaSender;
 import cloud.fogbow.probes.core.models.Metric;
 import cloud.fogbow.probes.core.probes.MetricCollector;
-import cloud.fogbow.probes.core.probes.docker.container.ContainerStats;
-import cloud.fogbow.probes.core.probes.docker.container.DockerRequestHelper;
+import cloud.fogbow.probes.core.probes.docker.collectors.container.ContainerStats;
+import cloud.fogbow.probes.core.probes.docker.collectors.container.DockerRequestHelper;
 import cloud.fogbow.probes.core.utils.Pair;
 import java.sql.Timestamp;
 import java.util.ArrayList;
