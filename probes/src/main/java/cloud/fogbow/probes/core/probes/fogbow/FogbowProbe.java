@@ -4,6 +4,7 @@ import cloud.fogbow.probes.core.PropertiesHolder;
 import cloud.fogbow.probes.core.fta.FtaSender;
 import cloud.fogbow.probes.core.models.Metric;
 import cloud.fogbow.probes.core.probes.MetricCollector;
+import cloud.fogbow.probes.core.probes.Probe;
 import cloud.fogbow.probes.core.services.DataProviderService;
 import java.sql.Timestamp;
 import java.util.Comparator;
@@ -13,7 +14,7 @@ import java.util.Optional;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class FogbowProbe implements Runnable {
+public class FogbowProbe implements Probe {
 
     public static final String probeTargetKey = "target_host";
     public static final String targetLabelKey = "target_label";
