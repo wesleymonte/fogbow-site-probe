@@ -35,7 +35,7 @@ public class FogbowServiceSuccessRateMetricCollector implements MetricCollector 
         this.providerService = providerService;
     }
 
-    public List<Metric> getMetrics(Timestamp currentTimestamp) {
+    public List<Metric> collect(Timestamp currentTimestamp) {
         List<Pair<String, Float>> resourcesAvailability = new ArrayList<>();
         ResourceType[] resourceTypes = {ResourceType.COMPUTE, ResourceType.VOLUME,
             ResourceType.NETWORK};

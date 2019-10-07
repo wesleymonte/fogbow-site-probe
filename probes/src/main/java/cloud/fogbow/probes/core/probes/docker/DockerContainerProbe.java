@@ -35,7 +35,7 @@ public class DockerContainerProbe implements MetricCollector, Runnable {
     }
 
     @Override
-    public List<Metric> getMetrics(Timestamp timestamp) {
+    public List<Metric> collect(Timestamp timestamp) {
         Map<String, ContainerStats> currentStats = new HashMap<>();
         List<Metric> metrics = new ArrayList<>();
         List<String> containerNames = dockerRequestHelper.listContainersName();
@@ -101,7 +101,7 @@ public class DockerContainerProbe implements MetricCollector, Runnable {
     public void run() {
         Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
         try {
-            List<Metric> metrics = this.getMetrics(currentTimestamp);
+            List<Metric> metrics = this.collect(currentTimestamp);
             FtaSender.sendMetrics(PropertiesHolder.getInstance().getFtaAddressProperty(), metrics);
         } catch (Exception e){
             LOGGER.error("Error while probe running at [" + currentTimestamp + "]: " + e

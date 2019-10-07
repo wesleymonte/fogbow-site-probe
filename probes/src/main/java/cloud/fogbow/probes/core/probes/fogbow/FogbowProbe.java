@@ -41,7 +41,7 @@ public class FogbowProbe implements Runnable {
             LOGGER.info("Last Timestamp Awake: " + lastTimestampAwake);
             LOGGER.debug("Last Submission Timestamp: " + lastSubmissionTimestamp);
             try {
-                List<Metric> metrics = metricCollector.getMetrics(lastTimestampAwake);
+                List<Metric> metrics = metricCollector.collect(lastTimestampAwake);
                 LOGGER.info("Metrics [" + metrics.size() + "] created at [" + lastTimestampAwake + "]");
                 if (metrics.size() > 0) {
                     FtaSender.sendMetrics(PropertiesHolder.getInstance().getFtaAddressProperty(), metrics);

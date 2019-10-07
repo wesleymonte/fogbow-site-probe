@@ -33,7 +33,7 @@ public class FogbowServiceLatencyMetricCollector implements MetricCollector {
         this.providerService = providerService;
     }
 
-    public List<Metric> getMetrics(Timestamp timestamp) {
+    public List<Metric> collect(Timestamp timestamp) {
         Long[] latencies = this.providerService.getLatencies(timestamp);
         List<Pair<String, Float>> values = toValue(latencies);
         List<Metric> metrics = FogbowProbeUtils.parsePairsToMetrics(this, values, timestamp);

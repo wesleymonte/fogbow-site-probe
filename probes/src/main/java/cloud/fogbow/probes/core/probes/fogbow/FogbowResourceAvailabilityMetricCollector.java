@@ -41,7 +41,7 @@ public class FogbowResourceAvailabilityMetricCollector implements MetricCollecto
     }
 
     @Override
-    public List<Metric> getMetrics(Timestamp timestamp) {
+    public List<Metric> collect(Timestamp timestamp) {
         List<Pair<String, Float>> resourcesAvailability = new ArrayList<>();
         for (ResourceType r : resourceTypes) {
             try {

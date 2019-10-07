@@ -80,7 +80,7 @@ public class FogbowServiceReachabilityMetricCollector implements MetricCollector
     }
 
     @Override
-    public List<Metric> getMetrics(Timestamp timestamp) {
+    public List<Metric> collect(Timestamp timestamp) {
         Map<String, Boolean> result = doGetRequest();
         List<Pair<String, Float>> values = toValues(result);
         List<Metric> metrics = parseValuesToMetrics(values, timestamp);
@@ -193,7 +193,7 @@ public class FogbowServiceReachabilityMetricCollector implements MetricCollector
     public void run() {
         Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
         try {
-            List<Metric> metrics = this.getMetrics(currentTimestamp);
+            List<Metric> metrics = this.collect(currentTimestamp);
             FtaSender.sendMetrics(PropertiesHolder.getInstance().getFtaAddressProperty(), metrics);
         } catch (Exception e){
             LOGGER.error("Error while probe running at [" + currentTimestamp + "]: " + e

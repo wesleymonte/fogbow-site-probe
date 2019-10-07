@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public interface MetricCollector {
 
-    List<Metric> getMetrics(Timestamp timestamp);
+    List<Metric> collect(Timestamp timestamp);
     String getMetricName();
     String getHelp();
     void populateMetadata(Map<String, String> metadata, Pair<String, Float> p);
