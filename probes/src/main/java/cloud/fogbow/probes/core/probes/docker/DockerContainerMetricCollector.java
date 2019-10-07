@@ -22,6 +22,7 @@ public class DockerContainerMetricCollector implements MetricCollector {
 
     protected static final String targetLabelKey = "target_label";
     private static final String HELP = "Help";
+    private static final String METRIC_NAME = "docker_container";
     private static final Logger LOGGER = LogManager.getLogger(DockerContainerMetricCollector.class);
     private Map<String, ContainerStats> previousContainersStats;
     private DockerRequestHelper dockerRequestHelper;
@@ -47,6 +48,16 @@ public class DockerContainerMetricCollector implements MetricCollector {
         }
         previousContainersStats = currentStats;
         return metrics;
+    }
+
+    @Override
+    public String getMetricName() {
+        return METRIC_NAME;
+    }
+
+    @Override
+    public String getHelp() {
+        return HELP;
     }
 
     @Override
