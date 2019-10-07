@@ -26,7 +26,7 @@ import org.apache.logging.log4j.Logger;
  * Availability is verified by performing http requests to services at specific verification
  * addresses.
  */
-public class FogbowServiceReachabilityMetricCollector implements MetricCollector, Runnable {
+public class FogbowServiceReachabilityMetricCollector implements MetricCollector {
 
     private static final String probeTargetKey = "target_host";
     private static final String targetLabelKey = "target_label";
@@ -187,18 +187,6 @@ public class FogbowServiceReachabilityMetricCollector implements MetricCollector
 
     private boolean hasFailed(int responseCode) {
         return responseCode > RESPONSE_CODE_UPPER_BOUND || responseCode < RESPONSE_CODE_LOWER_BOUND;
-    }
-
-    @Override
-    public void run() {
-        Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
-        try {
-            List<Metric> metrics = this.collect(currentTimestamp);
-            FtaSender.sendMetrics(PropertiesHolder.getInstance().getFtaAddressProperty(), metrics);
-        } catch (Exception e){
-            LOGGER.error("Error while probe running at [" + currentTimestamp + "]: " + e
-                .getMessage());
-        }
     }
 
     private class FogbowService {
