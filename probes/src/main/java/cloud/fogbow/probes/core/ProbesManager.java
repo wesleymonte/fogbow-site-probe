@@ -4,7 +4,7 @@ import cloud.fogbow.probes.core.controllers.DefaultProbesController;
 import cloud.fogbow.probes.core.probes.ProbeCreator;
 import cloud.fogbow.probes.core.probes.docker.DockerProbeCreator;
 import cloud.fogbow.probes.core.probes.fogbow.FogbowProbeCreator;
-import cloud.fogbow.probes.core.services.DataProviderService;
+import cloud.fogbow.probes.core.provides.DataProviderService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

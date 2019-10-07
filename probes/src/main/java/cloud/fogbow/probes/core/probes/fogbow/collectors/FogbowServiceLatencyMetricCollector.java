@@ -5,7 +5,7 @@ import cloud.fogbow.probes.core.models.OrderState;
 import cloud.fogbow.probes.core.models.ResourceType;
 import cloud.fogbow.probes.core.probes.MetricCollector;
 import cloud.fogbow.probes.core.probes.fogbow.util.FogbowProbeUtils;
-import cloud.fogbow.probes.core.services.DataProviderService;
+import cloud.fogbow.probes.core.provides.DataProviderService;
 import cloud.fogbow.probes.core.utils.Pair;
 import java.sql.Timestamp;
 import java.util.ArrayList;

@@ -5,7 +5,7 @@ import cloud.fogbow.probes.core.fta.FtaSender;
 import cloud.fogbow.probes.core.models.Metric;
 import cloud.fogbow.probes.core.probes.MetricCollector;
 import cloud.fogbow.probes.core.probes.Probe;
-import cloud.fogbow.probes.core.services.DataProviderService;
+import cloud.fogbow.probes.core.provides.DataProviderService;
 import java.sql.Timestamp;
 import java.util.Comparator;
 import java.util.List;
