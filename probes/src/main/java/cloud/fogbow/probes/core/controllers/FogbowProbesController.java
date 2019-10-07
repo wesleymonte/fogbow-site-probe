@@ -3,6 +3,8 @@ package cloud.fogbow.probes.core.controllers;
 import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.PropertiesHolder;
 import cloud.fogbow.probes.core.controllers.threadfactory.DefaultThreadFactory;
+import cloud.fogbow.probes.core.probes.DefaultProbe;
+import cloud.fogbow.probes.core.probes.MetricCollector;
 import cloud.fogbow.probes.core.probes.fogbow.FogbowProbe;
 import cloud.fogbow.probes.core.probes.fogbow.collectors.FogbowResourceAvailabilityMetricCollector;
 import cloud.fogbow.probes.core.probes.fogbow.collectors.FogbowServiceLatencyMetricCollector;
@@ -25,7 +27,7 @@ public class FogbowProbesController {
     private FogbowProbe resourceAvailabilityProbe;
     private FogbowProbe serviceLatencyProbe;
     private FogbowProbe serviceSuccessRateProbe;
-    private FogbowServiceReachabilityMetricCollector serviceReachabilityProbe;
+    private DefaultProbe serviceReachabilityProbe;
     private ScheduledExecutorService scheduled;
 
     public FogbowProbesController() {
@@ -35,17 +37,15 @@ public class FogbowProbesController {
 
     public void init(DataProviderService dataProviderService) {
 //        LOGGER.debug("Init the Fogbow Probes Controller: FTA ADDRESS [" + ftaAddress + "]");
-        FogbowResourceAvailabilityMetricCollector fogbowResourceAvailabilityProbe = new FogbowResourceAvailabilityMetricCollector(dataProviderService);
-        this.resourceAvailabilityProbe = new FogbowProbe(fogbowResourceAvailabilityProbe, dataProviderService);
+        MetricCollector fogbowResourceAvailabilityMetricCollector = new FogbowResourceAvailabilityMetricCollector(dataProviderService);
+        MetricCollector fogbowServiceLatencyMetricCollector = new FogbowServiceLatencyMetricCollector(dataProviderService);
+        MetricCollector fogbowServiceSuccessRateMetricCollector = new FogbowServiceSuccessRateMetricCollector(dataProviderService);
+        MetricCollector fogbowServiceReachabilityMetricCollector = new FogbowServiceReachabilityMetricCollector();
 
-        FogbowServiceLatencyMetricCollector fogbowServiceLatencyProbe = new FogbowServiceLatencyMetricCollector(dataProviderService);
-        this.serviceLatencyProbe = new FogbowProbe(fogbowServiceLatencyProbe, dataProviderService);
-
-        FogbowServiceSuccessRateMetricCollector fogbowServiceSuccessRateProbe = new FogbowServiceSuccessRateMetricCollector(dataProviderService);
-        this.serviceSuccessRateProbe = new FogbowProbe(fogbowServiceSuccessRateProbe, dataProviderService);
-
-        this.serviceReachabilityProbe = new FogbowServiceReachabilityMetricCollector();
-
+        this.resourceAvailabilityProbe = new FogbowProbe(fogbowResourceAvailabilityMetricCollector, dataProviderService);
+        this.serviceLatencyProbe = new FogbowProbe(fogbowServiceLatencyMetricCollector, dataProviderService);
+        this.serviceSuccessRateProbe = new FogbowProbe(fogbowServiceSuccessRateMetricCollector, dataProviderService);
+        this.serviceReachabilityProbe = new DefaultProbe(fogbowServiceReachabilityMetricCollector);
     }
 
     public void startAll() {
