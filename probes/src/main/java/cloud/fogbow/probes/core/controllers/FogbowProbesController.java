@@ -4,10 +4,10 @@ import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.PropertiesHolder;
 import cloud.fogbow.probes.core.controllers.threadfactory.DefaultThreadFactory;
 import cloud.fogbow.probes.core.probes.fogbow.FogbowProbe;
-import cloud.fogbow.probes.core.probes.fogbow.FogbowResourceAvailabilityProbe;
-import cloud.fogbow.probes.core.probes.fogbow.FogbowServiceLatencyProbe;
-import cloud.fogbow.probes.core.probes.fogbow.FogbowServiceSuccessRateProbe;
-import cloud.fogbow.probes.core.probes.service.FogbowServiceReachabilityProbe;
+import cloud.fogbow.probes.core.probes.fogbow.FogbowResourceAvailabilityMetricCollector;
+import cloud.fogbow.probes.core.probes.fogbow.FogbowServiceLatencyMetricCollector;
+import cloud.fogbow.probes.core.probes.fogbow.FogbowServiceSuccessRateMetricCollector;
+import cloud.fogbow.probes.core.probes.service.FogbowServiceReachabilityMetricCollector;
 import cloud.fogbow.probes.core.services.DataProviderService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -25,7 +25,7 @@ public class FogbowProbesController {
     private FogbowProbe resourceAvailabilityProbe;
     private FogbowProbe serviceLatencyProbe;
     private FogbowProbe serviceSuccessRateProbe;
-    private FogbowServiceReachabilityProbe serviceReachabilityProbe;
+    private FogbowServiceReachabilityMetricCollector serviceReachabilityProbe;
     private ScheduledExecutorService scheduled;
 
     public FogbowProbesController() {
@@ -35,16 +35,16 @@ public class FogbowProbesController {
 
     public void init(DataProviderService dataProviderService) {
 //        LOGGER.debug("Init the Fogbow Probes Controller: FTA ADDRESS [" + ftaAddress + "]");
-        FogbowResourceAvailabilityProbe fogbowResourceAvailabilityProbe = new FogbowResourceAvailabilityProbe(dataProviderService);
+        FogbowResourceAvailabilityMetricCollector fogbowResourceAvailabilityProbe = new FogbowResourceAvailabilityMetricCollector(dataProviderService);
         this.resourceAvailabilityProbe = new FogbowProbe(fogbowResourceAvailabilityProbe, dataProviderService);
 
-        FogbowServiceLatencyProbe fogbowServiceLatencyProbe = new FogbowServiceLatencyProbe(dataProviderService);
+        FogbowServiceLatencyMetricCollector fogbowServiceLatencyProbe = new FogbowServiceLatencyMetricCollector(dataProviderService);
         this.serviceLatencyProbe = new FogbowProbe(fogbowServiceLatencyProbe, dataProviderService);
 
-        FogbowServiceSuccessRateProbe fogbowServiceSuccessRateProbe = new FogbowServiceSuccessRateProbe(dataProviderService);
+        FogbowServiceSuccessRateMetricCollector fogbowServiceSuccessRateProbe = new FogbowServiceSuccessRateMetricCollector(dataProviderService);
         this.serviceSuccessRateProbe = new FogbowProbe(fogbowServiceSuccessRateProbe, dataProviderService);
 
-        this.serviceReachabilityProbe = new FogbowServiceReachabilityProbe();
+        this.serviceReachabilityProbe = new FogbowServiceReachabilityMetricCollector();
 
     }
 

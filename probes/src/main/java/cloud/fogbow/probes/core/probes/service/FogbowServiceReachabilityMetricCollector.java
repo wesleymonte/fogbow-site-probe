@@ -4,7 +4,7 @@ import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.PropertiesHolder;
 import cloud.fogbow.probes.core.fta.FtaSender;
 import cloud.fogbow.probes.core.models.Metric;
-import cloud.fogbow.probes.core.probes.Probe;
+import cloud.fogbow.probes.core.probes.MetricCollector;
 import cloud.fogbow.probes.core.utils.AppUtil;
 import cloud.fogbow.probes.core.utils.Pair;
 import java.io.IOException;
@@ -26,11 +26,12 @@ import org.apache.logging.log4j.Logger;
  * Availability is verified by performing http requests to services at specific verification
  * addresses.
  */
-public class FogbowServiceReachabilityProbe implements Probe, Runnable {
+public class FogbowServiceReachabilityMetricCollector implements MetricCollector, Runnable {
 
     private static final String probeTargetKey = "target_host";
     private static final String targetLabelKey = "target_label";
-    private static final Logger LOGGER = LogManager.getLogger(FogbowServiceReachabilityProbe.class);
+    private static final Logger LOGGER = LogManager.getLogger(
+        FogbowServiceReachabilityMetricCollector.class);
     private static final String HELP = "Returns 0 if the target service is not available or 1 if is.";
     private static final String METRIC_NAME = "reachability";
     private static final String SERVICE_LABEL = "service";
@@ -43,7 +44,7 @@ public class FogbowServiceReachabilityProbe implements Probe, Runnable {
     private String MS_ENDPOINT;
     private Map<String, FogbowService> services;
 
-    public FogbowServiceReachabilityProbe() {
+    public FogbowServiceReachabilityMetricCollector() {
         String probeTarget = PropertiesHolder.getInstance().getHostAddressProperty();
         this.AS_ENDPOINT =
             probeTarget + PropertiesHolder.getInstance().getProperty(Constants.AS_ENDPOINT);

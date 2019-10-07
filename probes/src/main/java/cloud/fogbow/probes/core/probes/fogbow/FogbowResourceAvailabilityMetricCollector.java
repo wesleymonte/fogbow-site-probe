@@ -3,7 +3,7 @@ package cloud.fogbow.probes.core.probes.fogbow;
 import cloud.fogbow.probes.core.models.Metric;
 import cloud.fogbow.probes.core.models.OrderState;
 import cloud.fogbow.probes.core.models.ResourceType;
-import cloud.fogbow.probes.core.probes.Probe;
+import cloud.fogbow.probes.core.probes.MetricCollector;
 import cloud.fogbow.probes.core.probes.exception.OrdersStateChangeNotFoundException;
 import cloud.fogbow.probes.core.probes.fogbow.util.FogbowProbeUtils;
 import cloud.fogbow.probes.core.services.DataProviderService;
@@ -24,10 +24,10 @@ import org.apache.logging.log4j.Logger;
  * cloud.fogbow.probes.core.models.Order} is {@link OrderState#OPEN}.
  */
 
-public class FogbowResourceAvailabilityProbe implements Probe {
+public class FogbowResourceAvailabilityMetricCollector implements MetricCollector {
 
     private static final Logger LOGGER = LogManager
-        .getLogger(FogbowResourceAvailabilityProbe.class);
+        .getLogger(FogbowResourceAvailabilityMetricCollector.class);
     private static final String HELP = "Measures the level of failure to request a resource after the Order is open.";
     private static final String METRIC_NAME = "availability";
     private static final String RESOURCE_LABEL = "resource";
@@ -36,7 +36,7 @@ public class FogbowResourceAvailabilityProbe implements Probe {
 
     protected DataProviderService providerService;
 
-    public FogbowResourceAvailabilityProbe(DataProviderService providerService) {
+    public FogbowResourceAvailabilityMetricCollector(DataProviderService providerService) {
         this.providerService = providerService;
     }
 

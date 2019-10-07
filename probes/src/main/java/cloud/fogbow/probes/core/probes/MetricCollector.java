@@ -11,7 +11,7 @@ import java.util.Map;
  * It is an entity in charge of making observations at every moment of time ). All observations are
  * sent to the Fogbow Telemetry Aggregator by address {@link #ftaAddress} using {@link FtaSender}.
  */
-public interface Probe {
+public interface MetricCollector {
 
     List<Metric> getMetrics(Timestamp timestamp);
     String getMetricName();

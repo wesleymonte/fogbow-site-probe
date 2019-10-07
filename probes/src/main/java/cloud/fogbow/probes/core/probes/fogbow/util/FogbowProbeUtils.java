@@ -2,7 +2,7 @@ package cloud.fogbow.probes.core.probes.fogbow.util;
 
 import cloud.fogbow.probes.core.PropertiesHolder;
 import cloud.fogbow.probes.core.models.Metric;
-import cloud.fogbow.probes.core.probes.Probe;
+import cloud.fogbow.probes.core.probes.MetricCollector;
 import cloud.fogbow.probes.core.probes.fogbow.FogbowProbe;
 import cloud.fogbow.probes.core.utils.Pair;
 import java.sql.Timestamp;
@@ -24,13 +24,14 @@ public class FogbowProbeUtils {
         return m;
     }
 
-    public static List<Metric> parsePairsToMetrics(Probe probe, List<Pair<String, Float>> values,
+    public static List<Metric> parsePairsToMetrics(MetricCollector metricCollector, List<Pair<String, Float>> values,
         Timestamp timestamp) {
         List<Metric> metrics = new ArrayList<>();
         for (Pair<String, Float> p : values) {
             Map<String, String> metadata = new HashMap<>();
-            probe.populateMetadata(metadata, p);
-            Metric m = FogbowProbeUtils.parsePairToMetric(p, probe.getMetricName(), probe.getHelp(), timestamp, metadata);
+            metricCollector.populateMetadata(metadata, p);
+            Metric m = FogbowProbeUtils.parsePairToMetric(p, metricCollector.getMetricName(), metricCollector
+                .getHelp(), timestamp, metadata);
             metrics.add(m);
         }
         return metrics;

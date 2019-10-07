@@ -3,7 +3,7 @@ package cloud.fogbow.probes.core.probes.fogbow;
 import cloud.fogbow.probes.core.models.Metric;
 import cloud.fogbow.probes.core.models.OrderState;
 import cloud.fogbow.probes.core.models.ResourceType;
-import cloud.fogbow.probes.core.probes.Probe;
+import cloud.fogbow.probes.core.probes.MetricCollector;
 import cloud.fogbow.probes.core.probes.fogbow.util.FogbowProbeUtils;
 import cloud.fogbow.probes.core.services.DataProviderService;
 import cloud.fogbow.probes.core.utils.Pair;
@@ -21,15 +21,15 @@ import org.apache.logging.log4j.Logger;
  * OrderState#OPEN}) until it is available ({@link OrderState#FULFILLED}). This metric measures how
  * long it takes for a resource to be ready.
  */
-public class FogbowServiceLatencyProbe implements Probe {
+public class FogbowServiceLatencyMetricCollector implements MetricCollector {
 
-    private static final Logger LOGGER = LogManager.getLogger(FogbowServiceLatencyProbe.class);
+    private static final Logger LOGGER = LogManager.getLogger(FogbowServiceLatencyMetricCollector.class);
     private static final String HELP = "The time that elapses between the order being opened until the order is available.";
     private static final String METRIC_NAME = "latency";
     private static final String RESOURCE_LABEL = "resource";
     protected DataProviderService providerService;
 
-    public FogbowServiceLatencyProbe(DataProviderService providerService) {
+    public FogbowServiceLatencyMetricCollector(DataProviderService providerService) {
         this.providerService = providerService;
     }
 

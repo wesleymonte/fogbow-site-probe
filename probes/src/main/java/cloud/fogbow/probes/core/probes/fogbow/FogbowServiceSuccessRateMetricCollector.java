@@ -3,7 +3,7 @@ package cloud.fogbow.probes.core.probes.fogbow;
 import cloud.fogbow.probes.core.models.Metric;
 import cloud.fogbow.probes.core.models.OrderState;
 import cloud.fogbow.probes.core.models.ResourceType;
-import cloud.fogbow.probes.core.probes.Probe;
+import cloud.fogbow.probes.core.probes.MetricCollector;
 import cloud.fogbow.probes.core.probes.exception.OrdersStateChangeNotFoundException;
 import cloud.fogbow.probes.core.probes.fogbow.util.FogbowProbeUtils;
 import cloud.fogbow.probes.core.services.DataProviderService;
@@ -22,15 +22,16 @@ import org.apache.logging.log4j.Logger;
  * failed after requests ({@link OrderState#FAILED_AFTER_SUCCESSFUL_REQUEST}) and the number of
  * orders opened ({@link OrderState#OPEN}).
  */
-public class FogbowServiceSuccessRateProbe implements Probe {
+public class FogbowServiceSuccessRateMetricCollector implements MetricCollector {
 
-    private static final Logger LOGGER = LogManager.getLogger(FogbowServiceSuccessRateProbe.class);
+    private static final Logger LOGGER = LogManager.getLogger(
+        FogbowServiceSuccessRateMetricCollector.class);
     private static final String HELP = "The success rate in requesting a resource.";
     private static final String METRIC_NAME = "success_rate";
     private static final String RESOURCE_LABEL = "resource";
     protected DataProviderService providerService;
 
-    public FogbowServiceSuccessRateProbe(DataProviderService providerService) {
+    public FogbowServiceSuccessRateMetricCollector(DataProviderService providerService) {
         this.providerService = providerService;
     }
 

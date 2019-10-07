@@ -3,7 +3,7 @@ package cloud.fogbow.probes.core.probes.docker;
 import cloud.fogbow.probes.core.PropertiesHolder;
 import cloud.fogbow.probes.core.fta.FtaSender;
 import cloud.fogbow.probes.core.models.Metric;
-import cloud.fogbow.probes.core.probes.Probe;
+import cloud.fogbow.probes.core.probes.MetricCollector;
 import cloud.fogbow.probes.core.probes.docker.container.ContainerStats;
 import cloud.fogbow.probes.core.probes.docker.container.DockerRequestHelper;
 import cloud.fogbow.probes.core.utils.Pair;
@@ -18,7 +18,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
-public class DockerContainerProbe implements Probe, Runnable {
+public class DockerContainerProbe implements MetricCollector, Runnable {
 
     protected static final String targetLabelKey = "target_label";
     private static final String HELP = "Help";

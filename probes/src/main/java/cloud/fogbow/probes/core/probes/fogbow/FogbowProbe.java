@@ -3,7 +3,7 @@ package cloud.fogbow.probes.core.probes.fogbow;
 import cloud.fogbow.probes.core.PropertiesHolder;
 import cloud.fogbow.probes.core.fta.FtaSender;
 import cloud.fogbow.probes.core.models.Metric;
-import cloud.fogbow.probes.core.probes.Probe;
+import cloud.fogbow.probes.core.probes.MetricCollector;
 import cloud.fogbow.probes.core.services.DataProviderService;
 import java.sql.Timestamp;
 import java.util.Comparator;
@@ -25,10 +25,10 @@ public class FogbowProbe implements Runnable {
     //To avoid send duplicate metrics from same timestamp
     private Timestamp lastSubmissionTimestamp;
 
-    private Probe probe;
+    private MetricCollector metricCollector;
 
-    public FogbowProbe(Probe probe, DataProviderService providerService) {
-        this.probe = probe;
+    public FogbowProbe(MetricCollector metricCollector, DataProviderService providerService) {
+        this.metricCollector = metricCollector;
         this.providerService = providerService;
         this.lastTimestampAwake = providerService.getMaxTimestampFromAuditOrders();
     }
@@ -41,7 +41,7 @@ public class FogbowProbe implements Runnable {
             LOGGER.info("Last Timestamp Awake: " + lastTimestampAwake);
             LOGGER.debug("Last Submission Timestamp: " + lastSubmissionTimestamp);
             try {
-                List<Metric> metrics = probe.getMetrics(lastTimestampAwake);
+                List<Metric> metrics = metricCollector.getMetrics(lastTimestampAwake);
                 LOGGER.info("Metrics [" + metrics.size() + "] created at [" + lastTimestampAwake + "]");
                 if (metrics.size() > 0) {
                     FtaSender.sendMetrics(PropertiesHolder.getInstance().getFtaAddressProperty(), metrics);
