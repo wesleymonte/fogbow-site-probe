@@ -17,7 +17,7 @@ public class FogbowProbeUtils {
         Timestamp currentTimestamp, Map<String, String> metadata) {
         metadata
             .put(FogbowProbe.targetLabelKey, PropertiesHolder.getInstance().getHostLabelProperty());
-        metadata.put(FogbowProbe.probeTargetKey,
+        metadata.put(FogbowProbe.targetHostKey,
             PropertiesHolder.getInstance().getHostAddressProperty());
         Metric m = new Metric(p.getKey().toLowerCase() + "_" + metricName, p.getValue(),
             currentTimestamp, help, metadata);

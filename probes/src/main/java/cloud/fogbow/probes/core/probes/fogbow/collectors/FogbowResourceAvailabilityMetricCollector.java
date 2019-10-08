@@ -31,6 +31,8 @@ public class FogbowResourceAvailabilityMetricCollector implements MetricCollecto
     private static final String HELP = "Measures the level of failure to request a resource after the Order is open.";
     private static final String METRIC_NAME = "availability";
     private static final String RESOURCE_LABEL = "resource";
+    private static final String SERVICE_LABEL = "service";
+    private static final String SERVICE_NAME = "ras";
     private static final ResourceType[] resourceTypes = {ResourceType.COMPUTE, ResourceType.VOLUME,
         ResourceType.NETWORK};
 
@@ -68,6 +70,7 @@ public class FogbowResourceAvailabilityMetricCollector implements MetricCollecto
     @Override
     public void populateMetadata(Map<String, String> metadata, Pair<String, Float> p) {
         metadata.put(RESOURCE_LABEL, p.getKey().toLowerCase());
+        metadata.put(SERVICE_LABEL, SERVICE_NAME);
     }
 
     private Pair<String, Float> getResourceAvailabilityValue(Timestamp timestamp,

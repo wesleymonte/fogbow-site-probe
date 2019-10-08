@@ -29,6 +29,8 @@ public class FogbowServiceSuccessRateMetricCollector implements MetricCollector 
     private static final String HELP = "The success rate in requesting a resource.";
     private static final String METRIC_NAME = "success_rate";
     private static final String RESOURCE_LABEL = "resource";
+    private static final String SERVICE_LABEL = "service";
+    private static final String SERVICE_NAME = "ras";
     protected DataProviderService providerService;
 
     public FogbowServiceSuccessRateMetricCollector(DataProviderService providerService) {
@@ -64,6 +66,7 @@ public class FogbowServiceSuccessRateMetricCollector implements MetricCollector 
     @Override
     public void populateMetadata(Map<String, String> metadata, Pair<String, Float> p) {
         metadata.put(RESOURCE_LABEL, p.getKey().toLowerCase());
+        metadata.put(SERVICE_LABEL, SERVICE_NAME);
     }
 
     private Pair<String, Float> getResourceAvailabilityValue(Timestamp timestamp,
