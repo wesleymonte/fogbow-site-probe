@@ -27,6 +27,8 @@ public class FogbowServiceLatencyMetricCollector implements MetricCollector {
     private static final String HELP = "The time that elapses between the order being opened until the order is available.";
     private static final String METRIC_NAME = "latency";
     private static final String RESOURCE_LABEL = "resource";
+    private static final String SERVICE_LABEL = "service";
+    private static final String SERVICE_NAME = "ras";
     protected DataProviderService providerService;
 
     public FogbowServiceLatencyMetricCollector(DataProviderService providerService) {
@@ -53,6 +55,7 @@ public class FogbowServiceLatencyMetricCollector implements MetricCollector {
     @Override
     public void populateMetadata(Map<String, String> metadata, Pair<String, Float> p) {
         metadata.put(RESOURCE_LABEL, p.getKey().toLowerCase());
+        metadata.put(SERVICE_LABEL, SERVICE_NAME);
     }
 
     private List<Pair<String, Float>> toValue(Long[] latencies) {
