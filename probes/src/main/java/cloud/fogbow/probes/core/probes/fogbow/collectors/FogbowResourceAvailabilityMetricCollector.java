@@ -1,9 +1,12 @@
-package cloud.fogbow.probes.core.probes.fogbow;
+package cloud.fogbow.probes.core.probes.fogbow.collectors;
 
 import cloud.fogbow.probes.core.models.Metric;
 import cloud.fogbow.probes.core.models.OrderState;
 import cloud.fogbow.probes.core.models.ResourceType;
-import cloud.fogbow.probes.core.probes.exception.OrdersStateChangeNotFoundException;
+import cloud.fogbow.probes.core.probes.MetricCollector;
+import cloud.fogbow.probes.core.probes.fogbow.exceptions.OrdersStateChangeNotFoundException;
+import cloud.fogbow.probes.core.probes.fogbow.util.FogbowProbeUtils;
+import cloud.fogbow.probes.provider.DataProviderService;
 import cloud.fogbow.probes.core.utils.AppUtil;
 import cloud.fogbow.probes.core.utils.Pair;
 import java.sql.Timestamp;
@@ -21,54 +24,67 @@ import org.apache.logging.log4j.Logger;
  * cloud.fogbow.probes.core.models.Order} is {@link OrderState#OPEN}.
  */
 
-public class FogbowResourceAvailabilityProbe extends FogbowProbe {
+public class FogbowResourceAvailabilityMetricCollector implements MetricCollector {
 
     private static final Logger LOGGER = LogManager
-        .getLogger(FogbowResourceAvailabilityProbe.class);
+        .getLogger(FogbowResourceAvailabilityMetricCollector.class);
     private static final String HELP = "Measures the level of failure to request a resource after the Order is open.";
     private static final String METRIC_NAME = "availability";
     private static final String RESOURCE_LABEL = "resource";
     private static final ResourceType[] resourceTypes = {ResourceType.COMPUTE, ResourceType.VOLUME,
         ResourceType.NETWORK};
 
-    public FogbowResourceAvailabilityProbe(String targetLabel, String probeTarget,
-        String ftaAddress) {
-        super(targetLabel, probeTarget, ftaAddress, HELP, METRIC_NAME);
+    protected DataProviderService providerService;
+
+    public FogbowResourceAvailabilityMetricCollector(DataProviderService providerService) {
+        this.providerService = providerService;
     }
 
-    protected List<Metric> getMetrics(Timestamp currentTimestamp) {
+    @Override
+    public List<Metric> collect(Timestamp timestamp) {
         List<Pair<String, Float>> resourcesAvailability = new ArrayList<>();
         for (ResourceType r : resourceTypes) {
             try {
-                resourcesAvailability.add(getResourceAvailabilityValue(r));
-            } catch (Exception e){
+                resourcesAvailability.add(getResourceAvailabilityValue(timestamp, r));
+            } catch (Exception e) {
                 LOGGER.error(r.getValue() + ": " + e.getMessage());
             }
         }
-        List<Metric> metrics = parseValuesToMetrics(resourcesAvailability, currentTimestamp);
+        List<Metric> metrics = FogbowProbeUtils
+            .parsePairsToMetrics(this, resourcesAvailability, timestamp);
         return metrics;
     }
 
-    protected void populateMetadata(Map<String, String> metadata, Pair<String, Float> p) {
+    @Override
+    public String getMetricName() {
+        return METRIC_NAME;
+    }
+
+    @Override
+    public String getHelp() {
+        return HELP;
+    }
+
+    @Override
+    public void populateMetadata(Map<String, String> metadata, Pair<String, Float> p) {
         metadata.put(RESOURCE_LABEL, p.getKey().toLowerCase());
     }
 
-    private Pair<String, Float> getResourceAvailabilityValue(ResourceType type) {
+    private Pair<String, Float> getResourceAvailabilityValue(Timestamp timestamp,
+        ResourceType type) {
         LOGGER.debug("Getting audits from resource of type [" + type.getValue() + "]");
         Integer valueFailedAfterSuccessful = providerService
             .getAuditsFromResourceByState(OrderState.FAILED_AFTER_SUCCESSFUL_REQUEST, type,
-                lastTimestampAwake);
+                timestamp);
         Integer valueFulfilled = providerService
-            .getAuditsFromResourceByState(OrderState.FULFILLED, type, lastTimestampAwake);
-        if(valueFailedAfterSuccessful == 0 && valueFulfilled == 0){
-            throw new OrdersStateChangeNotFoundException("Not found resource data to calculate resource availability.");
+            .getAuditsFromResourceByState(OrderState.FULFILLED, type, timestamp);
+        if (valueFailedAfterSuccessful == 0 && valueFulfilled == 0) {
+            throw new OrdersStateChangeNotFoundException(
+                "Not found resource data to calculate resource availability.");
         }
-        Float availabilityData = AppUtil.percent(valueFailedAfterSuccessful,
-            valueFulfilled);
+        Float availabilityData = AppUtil.percent(valueFailedAfterSuccessful, valueFulfilled);
         LOGGER.debug("Observation of availability data [" + availabilityData + "]");
         Pair<String, Float> pair = new Pair<>(type.getValue(), availabilityData);
         return pair;
     }
-
-
 }

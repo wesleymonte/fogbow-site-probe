@@ -1,9 +1,16 @@
 package cloud.fogbow.probes.core.utils;
 
+import static cloud.fogbow.probes.core.utils.PropertiesUtil.loadProperties;
+
+import cloud.fogbow.probes.FogbowProbesApplication;
+import cloud.fogbow.probes.core.Constants;
+import cloud.fogbow.probes.core.PropertiesHolder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
+import java.util.Properties;
 import org.json.JSONObject;
 
 public class AppUtil {
@@ -53,5 +60,23 @@ public class AppUtil {
             result = 100 * (1 - (float) dividend / (float) divisor);
         }
         return result;
+    }
+
+    public static Properties readProperties() {
+        Properties properties = new Properties();
+        String confFilePath = System.getProperty(PropertiesHolder.CONF_FILE_PROPERTY);
+
+        try {
+            if (Objects.isNull(confFilePath)) {
+                confFilePath = "private/" + Constants.CONF_FILE;
+                properties.load(FogbowProbesApplication.class.getClassLoader()
+                    .getResourceAsStream(confFilePath));
+            } else {
+                properties = loadProperties(confFilePath);
+            }
+        } catch (Exception e) {
+            System.exit(1);
+        }
+        return properties;
     }
 }

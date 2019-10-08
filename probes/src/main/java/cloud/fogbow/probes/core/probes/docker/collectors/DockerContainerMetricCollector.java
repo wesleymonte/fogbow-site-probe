@@ -1,9 +1,11 @@
-package cloud.fogbow.probes.core.probes.docker;
+package cloud.fogbow.probes.core.probes.docker.collectors;
 
+import cloud.fogbow.probes.core.PropertiesHolder;
 import cloud.fogbow.probes.core.models.Metric;
-import cloud.fogbow.probes.core.models.Probe;
-import cloud.fogbow.probes.core.probes.docker.container.ContainerStats;
-import cloud.fogbow.probes.core.probes.docker.container.DockerRequestHelper;
+import cloud.fogbow.probes.core.probes.MetricCollector;
+import cloud.fogbow.probes.core.probes.docker.collectors.container.ContainerStats;
+import cloud.fogbow.probes.core.probes.docker.collectors.container.DockerRequestHelper;
+import cloud.fogbow.probes.core.utils.Pair;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,22 +17,25 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
-public class DockerContainerProbe extends Probe {
+public class DockerContainerMetricCollector implements MetricCollector {
 
+    protected static final String targetLabelKey = "target_label";
     private static final String HELP = "Help";
-    private static final Logger LOGGER = LogManager.getLogger(DockerContainerProbe.class);
+    private static final String METRIC_NAME = "docker_container";
+    private static final Logger LOGGER = LogManager.getLogger(DockerContainerMetricCollector.class);
     private Map<String, ContainerStats> previousContainersStats;
     private DockerRequestHelper dockerRequestHelper;
 
-    public DockerContainerProbe(String targetLabel, String probeTarget, String targetDockerPort, String ftaAddress) {
-        super(targetLabel, probeTarget, ftaAddress);
+    public DockerContainerMetricCollector() {
         this.previousContainersStats = new HashMap<>();
-        String dockerProbeTarget = probeTarget + ":" + targetDockerPort;
+        String dockerProbeTarget =
+            PropertiesHolder.getInstance().getHostAddressProperty() + ":" + PropertiesHolder
+                .getInstance().getTargetDockerPortProperty();
         this.dockerRequestHelper = new DockerRequestHelper(dockerProbeTarget);
     }
 
     @Override
-    protected List<Metric> getMetrics(Timestamp timestamp) {
+    public List<Metric> collect(Timestamp timestamp) {
         Map<String, ContainerStats> currentStats = new HashMap<>();
         List<Metric> metrics = new ArrayList<>();
         List<String> containerNames = dockerRequestHelper.listContainersName();
@@ -42,6 +47,21 @@ public class DockerContainerProbe extends Probe {
         }
         previousContainersStats = currentStats;
         return metrics;
+    }
+
+    @Override
+    public String getMetricName() {
+        return METRIC_NAME;
+    }
+
+    @Override
+    public String getHelp() {
+        return HELP;
+    }
+
+    @Override
+    public void populateMetadata(Map<String, String> metadata, Pair<String, Float> p) {
+
     }
 
     private ContainerStats getContainerStats(String containerName) {
@@ -82,9 +102,7 @@ public class DockerContainerProbe extends Probe {
         Map<String, String> metadata = new HashMap<>();
         metadata.put("resource", "container");
         metadata.put("name", containerName);
-        metadata.put(targetLabelKey, targetLabel);
+        metadata.put(targetLabelKey, PropertiesHolder.getInstance().getHostLabelProperty());
         return metadata;
     }
-
-
 }

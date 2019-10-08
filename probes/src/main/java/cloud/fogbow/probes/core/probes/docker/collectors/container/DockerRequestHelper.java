@@ -1,4 +1,4 @@
-package cloud.fogbow.probes.core.probes.docker.container;
+package cloud.fogbow.probes.core.probes.docker.collectors.container;
 
 import cloud.fogbow.probes.core.utils.http.HttpWrapper;
 import java.util.ArrayList;
