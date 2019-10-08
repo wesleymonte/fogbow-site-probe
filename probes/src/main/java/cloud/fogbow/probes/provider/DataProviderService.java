@@ -45,20 +45,20 @@ public class DataProviderService {
         return dbManager.getEventsAfterTimeAndState(timestamp, OrderState.OPEN);
     }
 
-    public List<AuditableOrderStateChange> getOpened(Timestamp timestamp, ResourceType type) {
-        return getEventsOfType(dbManager.getEventsAfterTimeAndState(timestamp, OrderState.OPEN), type);
+    public List<AuditableOrderStateChange> getOpened(String cloudName, Timestamp timestamp, ResourceType type) {
+        return getEventsOfType(dbManager.getEventsByCloudNameAndAfterTimeAndState(cloudName, timestamp, OrderState.OPEN), type);
     }
 
-    public List<AuditableOrderStateChange> getFailedOnRequest(Timestamp timestamp, ResourceType type) {
-        return getEventsOfType(dbManager.getEventsAfterTimeAndState(timestamp, OrderState.FAILED_ON_REQUEST), type);
+    public List<AuditableOrderStateChange> getFailedOnRequest(String cloudName, Timestamp timestamp, ResourceType type) {
+        return getEventsOfType(dbManager.getEventsByCloudNameAndAfterTimeAndState(cloudName, timestamp, OrderState.FAILED_ON_REQUEST), type);
     }
 
-    public List<AuditableOrderStateChange> getFailed(Timestamp timestamp, ResourceType type) {
-        return getEventsOfType(dbManager.getEventsAfterTimeAndState(timestamp, OrderState.FAILED_AFTER_SUCCESSFUL_REQUEST), type);
+    public List<AuditableOrderStateChange> getFailed(String cloudName, Timestamp timestamp, ResourceType type) {
+        return getEventsOfType(dbManager.getEventsByCloudNameAndAfterTimeAndState(cloudName, timestamp, OrderState.FAILED_AFTER_SUCCESSFUL_REQUEST), type);
     }
 
-    public List<AuditableOrderStateChange> getFulfilled(Timestamp timestamp, ResourceType type) {
-        return getEventsOfType(dbManager.getEventsAfterTimeAndState(timestamp, OrderState.FULFILLED), type);
+    public List<AuditableOrderStateChange> getFulfilled(String cloudName, Timestamp timestamp, ResourceType type) {
+        return getEventsOfType(dbManager.getEventsByCloudNameAndAfterTimeAndState(cloudName, timestamp, OrderState.FULFILLED), type);
     }
 
     public Set<String> getCloudNamesAfterTimestamp(Timestamp timestamp){
@@ -84,21 +84,21 @@ public class DataProviderService {
         return latencies;
     }
 
-    public Integer getAuditsFromResourceByState(OrderState orderState, ResourceType type,
-        Timestamp lastTimestampAwake) {
+    public Integer getAuditsFromResourceByState(String cloudName, OrderState orderState,
+        ResourceType type, Timestamp lastTimestampAwake) {
         Integer value;
         switch (orderState) {
             case FAILED_ON_REQUEST:
-                value = getFailedOnRequest(lastTimestampAwake, type).size();
+                value = getFailedOnRequest(cloudName, lastTimestampAwake, type).size();
                 break;
             case FAILED_AFTER_SUCCESSFUL_REQUEST:
-                value = getFailed(lastTimestampAwake, type).size();
+                value = getFailed(cloudName, lastTimestampAwake, type).size();
                 break;
             case FULFILLED:
-                value = getFulfilled(lastTimestampAwake, type).size();
+                value = getFulfilled(cloudName, lastTimestampAwake, type).size();
                 break;
             case OPEN:
-                value = getOpened(lastTimestampAwake, type).size();
+                value = getOpened(cloudName, lastTimestampAwake, type).size();
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + orderState);

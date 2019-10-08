@@ -32,7 +32,6 @@ public class FogbowProbeCreator implements ProbeCreator {
         Probe serviceLatencyProbe = new FogbowProbe(fogbowServiceLatencyMetricCollector, dataProviderService);
         Probe serviceSuccessRateProbe = new FogbowProbe(fogbowServiceSuccessRateMetricCollector, dataProviderService);
         Probe serviceReachabilityProbe = new DefaultProbe(fogbowServiceReachabilityMetricCollector);
-
         return Arrays.asList(resourceAvailabilityProbe, serviceLatencyProbe, serviceSuccessRateProbe, serviceReachabilityProbe);
     }
 

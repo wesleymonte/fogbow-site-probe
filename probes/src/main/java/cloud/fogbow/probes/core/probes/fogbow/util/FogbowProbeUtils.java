@@ -25,10 +25,11 @@ public class FogbowProbeUtils {
     }
 
     public static List<Metric> parsePairsToMetrics(MetricCollector metricCollector, List<Pair<String, Float>> values,
-        Timestamp timestamp) {
+        String cloudName, Timestamp timestamp) {
         List<Metric> metrics = new ArrayList<>();
         for (Pair<String, Float> p : values) {
             Map<String, String> metadata = new HashMap<>();
+            metadata.put("cloud", cloudName);
             metricCollector.populateMetadata(metadata, p);
             Metric m = FogbowProbeUtils.parsePairToMetric(p, metricCollector.getMetricName(), metricCollector
                 .getHelp(), timestamp, metadata);

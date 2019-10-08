@@ -15,6 +15,9 @@ public interface AuditableOrderStateChangeRepository extends JpaRepository<Audit
 
     List<AuditableOrderStateChange> findByTimestampGreaterThanEqualAndNewState(Timestamp timestamp, OrderState state);
 
+    List<AuditableOrderStateChange> findByOrder_CloudNameAndTimestampGreaterThanEqualAndNewState(
+        String cloudName, Timestamp timestamp, OrderState state);
+
     List<AuditableOrderStateChange> findByTimestampLessThanEqualAndNewState(Timestamp timestamp, OrderState state);
 
     AuditableOrderStateChange findByOrderAndNewState(Order order, OrderState state);
