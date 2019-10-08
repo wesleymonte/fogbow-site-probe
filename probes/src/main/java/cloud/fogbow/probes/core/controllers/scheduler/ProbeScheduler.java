@@ -1,4 +1,4 @@
-package cloud.fogbow.probes.core.controllers;
+package cloud.fogbow.probes.core.controllers.scheduler;
 
 import cloud.fogbow.probes.core.probes.Probe;
 import java.util.List;

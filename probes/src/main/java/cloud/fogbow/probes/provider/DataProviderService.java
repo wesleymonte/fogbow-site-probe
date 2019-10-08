@@ -1,4 +1,4 @@
-package cloud.fogbow.probes.core.provides;
+package cloud.fogbow.probes.provider;
 
 import cloud.fogbow.probes.core.models.AuditableOrderStateChange;
 import cloud.fogbow.probes.core.models.OrderState;

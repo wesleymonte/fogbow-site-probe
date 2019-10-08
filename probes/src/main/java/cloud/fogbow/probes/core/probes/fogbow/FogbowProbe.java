@@ -1,11 +1,11 @@
 package cloud.fogbow.probes.core.probes.fogbow;
 
 import cloud.fogbow.probes.core.PropertiesHolder;
-import cloud.fogbow.probes.core.fta.FtaSender;
+import cloud.fogbow.probes.fta.FtaSender;
 import cloud.fogbow.probes.core.models.Metric;
 import cloud.fogbow.probes.core.probes.MetricCollector;
 import cloud.fogbow.probes.core.probes.Probe;
-import cloud.fogbow.probes.core.provides.DataProviderService;
+import cloud.fogbow.probes.provider.DataProviderService;
 import java.sql.Timestamp;
 import java.util.Comparator;
 import java.util.List;

@@ -1,6 +1,6 @@
 package cloud.fogbow.probes.core.probes;
 
-import cloud.fogbow.probes.core.fta.FtaSender;
+import cloud.fogbow.probes.fta.FtaSender;
 import cloud.fogbow.probes.core.models.Metric;
 import cloud.fogbow.probes.core.utils.Pair;
 import java.sql.Timestamp;

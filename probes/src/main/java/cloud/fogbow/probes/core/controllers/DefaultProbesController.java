@@ -1,8 +1,10 @@
 package cloud.fogbow.probes.core.controllers;
 
+import cloud.fogbow.probes.core.controllers.scheduler.DefaultProbeScheduler;
+import cloud.fogbow.probes.core.controllers.scheduler.ProbeScheduler;
 import cloud.fogbow.probes.core.probes.Probe;
 import cloud.fogbow.probes.core.probes.ProbeCreator;
-import cloud.fogbow.probes.core.probes.docker.DockerProbeCreator;
+import cloud.fogbow.probes.core.probes.docker.creators.DockerProbeCreator;
 import java.util.List;
 
 public class DefaultProbesController {

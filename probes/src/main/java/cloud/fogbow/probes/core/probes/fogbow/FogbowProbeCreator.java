@@ -8,7 +8,7 @@ import cloud.fogbow.probes.core.probes.fogbow.collectors.FogbowResourceAvailabil
 import cloud.fogbow.probes.core.probes.fogbow.collectors.FogbowServiceLatencyMetricCollector;
 import cloud.fogbow.probes.core.probes.fogbow.collectors.FogbowServiceReachabilityMetricCollector;
 import cloud.fogbow.probes.core.probes.fogbow.collectors.FogbowServiceSuccessRateMetricCollector;
-import cloud.fogbow.probes.core.provides.DataProviderService;
+import cloud.fogbow.probes.provider.DataProviderService;
 import java.util.Arrays;
 import java.util.List;
 

@@ -2,7 +2,6 @@ package cloud.fogbow.probes.core.probes.fogbow.collectors;
 
 import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.PropertiesHolder;
-import cloud.fogbow.probes.core.fta.FtaSender;
 import cloud.fogbow.probes.core.models.Metric;
 import cloud.fogbow.probes.core.probes.MetricCollector;
 import cloud.fogbow.probes.core.utils.AppUtil;

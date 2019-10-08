@@ -1,4 +1,4 @@
-package cloud.fogbow.probes.core.probes.docker;
+package cloud.fogbow.probes.core.probes.docker.creators;
 
 import cloud.fogbow.probes.core.probes.DefaultProbe;
 import cloud.fogbow.probes.core.probes.Probe;

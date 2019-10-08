@@ -1,7 +1,7 @@
 package cloud.fogbow.probes;
 
 import cloud.fogbow.probes.core.ProbesManager;
-import cloud.fogbow.probes.core.provides.DataProviderService;
+import cloud.fogbow.probes.provider.DataProviderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
