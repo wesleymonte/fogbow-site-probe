@@ -18,9 +18,19 @@ public interface MetricCollector {
      */
     List<Metric> collect(Timestamp timestamp);
 
+    /**
+     * Returns the name of the metric that is collected
+     * @return The metric name
+     */
     String getMetricName();
 
+    /**
+     * Returns a string with a short comment explaining about the metric that is collected
+     */
     String getHelp();
 
+    /**
+     * Add metadata about metrics according to received data pair
+     */
     void populateMetadata(Map<String, String> metadata, Pair<String, Float> p);
 }
