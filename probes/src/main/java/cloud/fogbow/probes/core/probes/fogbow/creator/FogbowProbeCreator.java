@@ -1,9 +1,10 @@
-package cloud.fogbow.probes.core.probes.fogbow;
+package cloud.fogbow.probes.core.probes.fogbow.creator;
 
 import cloud.fogbow.probes.core.probes.DefaultProbe;
 import cloud.fogbow.probes.core.probes.MetricCollector;
 import cloud.fogbow.probes.core.probes.Probe;
 import cloud.fogbow.probes.core.probes.ProbeCreator;
+import cloud.fogbow.probes.core.probes.fogbow.FogbowProbe;
 import cloud.fogbow.probes.core.probes.fogbow.collectors.FogbowResourceAvailabilityMetricCollector;
 import cloud.fogbow.probes.core.probes.fogbow.collectors.FogbowServiceLatencyMetricCollector;
 import cloud.fogbow.probes.core.probes.fogbow.collectors.FogbowServiceReachabilityMetricCollector;
@@ -31,7 +32,6 @@ public class FogbowProbeCreator implements ProbeCreator {
         Probe serviceLatencyProbe = new FogbowProbe(fogbowServiceLatencyMetricCollector, dataProviderService);
         Probe serviceSuccessRateProbe = new FogbowProbe(fogbowServiceSuccessRateMetricCollector, dataProviderService);
         Probe serviceReachabilityProbe = new DefaultProbe(fogbowServiceReachabilityMetricCollector);
-
         return Arrays.asList(resourceAvailabilityProbe, serviceLatencyProbe, serviceSuccessRateProbe, serviceReachabilityProbe);
     }
 
