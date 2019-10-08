@@ -27,6 +27,10 @@ public class DatabaseManager {
         return auditableOrderStateChangeRepository.findByOrderAndNewState(order, state);
     }
 
+    public List<AuditableOrderStateChange> getEventsAfterTime(Timestamp timestamp){
+        return auditableOrderStateChangeRepository.findByTimestampGreaterThanEqual(timestamp);
+    }
+
     public Timestamp getMaxTimestamp(){
         return auditableOrderStateChangeRepository.findMaxTimestamp();
     }

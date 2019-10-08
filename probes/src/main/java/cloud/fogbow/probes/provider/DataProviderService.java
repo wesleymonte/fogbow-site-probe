@@ -4,7 +4,9 @@ import cloud.fogbow.probes.core.models.AuditableOrderStateChange;
 import cloud.fogbow.probes.core.models.OrderState;
 import cloud.fogbow.probes.core.models.ResourceType;
 import cloud.fogbow.probes.datastore.DatabaseManager;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +59,13 @@ public class DataProviderService {
 
     public List<AuditableOrderStateChange> getFulfilled(Timestamp timestamp, ResourceType type) {
         return getEventsOfType(dbManager.getEventsAfterTimeAndState(timestamp, OrderState.FULFILLED), type);
+    }
+
+    public Set<String> getCloudNamesAfterTimestamp(Timestamp timestamp){
+        List<AuditableOrderStateChange> list = dbManager.getEventsAfterTime(timestamp);
+        Set<String> cloudNames = new HashSet<>();
+        list.forEach(o -> cloudNames.add(o.getOrder().getCloudName()));
+        return cloudNames;
     }
 
     public Timestamp getMaxTimestampFromAuditOrders(){
