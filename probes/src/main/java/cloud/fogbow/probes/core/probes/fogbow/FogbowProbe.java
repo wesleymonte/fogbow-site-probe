@@ -18,6 +18,7 @@ public class FogbowProbe implements Probe {
 
     public static final String probeTargetKey = "target_host";
     public static final String targetLabelKey = "target_label";
+    public static final String cloudNameKey = "cloud";
     private static final Logger LOGGER = LogManager.getLogger(FogbowProbe.class);
 
     private Timestamp lastTimestampAwake;

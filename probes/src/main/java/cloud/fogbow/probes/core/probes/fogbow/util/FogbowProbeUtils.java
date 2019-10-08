@@ -29,7 +29,7 @@ public class FogbowProbeUtils {
         List<Metric> metrics = new ArrayList<>();
         for (Pair<String, Float> p : values) {
             Map<String, String> metadata = new HashMap<>();
-            metadata.put("cloud", cloudName);
+            metadata.put(FogbowProbe.cloudNameKey, cloudName);
             metricCollector.populateMetadata(metadata, p);
             Metric m = FogbowProbeUtils.parsePairToMetric(p, metricCollector.getMetricName(), metricCollector
                 .getHelp(), timestamp, metadata);
