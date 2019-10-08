@@ -15,7 +15,7 @@ public class ProbeMainRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments applicationArguments) {
-        ProbesManager.getInstance().init(dataProviderService);
-        ProbesManager.getInstance().start();
+        ProbesManager.getInstance().startFogbowProbes(dataProviderService);
+        ProbesManager.getInstance().startDockerProbes();
     }
 }
