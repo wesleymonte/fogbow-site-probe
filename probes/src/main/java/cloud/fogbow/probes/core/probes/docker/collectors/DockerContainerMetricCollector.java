@@ -36,6 +36,7 @@ public class DockerContainerMetricCollector implements MetricCollector {
 
     @Override
     public List<Metric> collect(Timestamp timestamp) {
+        LOGGER.info("Stating collect docker container stats...");
         Map<String, ContainerStats> currentStats = new HashMap<>();
         List<Metric> metrics = new ArrayList<>();
         List<String> containerNames = dockerRequestHelper.listContainersName();

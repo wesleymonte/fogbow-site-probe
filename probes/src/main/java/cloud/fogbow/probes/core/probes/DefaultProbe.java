@@ -19,9 +19,11 @@ public class DefaultProbe implements Probe {
 
     @Override
     public void run() {
+        LOGGER.info("Running probe [" + Thread.currentThread().getName() + "] ...");
         Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
         try {
             List<Metric> metrics = metricCollector.collect(currentTimestamp);
+            LOGGER.info("Metrics [" + metrics.size() + "] created at [" + currentTimestamp + "]");
             FtaSender.sendMetrics(PropertiesHolder.getInstance().getFtaAddressProperty(), metrics);
         } catch (Exception e) {
             LOGGER.error(
