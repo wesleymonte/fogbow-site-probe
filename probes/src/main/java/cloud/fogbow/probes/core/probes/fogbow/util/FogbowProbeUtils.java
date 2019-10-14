@@ -17,7 +17,7 @@ public class FogbowProbeUtils {
         Timestamp currentTimestamp, Map<String, String> metadata) {
         metadata
             .put(FogbowProbe.targetLabelKey, PropertiesHolder.getInstance().getHostLabelProperty());
-        metadata.put(FogbowProbe.probeTargetKey,
+        metadata.put(FogbowProbe.targetHostKey,
             PropertiesHolder.getInstance().getHostAddressProperty());
         Metric m = new Metric(p.getKey().toLowerCase() + "_" + metricName, p.getValue(),
             currentTimestamp, help, metadata);
@@ -25,10 +25,11 @@ public class FogbowProbeUtils {
     }
 
     public static List<Metric> parsePairsToMetrics(MetricCollector metricCollector, List<Pair<String, Float>> values,
-        Timestamp timestamp) {
+        String cloudName, Timestamp timestamp) {
         List<Metric> metrics = new ArrayList<>();
         for (Pair<String, Float> p : values) {
             Map<String, String> metadata = new HashMap<>();
+            metadata.put(FogbowProbe.cloudNameKey, cloudName);
             metricCollector.populateMetadata(metadata, p);
             Metric m = FogbowProbeUtils.parsePairToMetric(p, metricCollector.getMetricName(), metricCollector
                 .getHelp(), timestamp, metadata);

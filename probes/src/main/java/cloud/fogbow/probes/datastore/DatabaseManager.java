@@ -15,6 +15,10 @@ public class DatabaseManager {
     @Autowired
     AuditableOrderStateChangeRepository auditableOrderStateChangeRepository;
 
+    public List<AuditableOrderStateChange> getEventsByCloudNameAndAfterTimeAndState(String cloudName, Timestamp timestamp, OrderState state) {
+        return auditableOrderStateChangeRepository.findByOrder_CloudNameAndTimestampGreaterThanEqualAndNewState(cloudName, timestamp, state);
+    }
+
     public List<AuditableOrderStateChange> getEventsAfterTimeAndState(Timestamp timestamp, OrderState state) {
         return auditableOrderStateChangeRepository.findByTimestampGreaterThanEqualAndNewState(timestamp, state);
     }
@@ -25,6 +29,10 @@ public class DatabaseManager {
 
     public AuditableOrderStateChange getEventByOrderAndState(Order order, OrderState state) {
         return auditableOrderStateChangeRepository.findByOrderAndNewState(order, state);
+    }
+
+    public List<AuditableOrderStateChange> getEventsAfterTime(Timestamp timestamp){
+        return auditableOrderStateChangeRepository.findByTimestampGreaterThanEqual(timestamp);
     }
 
     public Timestamp getMaxTimestamp(){

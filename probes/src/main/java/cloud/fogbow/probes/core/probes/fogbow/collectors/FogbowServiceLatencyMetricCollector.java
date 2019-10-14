@@ -10,8 +10,10 @@ import cloud.fogbow.probes.core.utils.Pair;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -27,6 +29,8 @@ public class FogbowServiceLatencyMetricCollector implements MetricCollector {
     private static final String HELP = "The time that elapses between the order being opened until the order is available.";
     private static final String METRIC_NAME = "latency";
     private static final String RESOURCE_LABEL = "resource";
+    private static final String SERVICE_LABEL = "service";
+    private static final String SERVICE_NAME = "ras";
     protected DataProviderService providerService;
 
     public FogbowServiceLatencyMetricCollector(DataProviderService providerService) {
@@ -34,9 +38,16 @@ public class FogbowServiceLatencyMetricCollector implements MetricCollector {
     }
 
     public List<Metric> collect(Timestamp timestamp) {
-        Long[] latencies = this.providerService.getLatencies(timestamp);
-        List<Pair<String, Float>> values = toValue(latencies);
-        List<Metric> metrics = FogbowProbeUtils.parsePairsToMetrics(this, values, timestamp);
+        List<Metric> metrics = new ArrayList<>();
+        Set<String> cloudNames = providerService.getCloudNamesAfterTimestamp(timestamp);
+        Iterator<String> i = cloudNames.iterator();
+        while(i.hasNext()) {
+            String cloud = i.next();
+            Long[] latencies = this.providerService.getLatencies(timestamp);
+            List<Pair<String, Float>> values = toValue(latencies);
+            List<Metric> m = FogbowProbeUtils.parsePairsToMetrics(this, values, cloud, timestamp);
+            metrics.addAll(m);
+        }
         return metrics;
     }
 
@@ -53,6 +64,7 @@ public class FogbowServiceLatencyMetricCollector implements MetricCollector {
     @Override
     public void populateMetadata(Map<String, String> metadata, Pair<String, Float> p) {
         metadata.put(RESOURCE_LABEL, p.getKey().toLowerCase());
+        metadata.put(SERVICE_LABEL, SERVICE_NAME);
     }
 
     private List<Pair<String, Float>> toValue(Long[] latencies) {

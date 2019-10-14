@@ -11,8 +11,10 @@ import cloud.fogbow.probes.core.utils.AppUtil;
 import cloud.fogbow.probes.core.utils.Pair;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,25 +31,34 @@ public class FogbowServiceSuccessRateMetricCollector implements MetricCollector 
     private static final String HELP = "The success rate in requesting a resource.";
     private static final String METRIC_NAME = "success_rate";
     private static final String RESOURCE_LABEL = "resource";
+    private static final String SERVICE_LABEL = "service";
+    private static final String SERVICE_NAME = "ras";
     protected DataProviderService providerService;
+    private static final ResourceType[] resourceTypes = {ResourceType.COMPUTE, ResourceType.VOLUME,
+        ResourceType.NETWORK};
 
     public FogbowServiceSuccessRateMetricCollector(DataProviderService providerService) {
         this.providerService = providerService;
     }
 
-    public List<Metric> collect(Timestamp currentTimestamp) {
+    public List<Metric> collect(Timestamp timestamp) {
+        List<Metric> metrics = new ArrayList<>();
         List<Pair<String, Float>> resourcesAvailability = new ArrayList<>();
-        ResourceType[] resourceTypes = {ResourceType.COMPUTE, ResourceType.VOLUME,
-            ResourceType.NETWORK};
-        for (ResourceType r : resourceTypes) {
-            try {
-                resourcesAvailability.add(getResourceAvailabilityValue(currentTimestamp, r));
-            } catch (Exception e) {
-                LOGGER.error(r.getValue() + ": " + e.getMessage());
+        Set<String> cloudNames = providerService.getCloudNamesAfterTimestamp(timestamp);
+        Iterator<String> i = cloudNames.iterator();
+        while(i.hasNext()){
+            String cloud = i.next();
+            for (ResourceType r : resourceTypes) {
+                try {
+                    resourcesAvailability.add(getResourceAvailabilityValue(cloud, timestamp, r));
+                } catch (Exception e) {
+                    LOGGER.error(r.getValue() + ": " + e.getMessage());
+                }
             }
+            List<Metric> m = FogbowProbeUtils
+                .parsePairsToMetrics(this, resourcesAvailability, cloud, timestamp);
+            metrics.addAll(m);
         }
-        List<Metric> metrics = FogbowProbeUtils
-            .parsePairsToMetrics(this, resourcesAvailability, currentTimestamp);
         return metrics;
     }
 
@@ -64,15 +75,16 @@ public class FogbowServiceSuccessRateMetricCollector implements MetricCollector 
     @Override
     public void populateMetadata(Map<String, String> metadata, Pair<String, Float> p) {
         metadata.put(RESOURCE_LABEL, p.getKey().toLowerCase());
+        metadata.put(SERVICE_LABEL, SERVICE_NAME);
     }
 
-    private Pair<String, Float> getResourceAvailabilityValue(Timestamp timestamp,
+    private Pair<String, Float> getResourceAvailabilityValue(String cloudName, Timestamp timestamp,
         ResourceType type) {
         LOGGER.debug("Getting audits from resource of type [" + type.getValue() + "]");
         Integer valueFailed = providerService
-            .getAuditsFromResourceByState(OrderState.FAILED_ON_REQUEST, type, timestamp);
+            .getAuditsFromResourceByState(cloudName, OrderState.FAILED_ON_REQUEST, type, timestamp);
         Integer valueOpen = providerService
-            .getAuditsFromResourceByState(OrderState.OPEN, type, timestamp);
+            .getAuditsFromResourceByState(cloudName, OrderState.OPEN, type, timestamp);
         if (valueFailed == 0 && valueOpen == 0) {
             throw new OrdersStateChangeNotFoundException(
                 "Not found resource data to calculate service success rate.");
