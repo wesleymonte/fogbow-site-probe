@@ -1,6 +1,7 @@
 package cloud.fogbow.probes.core.probes.fogbow;
 
 import cloud.fogbow.probes.core.PropertiesHolder;
+import cloud.fogbow.probes.core.utils.AppUtil;
 import cloud.fogbow.probes.fta.FtaSender;
 import cloud.fogbow.probes.core.models.Metric;
 import cloud.fogbow.probes.core.probes.MetricCollector;
@@ -45,6 +46,7 @@ public class FogbowProbe implements Probe {
             try {
                 List<Metric> metrics = metricCollector.collect(lastTimestampAwake);
                 LOGGER.info("Metrics [" + metrics.size() + "] created at [" + lastTimestampAwake + "]");
+                LOGGER.debug(AppUtil.metricsToString(metrics));
                 if (metrics.size() > 0) {
                     FtaSender.sendMetrics(PropertiesHolder.getInstance().getFtaAddressProperty(), metrics);
                     lastSubmissionTimestamp = lastTimestampAwake;
@@ -65,6 +67,5 @@ public class FogbowProbe implements Probe {
         Optional<Metric> opt = metric.stream().max(Comparator.comparing(Metric::getTimestamp));
         return opt.map(Metric::getTimestamp).orElse(null);
     }
-
 
 }

@@ -5,8 +5,10 @@ import static cloud.fogbow.probes.core.utils.PropertiesUtil.loadProperties;
 import cloud.fogbow.probes.FogbowProbesApplication;
 import cloud.fogbow.probes.core.Constants;
 import cloud.fogbow.probes.core.PropertiesHolder;
+import cloud.fogbow.probes.core.models.Metric;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -78,5 +80,13 @@ public class AppUtil {
             System.exit(1);
         }
         return properties;
+    }
+
+    public static String metricsToString(List<Metric> metrics){
+        String result = "\n";
+        for(Metric m : metrics){
+            result = result.concat(m.toString() + '\n');
+        }
+        return result;
     }
 }

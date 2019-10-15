@@ -60,4 +60,19 @@ public class Metric {
     public Map<String, String> getMetadata() {
         return metadata;
     }
+
+    @Override
+    public String toString() {
+        return "Metric{" + "name='" + name + '\'' + ", value=" + value + ", timestamp=" + timestamp.getTime()
+            + ", metadata=" + mapToString(metadata) + '}';
+    }
+
+    private String mapToString(Map<String, String> map) {
+        StringBuilder mapAsString = new StringBuilder("{");
+        for (String key : map.keySet()) {
+            mapAsString.append(key + "=" + map.get(key) + ", ");
+        }
+        mapAsString.delete(mapAsString.length()-2, mapAsString.length()).append("}");
+        return mapAsString.toString();
+    }
 }

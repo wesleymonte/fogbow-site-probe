@@ -1,6 +1,7 @@
 package cloud.fogbow.probes.core.probes;
 
 import cloud.fogbow.probes.core.PropertiesHolder;
+import cloud.fogbow.probes.core.utils.AppUtil;
 import cloud.fogbow.probes.fta.FtaSender;
 import cloud.fogbow.probes.core.models.Metric;
 import java.sql.Timestamp;
@@ -24,6 +25,7 @@ public class DefaultProbe implements Probe {
         try {
             List<Metric> metrics = metricCollector.collect(currentTimestamp);
             LOGGER.info("Metrics [" + metrics.size() + "] created at [" + currentTimestamp + "]");
+            LOGGER.debug(AppUtil.metricsToString(metrics));
             FtaSender.sendMetrics(PropertiesHolder.getInstance().getFtaAddressProperty(), metrics);
         } catch (Exception e) {
             LOGGER.error(
