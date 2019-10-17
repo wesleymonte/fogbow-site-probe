@@ -1,20 +1,9 @@
-#/bin/bash
+#!/bin/bash
 
-readonly TAG=latest
-readonly IMAGE=wesleymonte/probes
+PREFIX=fogbow-probe
+TAG=latest
+IMAGE=wesleymonte/probes:${TAG}
+NAME=$1
 
-echo "Run this script in the project folder."
-echo "(e.g.) sudo bash ./docker/deploy.sh"
-printf "For configuration, edit the files:\n\t./src/main/resources/private/probe-fogbow.conf\n\t./src/main/resources/application.properties\n"
-while true; do
-    read -p "Is ok?" yn
-    case $yn in
-        [Yy]* ) 
-        mvn package;
-        docker build --no-cache -t $IMAGE:$TAG -f docker/Dockerfile .; 
-        docker run -itd --name probes $IMAGE:$TAG
-        break;;
-        [Nn]* ) exit;;
-        * ) echo "Please answer yes or no.";;
-    esac
-done
+sudo docker pull ${IMAGE}
+sudo docker run -itd --name ${PREFIX}-${NAME} -v ~/config/${NAME}/application.properties:/service/config/application.properties -v  ~/config/${NAME}/probe.conf:/service/config/probe.conf ${IMAGE}
