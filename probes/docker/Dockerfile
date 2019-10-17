@@ -5,4 +5,4 @@ WORKDIR /service
 
 COPY ./target/probe-fogbow-0.1.jar app.jar
 
-ENTRYPOINT ["java", "-jar", "app.jar -c ./config/probe.conf"]
+ENTRYPOINT ["java", "-jar", "app.jar", "-c" , "./config/probe.conf"]
