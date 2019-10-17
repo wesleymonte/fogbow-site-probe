@@ -2,7 +2,7 @@ package cloud.fogbow.probes.core;
 
 public class Constants {
 
-    public static final String CONF_FILE = "probe-fogbow.conf";
+    public static final String CONF_FILE = "probe.conf";
 
     public static final String PROBE_TARGET = "probe_target";
     public static final String FTA_ADDRESS = "fta_address";
